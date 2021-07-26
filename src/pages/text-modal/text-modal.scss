@@ -1,0 +1,22 @@
+page-text-modal {
+  .dialog {
+    background: white;
+    padding: 20px;
+    textarea {
+      width: 100%;
+      resize: none;
+      border: 1px solid #cccccc;
+      height: 130px;
+      padding: 5px;
+    }
+
+    button {
+      height: 30px !important;
+    }
+  }
+
+  ion-content{
+    height: 222px;
+    border: 1px solid #e2e2e2;
+  }
+}

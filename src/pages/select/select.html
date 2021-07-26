@@ -1,0 +1,48 @@
+<!--
+  Generated template for the SelectPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+
+  <div class="logo">
+    <img src="assets/imgs/logo.png" style="width: 50px;">
+    <p> <span style="color: #3370d0;">{{'WHO_YOU_ARE' | translate}}</span></p>
+  </div>
+
+
+
+  <ion-item no-lines no-padding class="item_select" (click)="company()">
+    <h3>{{'I_AM_COMPANY_OWNER' | translate}}</h3>
+    <p>{{'I_WANT_TO_FIND_ANY' | translate}}<span class="color">{{'INFLUENCER' |
+        translate}}</span>&nbsp;{{'TO_ADVERTISE_MY_GOODS/SERVICES' | translate}} </p>
+    <div class="imgs_slct">
+      <img src="assets/imgs/influ.png" class="img_main">
+      <button class="forBtn" ion-button icon-only>
+        <ion-icon name="ios-arrow-forward-outline"></ion-icon>
+      </button>
+      <!-- <img src="assets/imgs/arrow.png" class="arrow"> -->
+    </div>
+  </ion-item>
+
+  <ion-item no-lines no-padding class="item_select" (click)="influencer()">
+    <h3>{{'I_AM_A_SOCIAL_INFLUENCER' | translate}}</h3>
+    <p>{{'I_WANT_TO_APPLY_TO' | translate}} <span class="color">{{'INFLU' | translate}}</span>
+      {{'TO_ADVERTISE_MY_SERVICES' | translate}} </p>
+    <div class="imgs_slct">
+      <img src="assets/imgs/group_img.png" style="width: 180px;">
+      <!-- <img src="assets/imgs/arrow.png" class="arrow"> -->
+      <button class="forBtn" ion-button icon-only>
+        <ion-icon name="ios-arrow-forward-outline"></ion-icon>
+      </button>
+    </div>
+  </ion-item>
+
+</ion-content>

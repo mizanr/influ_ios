@@ -1,0 +1,49 @@
+page-chat {
+  .searchbar {
+    background: #0000;
+    padding: 0 0 16px;
+    overflow: unset;
+    border-bottom: none !important;
+    .searchbar-input {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+  }
+  }
+  .chat{
+      .item {
+          background: transparent;
+          margin: 10px 0;
+      }
+     h2 {
+          font-size: 15px;
+          font-weight: normal;
+          color: #575757;
+      }
+  }
+
+  .item-ios ion-avatar ion-img, .item-ios ion-avatar img {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+  }
+  .toolbar-background-ios {
+    background: #fff;
+  }
+  .chat_list{
+    p{
+      font-size: 15px;
+      font-weight: normal;
+      white-space: normal;
+    }
+    h3 {
+      font-size: 16px !important;
+      font-weight: 500 !important;
+    }
+  }
+  .chat_list.item.item-block.item-ios {
+    border-bottom: 1px solid #f1f1f1;
+    padding: 8px 16px;
+  }
+}

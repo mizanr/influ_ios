@@ -1,0 +1,19 @@
+<div class="fullpage">
+    <button ion-button icon-only clear color="light" style="position:absolute; top:0px; left:0px; z-index:10"
+        (click)="viewCtrl.dismiss()">
+        <ion-icon name="close"></ion-icon>
+    </button>
+    <ion-slides [dir]="auth.getUserLanguage()=='en'?'':'rtl'" [pager]="true" paginationType="fraction" [initialSlide]="index" zoom>
+        <ion-slide *ngFor="let img of imgs">
+
+            <!-- <div class="heigh-full" [ngStyle]="{'background-image': 'url('+img.image+')'}">
+
+            </div> -->
+            <div class="swiper-zoom-container">
+                <img [src]="img.name" alt="">
+            </div>
+
+        </ion-slide>
+
+    </ion-slides>
+</div>

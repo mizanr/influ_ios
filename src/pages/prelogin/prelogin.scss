@@ -1,0 +1,58 @@
+page-prelogin {
+  .btn_login img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+  .fb.item {
+    background: #3b5998;
+    border-radius: 50px;
+    color: #fff;
+  }
+
+  .btn_login {
+    .item {
+      border-radius: 50px;
+      padding: 5px 16px;
+      box-shadow: 0 0 13px rgba(0, 0, 0, 0.2);
+      margin-bottom: 16px;
+      h4 {
+        font-size: 20px !important;
+        text-align: center;
+        width: 100%;
+        position: absolute;
+        top: 18px;
+        left: 0;
+      }
+    }
+  }
+
+  .insta.item {
+    background-image: linear-gradient(12deg, #f8c602, #f40816, #9049c5);
+    color: #fff;
+  }
+  .tiktok.item.item-block.item-ios {
+    background: #0b0b16;
+    color: #fff;
+  }
+  .logo {
+    margin: 0 auto;
+    text-align: center;
+    img {
+      width: 120px;
+      // margin-top: 50px;
+    }
+    p {
+      color: #3370d0;
+      font-size: 22px;
+    }
+  }
+  ion-label {
+    white-space: normal;
+  }
+  .color {
+    color: #d12989;
+    z-index: +111111;
+    position: relative;
+  }
+}

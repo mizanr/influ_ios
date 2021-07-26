@@ -1,0 +1,58 @@
+<!--
+  Generated template for the HomeInfluencerPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+
+    <ion-buttons start>
+      <button style="width: 17px;min-width: unset;" ion-button menuToggle>
+        <ion-icon class="icon-theme" name="md-menu"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button (click)="openfilter()" class="filerIconBtn" ion-button clear icon-only color="light">
+        <!-- <img src="assets/imgs/filter.png" style="width: 25px;"> -->
+        <ion-icon color="light" name="ios-options"></ion-icon>
+      </button>
+
+      <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
+        <ion-icon style="font-size: 32px;" class="icon-theme" name="md-notifications"></ion-icon>
+        <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti<99 && auth.unread_noti!=0">
+          {{auth.unread_noti}}</ion-badge>
+        <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>99">
+          {{auth.unread_noti}}</ion-badge>
+      </button>
+    </ion-buttons>
+    <ion-title>{{'COMPANY_REQUESTS' | translate}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content>
+
+    </ion-refresher-content>
+  </ion-refresher>
+  <div class="noDatadiv" *ngIf="noData">
+    <ion-icon name="ios-search-outline"></ion-icon>
+    <p>{{'NO_DATA_FOUND' | translate}}</p>
+  </div>
+
+  <div *ngIf="services" [virtualScroll]="services">
+    <div class="feed" *virtualItem="let k">
+      <job [k]='k'>
+      </job>
+    </div>
+  </div>
+
+  <ion-infinite-scroll no-padding (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'LOADING' | translate}}...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

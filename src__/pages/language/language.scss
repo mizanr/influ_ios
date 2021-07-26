@@ -1,0 +1,64 @@
+page-language {
+  .payment_options {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 0 7px rgba(104, 104, 104, 0.2);
+    min-height: 40px;
+    border-radius: 30px;
+    height: 50px;
+
+  }
+
+  .content {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.login_form {
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 1px 3px #00001075;
+    padding:16px 16px 16px;
+    margin-top: 40%;
+    position: relative;
+    .btn_close {
+        position: absolute;
+        right: 0;
+        font-size: 25px;
+        color: #000;
+        top: 0;
+        line-height: 0;
+        height: 35px;
+        padding: 0 !important;
+    }
+}
+img {
+	position: absolute;
+	left: 50%;
+	top: -70px;
+	margin-left: -50px;
+}
+p {
+	font-size: 17px;
+	text-align: left;
+	color: #000;
+  margin: 5px 0;
+}
+.warning {
+	color: #eea951;
+}
+button {
+	padding: 20px 30px !important;
+}
+.cancel{
+	background: #f1f1f1;
+	color: #000;
+}
+.row{
+  .button {
+    width: 120px;
+    font-size: 17px;
+    margin-top: 20px;
+
+  }
+}
+}

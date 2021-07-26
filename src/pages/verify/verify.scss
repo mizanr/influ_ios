@@ -1,0 +1,114 @@
+page-verify {
+    .back_img {
+        background: white;
+        background-color: rgba(0, 0, 0, 0);
+        background-position-x: 0%;
+        background-position-y: 0%;
+        background-repeat: repeat;
+        background-size: auto;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-color: white;
+    }
+    .logo h3 {
+        color: #000;
+        font-size: 16px;
+        margin: 16px 0 16px;
+    }
+    .login_form_main {
+        // height: 100%;
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+    .login_form {
+        width: 100%;
+    }
+    .img_sign img {
+        width: 200px;
+        margin: 10px;
+    }
+    .logo img {
+        width: 100px;
+    }
+    .logo {
+        padding: 0;
+        text-align: center;
+    }
+    .input_1 {
+        margin: 10px 0;
+        height: 35px;
+        background: #fff;
+        color: #575757;
+        font-size: 13px;
+        border: 1px solid #d8d8d8 !important;
+        border-radius: 3px;
+    }
+    .btn_grp {
+        padding: 10px 0 !important;
+        text-align: center;
+        font-size: 15px;
+    }
+    .btn_grp p span {
+        color: #fe6e4a;
+    }
+    .toolbar-background.toolbar-background-ios {
+        background: #fff;
+        border: none;
+    }
+    .header-md::after,
+    .tabs-md[tabsPlacement="top"] > .tabbar::after,
+    .footer-md::before,
+    .tabs-md[tabsPlacement="bottom"] > .tabbar::before {
+        left: 0;
+        bottom: -5px;
+        background-position: left 0 top -2px;
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        background-image: none;
+        background-repeat: repeat-x;
+        content: "";
+    }
+    .label input {
+        width: 85%;
+        height: 30px;
+        border: none;
+    }
+    .label {
+        display: flex;
+        align-items: center;
+    }
+    .label img {
+        width: auto;
+        height: 20px;
+        margin-right: 8px;
+    }
+    .verify {
+        height: 45px;
+        width: 45px;
+        background: #339bdb;
+        border: 1px solid #d8d8d8;
+        border-radius: 5px;
+        overflow: hidden;
+        display: inline-block;
+    }
+    .input_2 {
+        input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            height: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 30px;
+            color: #fff;
+            margin: 0;
+        }
+    }
+    .verify.active {
+        background: #c03591;
+        border-bottom: 5px solid #9c4fa4;
+    }
+}

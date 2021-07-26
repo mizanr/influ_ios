@@ -1,0 +1,231 @@
+<!--
+  Generated template for the AddjobInfluPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <!-- <ion-buttons end>
+     <button ion-button small clear style="padding: 0; width: 40px;">
+      <img src="assets/imgs/logo.png" style="width: 50px;">
+     </button>
+   </ion-buttons> -->
+    <ion-title *ngIf="!editId">{{'ADD_SERVICE' | translate}}</ion-title>
+    <ion-title *ngIf="editId">{{'EDIT_SERVICE' | translate}}</ion-title>
+
+    <ion-buttons *ngIf="!editId" start>
+      <button style="width: 17px;min-width: unset;" ion-button menuToggle>
+        <ion-icon class="icon-theme" name="md-menu"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons *ngIf="!editId" end>
+      <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>0">{{auth.unread_noti}}</ion-badge>
+      <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
+        <ion-icon style="font-size: 32px;" class="icon-theme" name="md-notifications"></ion-icon>
+      </button>
+
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+
+<ion-content padding>
+
+  <div class="login_form_div">
+
+    <ion-list>
+
+      <div style="margin-bottom: 20px !important;">
+        <ion-item class="input_1" no-padding no-lines>
+          <input type="text" (keyup)="onKeyT()" (blur)="onBlurT()" [(ngModel)]="formData.title"
+            placeholder="{{'TITLE' | translate}}">
+        </ion-item>
+        <div *ngIf="validations.isTitleEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'PLEASE_ENTER_TITLE' | translate}}</div>
+        <div *ngIf="validations.isTitleWrong" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'THE_TITLE_MUST_HAVE_ATLEAST_5_CHARACTERS_&_MAXIMUM_50_CHARACTERS' | translate}}</div>
+      </div>
+
+      <div style="margin-bottom: 20px !important;">
+        <ion-item class="input_1 input_1_text" no-padding no-lines>
+          <textarea (keyup)="onKeyD()" (blur)="onBlurD()" [(ngModel)]="formData.descriptions"
+            placeholder="{{'DESCRIPTION' | translate}}" rows="4"></textarea>
+        </ion-item>
+        <div *ngIf="validations.isDescEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'PLEASE_WRITE_DESCRIPTION_FOR_THE_JOB_TEST' | translate}}
+        </div>
+        <div *ngIf="validations.isDescWrong" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'THE_DESCRIPTION_MUST_HAVE_AT_LEAST_20_CHARACTERS_&_MAXIMUM_500_CHARACTERS' | translate}}
+        </div>
+      </div>
+
+
+      <div style="margin-bottom: 20px !important;">
+        <ion-item class="input_1" no-padding no-lines>
+          <span style="margin-right: 5px;" item-start>$</span><input (keyup)="kp()" item-start
+            [(ngModel)]="formData.price" type="number" placeholder="{{'PRICE' | translate}}">
+        </ion-item>
+        <div *ngIf="validations.isPriceEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'PLEASE_ENTER_PRICE' | translate}}</div>
+        <div *ngIf="validations.isPriceWrong" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'THE_PRICE_SHOULD_BE_AN_INTEGER' | translate}}</div>
+      </div>
+
+
+      <div style="margin-bottom: 20px !important;">
+        <ion-item class="input_1" no-padding no-lines>
+          <ion-label>{{'SELECT_CATEGORY' | translate}}</ion-label>
+          <ion-select (ionChange)="cateChange()" multiple [(ngModel)]="formData.category">
+            <ion-option value="">{{'ANY' | translate}}</ion-option>
+            <ion-option *ngFor="let item of cates" [value]="item.id">{{item.name}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <!-- <div style="margin-bottom: 20px !important;">
+        <ion-item class="input_1" no-padding no-lines>
+          <ion-label>Service type</ion-label>
+          <ion-select (ionChange)="selectChange()" multiple interface="action-sheet" [(ngModel)]="formData.post_type">
+            <ion-option value="Facebook">{{'FACEBOOK' | translate}}</ion-option>
+            <ion-option value="Image file">{{'IMAGE_FILE' | translate}}</ion-option>
+            <ion-option value="Video file">{{'VIDEO_FILE' | translate}}</ion-option>
+            <ion-option value="Tiktok">{{'TIKTOK' | translate}}Tiktok</ion-option>
+            <ion-option value="Instagram Post">{{'INSTAGRAM_POST' | translate}}</ion-option>
+            <ion-option value="Instagram Story">{{'INSTAGRAM_STORY' | translate}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <div *ngIf="validations.isServiceSelceted" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'PLEASE_SERVICE_TYPE' | translate}}</div>
+      </div> -->
+
+
+      <ion-label style="font-size: 16px;font-weight: 500;">{{'SERVICE_TYPE' | translate}}</ion-label>
+      <ion-row class="item_check">
+        <ion-col col-4 *ngFor="let item of service_types">
+          <ion-item no-padding no-lines>
+            <ion-label>{{item.service_title | translate}}</ion-label>
+            <ion-checkbox (ionChange)="selectChange()" [(ngModel)]="item.checked" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <div *ngIf="validations.isServiceSelceted" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+          {{'PLEASE_SERVICE_TYPE' | translate}} </div>
+      </ion-row>
+
+      <ion-row *ngIf="!editId">
+        <ion-col col-3 *ngFor="let m of formData.images;let i = index">
+          <div *ngIf="formData.images.length>0" class="add_image">
+            <img [src]="m.preview">
+            <button (click)="delImage(i)" class="btn-theme cross" ion-button icon-only>
+              <ion-icon name="close"></ion-icon>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col *ngIf="formData.images.length<5" col-3 text-center>
+          <div class="add_image">
+            <img (click)="getPicture()" src="assets/imgs/add.png">
+            {{'IMAGE' | translate}}
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="editId">
+        <ion-col col-3 *ngFor="let m of formData.images;let i = index">
+          <div *ngIf="formData.images.length>0" class="add_image">
+            <img [src]="m.name">
+            <button (click)="delServerImage(m.id)" class="btn-theme cross" ion-button icon-only>
+              <ion-icon name="close"></ion-icon>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col col-3 *ngFor="let m of newImagesArr;let i = index">
+          <div *ngIf="newImagesArr.length>0" class="add_image">
+            <img [src]="m.preview">
+            <button (click)="delImageE(i)" class="btn-theme cross" ion-button icon-only>
+              <ion-icon name="close"></ion-icon>
+            </button>
+          </div>
+        </ion-col>
+        <ion-col text-center *ngIf="(formData.images.length + this.newImagesArr.length)<5" col-3>
+          <div class="add_image">
+            <img (click)="getPictureEdit()" src="assets/imgs/add.png">
+            {{'IMAGE' | translate}}
+          </div>
+        </ion-col>
+      </ion-row>
+      <div *ngIf="validations.isImageEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
+        {{'PLEASE_ADD_A_IMAGE' | translate}}</div>
+      <!-- <h3 class="heading">Service type</h3> -->
+      <!-- 
+      <ion-row [(ngModel)]="formData.post_type"  class="item_check">
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Facebook</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Facebook" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Image file</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Image file" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Video file</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Video file" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Tiktok</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Tiktok" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Instagram Post</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Instagram Post" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item no-padding no-lines>
+            <ion-label>Instagram Story</ion-label>
+            <ion-checkbox style="margin:5px !important" value="Instagram Story" color="primary"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row> -->
+
+      <!-- <div *ngIf="formData.post_type== 'Video file'" class="img_upload">
+        <img *ngIf="!formData.video_thumbnail" (click)="getVideo()" src="assets/imgs/videoupload.png" />
+        <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer"
+          *ngIf="formData.video_thumbnail" [poster]="formData.video_thumbnail">
+          <source [src]="formData.service_video" />
+        </video>
+      </div>
+      <div *ngIf="formData.post_type== 'Video file'" text-right>
+        <button (click)="getVideo()" *ngIf="!formData.video_thumbnail" class="btn-theme" ion-button small>Add
+          Video</button>
+        <button (click)="getVideo()" *ngIf="formData.video_thumbnail" class="btn-theme" ion-button small>Update
+          Video</button>
+      </div> -->
+
+      <div no-padding class="btn_grp">
+        <button
+          [disabled]="validations.isTitleEmpty || validations.isTitleWrong || validations.isDescEmpty || validations.isDescWrong || validations.isPriceEmpty || validations.isPriceWrong || validations.isServiceSelceted ||  validations.isImageEmpty"
+          ion-button block round (click)="Post()" *ngIf="!editId" color="primary" class="btn-theme">{{'POST' |
+          translate}}</button>
+        <button
+          [disabled]="validations.isTitleEmpty || validations.isTitleWrong || validations.isDescEmpty || validations.isDescWrong || validations.isPriceEmpty || validations.isPriceWrong || validations.isServiceSelceted ||  validations.isImageEmpty"
+          ion-button block round (click)="update()" *ngIf="editId" color="primary" class="btn-theme">{{'UPDATE' |
+          translate}}</button>
+      </div>
+
+    </ion-list>
+  </div>
+
+
+
+</ion-content>

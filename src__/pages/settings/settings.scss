@@ -1,0 +1,31 @@
+page-settings {
+	.content{
+		background: #fff;
+	}
+.list .item {
+	border: none !important;
+  min-height: 50px;
+  font-size: 18px;
+  color: #000;
+  background: transparent;
+}
+.list{
+	margin: 0 !important;
+}
+.item.item-block.item-toggle {
+	min-height: 50px;
+	border: none !important;
+}
+span {
+	display: block;
+}
+.item-block .item-inner {
+	padding-right: 8px;
+	padding-right: 8px;
+	border-bottom: none !important;
+}
+.header-ios .toolbar-ios:last-child .toolbar-background-ios {
+	border-width: 0 0 0.55px;
+	background: transparent;
+}
+}

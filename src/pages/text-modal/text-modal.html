@@ -1,0 +1,13 @@
+<ion-content>
+  <div class="dialog">
+    <textarea [(ngModel)]="msg" placeholder="{{'ENTER_REPORT_HERE' | translate}}" cols="30" rows="10"></textarea>
+    <ion-row>
+      <ion-col text-center>
+        <button class="btn-theme" ion-button (click)="cancel()">{{'CANCEL' | translate}}</button>
+      </ion-col>
+      <ion-col text-center>
+        <button class="btn-theme" ion-button (click)="done()">{{'DONE' | translate}}</button>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

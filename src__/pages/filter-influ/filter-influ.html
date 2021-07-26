@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'FILTER' | translate}}</ion-title>
+
+    <ion-buttons start>
+      <button ion-button clear icon-only (click)="viewCtrl.dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button style="color:white" class="btn-theme" (click)="reset()">{{'RESET' | translate}}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+
+  <div>
+    <ion-list padding>
+      <ion-item class="input_1" no-padding no-lines>
+        <input type="text" [(ngModel)]="filter.name" placeholder="{{'FILTER_BY_NAME' | translate}}">
+      </ion-item>
+
+      <!-- <ion-item class="input_1" no-padding no-lines>
+        <input type="text" [(ngModel)]="filter.keywords" placeholder="Filter by Name">
+      </ion-item> -->
+
+      <ion-item (click)="openModal()" class="input_1" no-padding no-lines>
+        <input type="text" disabled style="opacity: 1 !important;" [(ngModel)]="filter.country.nicename"
+          placeholder="{{'FILTER_BY_COUNTRY' | translate}}">
+      </ion-item>
+
+
+      <ion-item *ngIf="auth?.getUserDetails()?.user_type==1" class="input_1" no-padding no-lines>
+        <ion-label>{{'FILTER_BY_GENDER' | translate}}</ion-label>
+        <ion-select placeholder="{{'FILTER_BY_GENDER' | translate}}"
+          style="width: 100%;max-width: 100%;padding-left: 0;" [(ngModel)]="filter.gender">
+          <ion-option value="Male">{{'MALE' | translate}}</ion-option>
+          <ion-option value="Female">{{'FEMALE' | translate}}</ion-option>
+          <ion-option value="Any">{{'ANY' | translate}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+
+      <ion-item class="input_1" no-padding no-lines>
+        <ion-label>{{'FILTER_BY_CATEGORY' | translate}}</ion-label>
+        <ion-select style="width: 100%;max-width: 100%;padding-left: 0;"
+          placeholder="{{'FILTER_BY_CATEGORY' | translate}}" [(ngModel)]="filter.category">
+          <ion-option *ngFor="let item of categories" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item class="input_1" no-padding no-lines>
+        <ion-select style="width: 100%;max-width: 100%;padding-left: 0;" [(ngModel)]="filter.post_type"
+          placeholder="{{'FILTER_BY_SERVICE_TYPE' | translate}}">
+          <ion-option value="Facebook">{{'FACEBOOK' | translate}}</ion-option>
+          <ion-option value="Image file">{{'IMAGE_FILE' | translate}}</ion-option>
+          <ion-option value="Video file">{{'VIDEO_FILE' | translate}}</ion-option>
+          <ion-option value="Tiktok">{{'TIKTOK' | translate}}Tiktok</ion-option>
+          <ion-option value="Instagram Post">{{'INSTAGRAM_POST' | translate}}</ion-option>
+          <ion-option value="Instagram Story">{{'INSTAGRAM_STORY' | translate}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item *ngIf="auth?.getUserDetails()?.user_type==1" class="input_1" no-padding no-lines>
+        <ion-label>{{'SELECT_AGE' | translate}}</ion-label>
+        <ion-select placeholder="{{'SELECT_AGE' | translate}}" style="width: 100%;max-width: 100%;padding-left: 0;"
+          [(ngModel)]="filter.age">
+          <ion-option>1</ion-option>
+          <ion-option>2</ion-option>
+          <ion-option>3</ion-option>
+          <ion-option>4</ion-option>
+          <ion-option>5</ion-option>
+          <ion-option>6</ion-option>
+          <ion-option>7</ion-option>
+          <ion-option>8</ion-option>
+          <ion-option>9</ion-option>
+          <ion-option>10</ion-option>
+          <ion-option>11</ion-option>
+          <ion-option>12</ion-option>
+          <ion-option>13</ion-option>
+          <ion-option>14</ion-option>
+          <ion-option>15</ion-option>
+          <ion-option>16</ion-option>
+          <ion-option>17</ion-option>
+          <ion-option>18</ion-option>
+          <ion-option>19</ion-option>
+          <ion-option>20</ion-option>
+          <ion-option>21</ion-option>
+          <ion-option>22</ion-option>
+          <ion-option>23</ion-option>
+          <ion-option>24</ion-option>
+          <ion-option>25</ion-option>
+          <ion-option>26</ion-option>
+          <ion-option>27</ion-option>
+          <ion-option>28</ion-option>
+          <ion-option>29</ion-option>
+          <ion-option>30</ion-option>
+          <ion-option>31</ion-option>
+          <ion-option>32</ion-option>
+          <ion-option>33</ion-option>
+          <ion-option>34</ion-option>
+          <ion-option>35</ion-option>
+          <ion-option>36</ion-option>
+          <ion-option>37</ion-option>
+          <ion-option>38</ion-option>
+          <ion-option>39</ion-option>
+          <ion-option>40</ion-option>
+          <ion-option>41</ion-option>
+          <ion-option>42</ion-option>
+          <ion-option>43</ion-option>
+          <ion-option>44</ion-option>
+          <ion-option>45</ion-option>
+          <ion-option>46</ion-option>
+          <ion-option>47</ion-option>
+          <ion-option>48</ion-option>
+          <ion-option>49</ion-option>
+          <ion-option>50</ion-option>
+          <ion-option>51</ion-option>
+          <ion-option>52</ion-option>
+          <ion-option>53</ion-option>
+          <ion-option>54</ion-option>
+          <ion-option>55</ion-option>
+          <ion-option>56</ion-option>
+          <ion-option>57</ion-option>
+          <ion-option>58</ion-option>
+          <ion-option>59</ion-option>
+          <ion-option>60</ion-option>
+          <ion-option>61</ion-option>
+          <ion-option>62</ion-option>
+          <ion-option>63</ion-option>
+          <ion-option>64</ion-option>
+          <ion-option>65</ion-option>
+          <ion-option>66</ion-option>
+          <ion-option>67</ion-option>
+          <ion-option>68</ion-option>
+          <ion-option>69</ion-option>
+          <ion-option>70</ion-option>
+          <ion-option>71</ion-option>
+          <ion-option>72</ion-option>
+          <ion-option>73</ion-option>
+          <ion-option>74</ion-option>
+          <ion-option>75</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <button class="btn-theme" (click)="viewCtrl.dismiss(this.filter)" ion-button round full>{{'APPLY' |
+        translate}}</button>
+    </ion-list>
+  </div>
+</ion-content>

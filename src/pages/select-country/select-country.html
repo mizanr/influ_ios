@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar>
+        <ion-buttons start>
+            <button ion-button icon-only (click)="viewCtrl.dismiss()">
+
+                <ion-icon color="dark" *ngIf="auth.getUserLanguage()=='en'" name="ios-arrow-back-outline"></ion-icon>
+                <ion-icon color="dark" *ngIf="auth.getUserLanguage()=='he'" name="ios-arrow-forward-outline"></ion-icon>
+            </button>
+
+        </ion-buttons>
+        <ion-title>
+            {{'SELECT_COUNTRY' | translate}}
+        </ion-title>
+    </ion-navbar>
+    <ion-toolbar>
+        <ion-searchbar #searchinput (ionInput)="getItems($event.srcElement.value,0)"></ion-searchbar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <div *ngFor="let c of searchList">
+            <ion-item (click)="viewCtrl.dismiss(c)">
+
+                <!-- <ion-avatar item-start>
+                    <img [src]="c.image">
+                </ion-avatar> -->
+                <p text-wrap style="color: black !important;font-size: 17px !important;">
+                    {{c.name }}</p>
+
+
+                <!-- <p>{{contact.phoneNumbers[0].value}}</p> -->
+            </ion-item>
+        </div>
+
+    </ion-list>
+</ion-content>

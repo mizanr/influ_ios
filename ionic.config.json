@@ -1,0 +1,7 @@
+{
+  "name": "Influ",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

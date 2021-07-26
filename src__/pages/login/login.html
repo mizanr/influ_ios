@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons end>
+      <button ion-button small clear style="padding: 0; width: 40px;">
+        <img src="assets/imgs/logo.png" style="width: 50px;">
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+
+
+  <div class="login_form_div">
+
+
+    <div class="heading_login_logo">
+      <img src="assets/imgs/logo.png" style="width: 120px;">
+    </div>
+
+    <p> <span style="color: #3370d0;">{{'EASY_COLABRATION' |
+        translate}}</span>&nbsp;{{'BETWEEN_INFLUENCERS_AND_PRODUCT_OWNERS' | translate}}</p>
+
+    <form [formGroup]="loginForm">
+      <ion-list>
+        <div style="margin-bottom: 20px !important;">
+          <ion-item class="input_1" no-padding no-lines>
+            <input (keyup)="get()" formControlName="email" type="email"
+              placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}">
+          </ion-item>
+          <!-- <p>{{ }}</p> -->
+          <div *ngIf="loginForm.controls.email.value=='' && loginForm.controls.email.touched" style="margin-top: 8px;"
+            ion-text padding-horizontal color="danger">
+            {{'PLEASE_ENTER_EMAIL' | translate}}</div>
+          <div
+            *ngIf="!loginForm.controls.email.valid && loginForm.controls.email.value!='' && loginForm.controls.email.touched"
+            style="margin-top: 8px;" ion-text padding-horizontal color="danger">{{'PLEASE_ENTER_VALID_EMAIL' |
+            translate}}</div>
+
+        </div>
+
+        <div style="margin-bottom: 20px !important;">
+          <ion-item class="input_1" no-padding no-lines>
+            <input formControlName="password" type="password" placeholder="{{'PASSWORD' | translate}}">
+          </ion-item>
+          <div *ngIf="loginForm.controls.password.value=='' && loginForm.controls.password.touched" style="margin-top: 8px;" ion-text padding-horizontal
+            color="danger">
+            {{'PLEASE_ENTER_PASSWORD' | translate}} </div>
+          <div *ngIf="!loginForm.controls.password.valid && loginForm.controls.password.value!='' && loginForm.controls.email.touched"
+            style="margin-top: 8px;" ion-text padding-horizontal color="danger">{{'PLEASE_MUST_BE_ATLEAST_6_CHARACTERS'
+            |
+            translate}} </div>
+        </div>
+
+
+        <h5 style="text-align: right;font-size: 17px;font-weight: normal;color: #3370d0;margin: 20px 0 20px !important;"
+          (click)="forgot()">{{'FORGOT_YOUR_PASSWORD' | translate}}</h5>
+
+
+        <div no-padding class="btn_grp">
+          <button ion-button [disabled]="!loginForm.valid" block round color="primary" class="btn-theme"
+            (click)="login()">{{'LOGIN' | translate}}</button>
+        </div>
+
+
+        <p style="color: #a6a6a6;text-align: center;font-size: 18px;width: 100%;bottom: 0;left: 0;">{{'NEW_AROUND_HERE'
+          |
+          translate}}
+          <span (click)="signup()" style="color: #3370d0;text-decoration: underline;">{{'SIGNUP' | translate}}</span>
+        </p>
+
+
+      </ion-list>
+    </form>
+  </div>
+
+
+</ion-content>

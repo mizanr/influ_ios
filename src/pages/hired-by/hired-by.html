@@ -1,0 +1,41 @@
+<div class="box" padding>
+  <!-- <ion-slides style="height: 200px !important;" [pager]="true" paginationType="fraction">
+    <ion-slide *ngFor="let img of detail.images"> -->
+  <div class="swiper-zoom-container">
+    <img style="object-fit: cover;height: 200px;width: 100%;" [src]="detail.company_logo" alt="">
+  </div>
+  <!-- </ion-slide>
+  </ion-slides> -->
+
+  <ion-item no-lines no-padding margin-top>
+    <h3>{{'COMPANY_NAME' | translate}}</h3>
+    <p text-wrap text-capitalize>{{detail.company_name}}</p>
+  </ion-item>
+
+  <ion-item no-lines no-padding margin-top>
+    <h3>{{'COMPANY_EMAIL' | translate}}</h3>
+    <p text-wrap text-capitalize>{{detail.email}}</p>
+  </ion-item>
+
+  <ion-item no-lines no-padding margin-top>
+    <h3>{{'COMPANY_DESCRIPTION' | translate}}</h3>
+    <p text-wrap text-capitalize>{{detail.company_desc}}</p>
+  </ion-item>
+
+  <ion-item no-lines no-padding margin-top>
+    <h3>{{'COMPANY_WEBSITE' | translate}}</h3>
+    <p text-wrap text-capitalize>{{detail.company_website}}</p>
+  </ion-item>
+
+  <ion-item no-lines no-padding margin-top>
+    <h3>{{'COMPANY_ADDRESS' | translate}}</h3>
+    <p text-wrap text-capitalize>{{detail.company_address}}</p>
+  </ion-item>
+
+  <div text-center>
+
+    <button class="btn-theme" small (click)="viewCtrl.dismiss()" ion-button>
+      {{'CLOSE' | translate}} 
+    </button>
+  </div>
+</div>

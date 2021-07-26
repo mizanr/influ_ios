@@ -1,0 +1,195 @@
+<ion-content class="back">
+
+  <div *ngIf="profile" class="Image_create">
+    <img src="assets/imgs/back-pro.png" style="height: 200px;width: 100%;object-fit: cover;margin-bottom: 65px;">
+    <div class="topbar">
+      <button class="backBtn" *ngIf="navParams.get('ID')" ion-button clear no-margin (click)="back()">
+        <!-- <img src="assets/imgs/back.png" style="width: 12px;"> -->
+        <ion-icon color="light" *ngIf="auth.getUserLanguage()=='en'"  name="ios-arrow-back-outline"></ion-icon>
+        <ion-icon color="light" *ngIf="auth.getUserLanguage()=='he'" name="ios-arrow-forward-outline"></ion-icon>
+
+      </button>
+
+      <button menuToggle class="menuBtn" *ngIf="!navParams.get('ID')" ion-button clear>
+        <!-- <img src="assets/imgs/notification.png" style="width: 15px;"> -->
+        <ion-icon color="light" name="md-menu"></ion-icon>
+      </button>
+      <div class="rightIcons" [ngClass]="auth.getUserLanguage()=='en'?'eng':'noteng'">
+        <button class="notiBtn" ion-button clear (click)="openNoti()">
+          <!-- <img src="assets/imgs/notification.png" style="width: 15px;"> -->
+          <ion-icon color="light" name="ios-notifications-outline"></ion-icon>
+          <ion-badge class="redBadge" color="danger" *ngIf="auth.unread_noti<99 && auth.unread_noti!=0">
+            {{auth.unread_noti}}</ion-badge>
+          <ion-badge class="redBadge" color="danger" *ngIf="auth.unread_noti>99">
+            99+</ion-badge>
+        </button>
+      </div>
+    </div>
+
+
+    <div class="div_top_influ">
+      <ion-item no-lines no-padding>
+        <h3>{{profile.company_name}}</h3>
+        <!-- <p>Male</p> -->
+      </ion-item>
+
+      <div class="flex_content_dv">
+        <div class="img_profile">
+          <img [src]="profile.company_logo">
+        </div>
+        <div class="proflie_info">
+          <ion-row>
+            <ion-col col-6 (click)="makeActive('Service')">
+              <div class="count">
+                <h3>{{posts}}</h3>
+                <p>{{'POSTS' | translate}}</p>
+              </div>
+            </ion-col>
+            <ion-col col-6 (click)="makeActive('hired_services')">
+              <div class="count">
+                <h3>{{hired_services.length}}</h3>
+                <p>{{'TOTAL_HIRES' | translate}}</p>
+              </div>
+            </ion-col>
+
+          </ion-row>
+          <div class="btn_mess">
+            <!-- <button *ngIf="ownerId!=auth.getCurrentUserId()" ion-button round small class="btn-theme">{{'MESSAGE' |
+              translate}}</button> -->
+
+            <div *ngIf="ownerId==auth.getCurrentUserId()">
+              <button (click)="opneEdit()" [ngClass]="auth.getUserLanguage()=='en'?'':'inLeft'" class="inRight"
+                ion-button clear icon-only><img src="../../assets/imgs/edit.png">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <ion-segment (ionChange)="onChange()" [(ngModel)]="grown" class="segment_new">
+    <ion-segment-button value="Profile">
+      {{'PROFILE' | translate}}
+    </ion-segment-button>
+    <ion-segment-button value="hired_services">
+      {{'HIRED_SERVICES' | translate}}
+    </ion-segment-button>
+    <ion-segment-button value="Service">
+      {{'OPEN_JOBS' | translate}}
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="grown" *ngIf="profile">
+    <div *ngSwitchCase="'Profile'" style="padding: 0 16px;" class="scroll_div">
+
+      <h3 class="heading">{{'PROFILE_DETAILS' | translate}}</h3>
+
+      <ion-item no-lines no-padding class="detail_item">
+        <h3>{{'COMPANY_ADDRESS' | translate}} </h3>
+        <p text-wrap>{{profile.company_address}}</p>
+      </ion-item>
+
+      <ion-item no-lines no-padding class="detail_item">
+        <h3>{{'DESCRIPTION' | translate}}</h3>
+        <p text-wrap>{{profile.company_desc}}</p>
+      </ion-item>
+
+      <ion-item no-lines no-padding class="detail_item">
+        <h3>{{'COMPANY_WEBSITE' | translate}}</h3>
+        <p text-wrap>{{profile.company_website}}</p>
+      </ion-item>
+
+    </div>
+
+
+    <div *ngSwitchCase="'hired_services'" style="padding: 16px 16px;" class="scroll_div">
+      <div class="noDatadiv" *ngIf="noHireData">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
+      </div>
+      <div (click)="profile(k.JobDetails.created_by.id,k.JobDetails.Id)" class="feed" *ngFor="let k of hired_services">
+        <ion-item no-lines no-pading class="name_item">
+          <ion-avatar item-start>
+            <img [src]="k.JobDetails.created_by.image">
+          </ion-avatar>
+          <h3>{{k.JobDetails.created_by.first_name}}&nbsp;{{k.JobDetails.created_by.last_name}}</h3>
+          <p>{{k.JobDetails.created_at}}</p>
+          <!-- <button ion-button small clear item-end no-padding (click)="openAction(k.JobDetails.Id);$event.stopPropagation()">
+            <img src="assets/imgs/dots.png" style="width: 6px;">
+          </button> -->
+        </ion-item>
+
+        <!-- <div class="filter_div" *ngIf="buttonClicked">
+          <ion-list>
+            <button (click)="report(k.JobDetails.Id);$event.stopPropagation()" ion-item no-padding no-lines>Report
+              Post</button>
+          </ion-list>
+        </div> -->
+
+
+        <ion-card class="card_feed">
+
+          <img height="200" width="100%" [src]="k.JobDetails.images[0].name" style="object-fit: cover;">
+
+          <ion-card-content>
+            <ion-item no-lines no-padding class="info">
+              <p>{{k.JobDetails.descriptions}}</p>
+              <h3 item-end>${{k.JobDetails.price}}</h3>
+            </ion-item>
+          </ion-card-content>
+
+          <ion-row padding-left>
+            <ion-col no-padding>
+              <!-- (click)="hire(k.JobDetails.created_by.id,k.JobDetails.Id,k.JobDetails.price)" -->
+              <!-- <button *ngIf="k.JobDetails.isPayment==0" ion-button
+                (click)="hire(k.JobDetails.created_by.id,k.JobDetails.Id,k.JobDetails.price);$event.stopPropagation()" small round class="btn-theme">Hire
+                Now</button>
+              <button *ngIf="k.JobDetails.isPayment==1" disabled style="opacity: 1 !important;" ion-button small round
+                class="btn-theme">Already Hired</button> -->
+              <button (click)="postdetail(k.JobDetails.Id);$event.stopPropagation()" style="opacity: 1 !important;"
+                ion-button small round class="btn-theme">{{'READ_MORE' | translate}}</button>
+            </ion-col>
+          </ion-row>
+
+        </ion-card>
+
+      </div>
+
+
+    </div>
+
+
+    <div *ngSwitchCase="'Service'" style="padding: 16px 16px;" class="scroll_div">
+      <div class="noDatadiv" *ngIf="noData">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
+      </div>
+
+      <ion-card *ngFor="let k of jobs" class="card_feed">
+
+        <img height="200" width="100%" style="object-fit: cover;" [src]="k.images[0].name">
+
+        <ion-card-content>
+          <ion-item no-lines no-padding class="info">
+            <p>{{k.descriptions}}</p>
+            <h3 item-end>${{k.price}}</h3>
+          </ion-item>
+        </ion-card-content>
+
+        <ion-row padding-left>
+          <ion-col no-padding>
+            <!-- <button *ngIf="ownerId!=auth.getCurrentUserId()" ion-button small round class="btn-theme">{{'REQUEST_TO_JOB'
+              | translate}}</button> -->
+            <button (click)="jobDetail(k.Id);$event.stopPropagation()" style="opacity: 1 !important;" ion-button small
+              round class="btn-theme">{{'READ_MORE' | translate}}</button>
+          </ion-col>
+        </ion-row>
+
+      </ion-card>
+    </div>
+  </div>
+
+</ion-content>

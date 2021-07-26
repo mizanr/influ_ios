@@ -1,0 +1,145 @@
+<ion-menu [side]="auth.getUserLanguage()=='en'?'left':'right'" [content]="nav" type="overlay" persistent="true">
+
+  <ion-content>
+
+    <div *ngIf="auth.isUserLoggedIn() && auth.getUserDetails().user_type==1">
+
+      <div class="user">
+
+        <ion-list no-lines class="list_menu" style="margin: 16px 0px;">
+
+          <ion-item padding-left no-lines class="chat_item chat_item_2"
+            style="background-color: transparent;;padding-left: 15px !important">
+            <ion-avatar item-start class="avtar_menu">
+              <div class="user_img">
+                <img style="object-fit: cover;" [src]="auth.getUserDetails().company_logo">
+              </div>
+            </ion-avatar>
+            <h6 (click)="event.publish('SelectTab',3)" text-wrap class="heading_int" menuClose
+              style="color: #000;font-size: 18px;" text-capitalize>
+              {{auth.getUserDetails().company_name}}</h6>
+          </ion-item>
+        </ion-list>
+
+      </div>
+      <ion-list [ngClass]="auth.getUserLanguage()=='he'?'arrowRight':''" class="menu-btn">
+
+        <button ion-item menuClose no-lines>
+          <img src="assets/imgs/side/home.png">{{'HOME' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="profile()">
+          <img src="assets/imgs/side/profile.png">{{'MY_PROFILE' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="change()">
+          <ion-icon text-center name="md-lock"></ion-icon>{{'CHANGE_PASSWORD' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="add()">
+          <img src="assets/imgs/side/add.png"> {{'ADD_JOB' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="job()">
+          <img src="assets/imgs/side/list.png">{{'JOB_LIST' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="openHired()">
+          <img src="assets/imgs/side/list.png"> {{'HIRED_SERVICES' | translate}}
+        </button>
+
+
+        <button ion-item menuClose no-lines (click)="settings()">
+          <img src="assets/imgs/side/settings.png"> {{'SETTINGS' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="auth.logout()">
+          <img src="assets/imgs/side/logout.png">{{'LOG_OUT' | translate}}
+        </button>
+
+      </ion-list>
+    </div>
+
+    <div *ngIf="auth.isUserLoggedIn() && auth.getUserDetails().user_type==2">
+
+      <div class="user">
+
+        <ion-list no-lines class="list_menu" style="margin: 16px 0px;">
+
+          <ion-item no-lines class="chat_item chat_item_2"
+            style="background-color: transparent;padding-left: 15px !important;">
+            <ion-avatar item-start class="avtar_menu">
+              <div class="user_img">
+                <img style="object-fit: cover;" [src]="auth.getUserDetails().image">
+              </div>
+            </ion-avatar>
+            <h6 (click)="event.publish('SelectTab',3)" text-wrap class="heading_int" menuClose
+              style="color: #000;font-size: 18px;" text-capitalize>
+              {{auth.getUserDetails().first_name}}&nbsp;{{auth.getUserDetails().last_name}}</h6>
+          </ion-item>
+        </ion-list>
+
+      </div>
+
+      <ion-list [ngClass]="auth.getUserLanguage()=='he'?'arrowRight':''" class="menu-btn">
+
+        <button ion-item menuClose no-lines>
+          <img src="assets/imgs/side/home.png">{{'HOME' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="profile()">
+          <img src="assets/imgs/side/profile.png">{{'MY_PROFILE' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="wallet()">
+          <img src="assets/imgs/side/add.png"> {{'MY_WALLET' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="mypost()">
+          <img src="assets/imgs/side/add.png"> {{'MY_SERVICES' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="openHired()">
+          <img src="assets/imgs/side/list.png">{{'HIRED_SERVICES' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="addpost()">
+          <img src="assets/imgs/side/add.png">{{'ADD_NEW_SERVICE' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="change()">
+          <ion-icon text-center name="md-lock"></ion-icon>{{'CHANGE_PASSWORD' | translate}}
+        </button>
+
+
+
+        <!-- <button ion-item menuClose no-lines (click)="jobrequest()">
+          <img src="assets/imgs/side/list.png"> {{'JOB_REQUEST_LIST' | translate}}
+        </button> -->
+
+        <button ion-item menuClose no-lines (click)="settings()">
+          <img src="assets/imgs/side/settings.png"> {{'SETTINGS' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="auth.logout()">
+          <img src="assets/imgs/side/logout.png"> {{'LOG_OUT' | translate}}
+        </button>
+
+      </ion-list>
+    </div>
+
+  </ion-content>
+</ion-menu>
+<ion-nav [ngClass]="auth.getUserLanguage()=='en'?'':'rotateBack'" [root]="rootPage"></ion-nav>
+
+<ion-card class="downloadBar" *ngIf="download.isDownloading==true">
+  <button (click)="download.cancelDownload()" class="cancelDownload" ion-button icon-only small clear>
+    <ion-icon name="close"></ion-icon>
+  </button>
+  <div class="sub"><span>Downloading</span></div>
+  <div class="title"> {{download.downloadingTitle}}<div class="percentage">{{download.percentage}}%</div>
+  </div>
+  <ion-range [disabled]="true" min="0" max="100" [(ngModel)]="download.percentage">
+
+  </ion-range>
+</ion-card>

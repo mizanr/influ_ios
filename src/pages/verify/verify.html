@@ -1,0 +1,86 @@
+<ion-content padding class="back_img">
+
+    <div *ngIf="!email" text-right>
+        <button ion-button icon-only (click)="logout()" clear>
+            <ion-icon color="appColor" name="md-log-out"></ion-icon>
+        </button>
+    </div>
+
+
+    <div class="login_form_main">
+        <div class="login_form">
+            <div class="logo">
+                <img src="assets/imgs/logo.png">
+                <h3>{{'VERIFY_YOUR_EMAIL' | translate}}</h3>
+            </div>
+
+
+            <ion-list style="margin:0 0 20px" text-center>
+                <label (click)="pp()">{{'ENTER_VERIFICATION_CODE_SENT_TO_YOUR_EMAIL' | translate}}</label>
+            </ion-list>
+
+
+
+            <ion-row no-padding class="row_input">
+                <ion-col col-3 text-center>
+                    <div class="verify" [ngClass]="formdata.first?'active':''">
+                        <ion-input [(ngModel)]="formdata.first" #one (keyup)="onKeyUp($event.keyCode,'one')"
+                            maxlength="1" type="tel" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col>
+                <ion-col col-3 text-center>
+                    <div class="verify" [ngClass]="formdata.second?'active':''">
+                        <ion-input [(ngModel)]="formdata.second" #two (keyup)="onKeyUp($event.keyCode,'two')" type="tel"
+                            maxlength="1" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col>
+                <ion-col col-3 text-center>
+                    <div class="verify" [ngClass]="formdata.third?'active':''">
+                        <ion-input [(ngModel)]="formdata.third" (keyup)="onKeyUp($event.keyCode,'three')" #three
+                            type="tel" maxlength="1" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col>
+                <ion-col col-3 text-center>
+                    <div class="verify" [ngClass]="formdata.fourth?'active':''">
+                        <ion-input [(ngModel)]="formdata.fourth" (keyup)="onKeyUp($event.keyCode,'four')" #four
+                            type="tel" maxlength="1" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col>
+                <!-- <ion-col col-2>
+                    <div class="verify" [ngClass]="formdata.fifth?'active':''">
+                        <ion-input [(ngModel)]="formdata.fifth" (keyup)="onKeyUp($event.keyCode,'five')" #five type="tel" maxlength="1" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col>
+                <ion-col col-2>
+                    <div class="verify" [ngClass]="formdata.sixth?'active':''">
+                        <ion-input [(ngModel)]="formdata.sixth" #six (keyup)="onKeyUp($event.keyCode,'six')" type="tel" maxlength="1" class="input_2"></ion-input>
+                    </div>
+
+                </ion-col> -->
+
+                <div text-center style="width: 100%;margin: 20px 0 100px;">
+                    <button *ngIf="!email" ion-button color="dark" (click)="resend()" outline
+                        style="color: #000;height: 40px !important;">{{'RESEND' | translate}}</button>
+                    <button *ngIf="email" ion-button color="dark" (click)="forgot()" outline
+                        style="color: #000;height: 40px !important;">{{'RESEND' | translate}}</button>
+                </div>
+            </ion-row>
+
+
+            <div padding class="btn_grp">
+                <button ion-button class="btn-theme" *ngIf="!email" color="primary" block
+                    (click)="verify()">{{'CONFIRM' | translate}}</button>
+                <button ion-button class="btn-theme" *ngIf="email" color="primary" block
+                    (click)="verifyandsubmit()">{{'CONFIRM' | translate}}</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</ion-content>
