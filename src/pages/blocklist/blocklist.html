@@ -12,14 +12,31 @@
 
 <ion-content padding>
 
-  <ion-item class="job_item" no-lines no-padding *ngFor="let k of [1,2,3,4,5]">
+  <div class="noDatadiv" *ngIf="noData">
+    <ion-icon name="ios-search-outline"></ion-icon>
+    <p>{{'NO_DATA_FOUND' | translate}}</p>
+  </div>
+
+  <ion-item class="job_item" no-lines no-padding *ngFor="let k of blocklist">
+    <ion-avatar item-start>
+      <img [src]="k.image">
+    </ion-avatar>
+    <!-- <p style="color: #acacac;">{{'COMPANY_NAME' | translate}}Company Name, USA</p> -->
+    <h2 *ngIf="k.user_type=='2'" style="color: #333;">{{k.first_name+' '+k.last_name}}</h2>
+    <h2 *ngIf="k.user_type=='1'" style="color: #333;">{{k.company_name}}</h2>
+    
+    <button (click)="unblock(k)" ion-button round small class="btn-theme btn_view" item-end>{{'UNBLOCK' | translate}}</button>
+  </ion-item>
+
+  <!-- <ion-item class="job_item" no-lines no-padding *ngFor="let k of [1,2,3,4,5]">
     <ion-avatar item-start>
       <img src="assets/imgs/you.png">
     </ion-avatar>
     <p style="color: #acacac;">{{'COMPANY_NAME' | translate}}Company Name, USA</p>
     <h2 style="color: #333;">Youtube</h2>
 
+
     <button ion-button round small class="btn-theme btn_view" item-end>{{'UNBLOCK' | translate}}</button>
-  </ion-item>
+  </ion-item> -->
 
 </ion-content>

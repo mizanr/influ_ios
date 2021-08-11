@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+import { AlertProvider } from './../alert/alert';
 
 import { LoadingProvider } from './../loading/loading';
 import { Camera } from '@ionic-native/camera';
@@ -10,12 +12,15 @@ import { File, FileEntry } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FilePath } from '@ionic-native/file-path';
 import { ImageProvider } from '../image/image';
-import { Platform } from 'ionic-angular';
+import { Platform, AlertController } from 'ionic-angular';
 import { ImageResizer, ImageResizerOptions } from '@ionic-native/image-resizer';
 
 import { ImagePicker } from '@ionic-native/image-picker';
 
 import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor';
+
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
+const ALLOWED_MIME_TYPE = "video/mp4";
 @Injectable()
 export class MediaProvider {
   recordingStatus = 0;
@@ -32,6 +37,18 @@ export class MediaProvider {
   audioInterval: any;
 
   audiofile: MediaObject;
+  VideoEditorOptions = {
+    OptimizeForNetworkUse: {
+      NO: 0,
+      YES: 1
+    },
+    OutputFileType: {
+      M4V: 0,
+      MPEG4: 1,
+      M4A: 2,
+      QUICK_TIME: 3
+    }
+  };
   constructor(
     public http: HttpClient,
     public camera: Camera,
@@ -47,10 +64,14 @@ export class MediaProvider {
     private fileChooser: FileChooser,
     public imagePicker: ImagePicker,
     public plt: Platform,
-    public imageResizer: ImageResizer
+    public imageResizer: ImageResizer,
+    public alert: AlertProvider,
+    public alertCtrl: AlertController,
+    public trans: TranslateService
   ) {
     // console.log('Hello MediaProvider Provider');
     this.askpermission();
+
   }
 
   askpermission() {
@@ -221,6 +242,7 @@ export class MediaProvider {
 
   getWebImage() {
     let imageData: any;
+    let _this = this;
     return new Promise((resolve, reject) => {
       var file = document.createElement("INPUT");
       file.setAttribute("type", "file");
@@ -231,6 +253,16 @@ export class MediaProvider {
         let reader = new FileReader();
         reader.onload = (readerEvent) => {
           imageData = (readerEvent.target as any).result;
+
+
+          _this.image.imgURItoBlob(imageData).then((blob: any) => {
+            console.log(blob);
+            let name = _this.image.generateImageName("hello.jpg");
+            resolve({ file: blob, name: name, preview:imageData });
+          })
+
+
+
           // resolve(imageData);
         };
 
@@ -238,11 +270,7 @@ export class MediaProvider {
       }
       console.log(imageData);
 
-      this.image.imgURItoBlob(imageData).then((blob: any) => {
-        console.log(blob);
-        let name = this.image.generateImageName("hello.jpg");
-        resolve({ file: blob, name: name });
-      })
+
     });
 
   }
@@ -336,48 +364,106 @@ export class MediaProvider {
 
   }
 
+  getCompressedImage() {
+    return new Promise((resolve, reject) => {
+
+      this.alertCtrl.create({
+        title: this.trans.instant('SET_PHOTO'),
+        message: this.trans.instant('DO_YOU_WNAT_TO_TAKE_PHOTO_OR_CHOOSE_FORM_YOUR_PHOTO_GALLERY'),
+        buttons: [
+          {
+            text: 'Cancel',
+            handler: data => { }
+          },
+          {
+            text: this.trans.instant('CHOOSE_FROM_GALLERY'),
+            handler: () => {
+              this.getImageByGallery().then((res: any) => {
+                resolve(res);
+              })
+
+            }
+          },
+          {
+            text: this.trans.instant('TAKE_PHOTO'),
+            handler: () => {
+              this.getImageByCamera().then((res: any) => {
+                resolve(res);
+              })
+            }
+          }
+        ]
+      }).present();
+    });
+  }
 
   getImageByCamera() {
     console.log("media provider");
     return new Promise((resolve, reject) => {
-      if (Camera['installed']()) {
-        this.camera.getPicture({
-          quality: 100,
-          destinationType: this.camera.DestinationType.FILE_URI,
-          encodingType: this.camera.EncodingType.JPEG,
-          targetHeight: 1000,
-          targetWidth: 1000,
-          saveToPhotoAlbum: false,
-          correctOrientation: true
-        }).then((data) => {
-          let path = data;
-          this.readAsBlob(path).then((res) => {
-            if (res == 0) {
-              // this.loading.hide();
-              resolve(0);
-            }
-            else {
-              resolve(res);
-              console.log("get blob successfull", res);
-
-            }
-          });
-          // console.log('getting image by camera',data);
-          //resolve('data:image/png;base64,' + data);
-        }, (err) => {
-          console.log('getting image by camera', err);
-          reject('Unable to take photo: ' + err);
-        })
+      if(this.plt.is('cordova')){
+      
+          this.camera.getPicture({
+            quality: 100,
+            destinationType: this.camera.DestinationType.FILE_URI,
+            encodingType: this.camera.EncodingType.JPEG,
+            targetHeight: 1000,
+            targetWidth: 1000,
+            saveToPhotoAlbum: false,
+            correctOrientation: true
+          }).then((data) => {
+            let path = data;
+            console.log('Path--------==', path);
+  
+            let options = {
+              uri: path,
+              quality: 100,
+              width: this.plt.width() * 2,
+              height: this.plt.height() * 2
+            } as ImageResizerOptions;
+  
+            this.imageResizer
+              .resize(options)
+              .then((filePath: string) => {
+                console.log('FilePath--------------==', filePath);
+                this.readAsBlob(filePath).then((res) => {
+                  if (res == 0) {
+                    // this.loading.hide();
+                    resolve(0);
+                  }
+                  else {
+                    resolve(res);
+                    console.log("get blob successfull", res);
+  
+                  }
+                });
+              })
+              .catch(e => console.log(e));
+  
+  
+  
+  
+  
+  
+            // console.log('getting image by camera',data);
+            //resolve('data:image/png;base64,' + data);
+          }, (err) => {
+            console.log('getting image by camera', err);
+            reject('Unable to take photo: ' + err);
+          })
+        
       }
+
       else {
         this.getWebImage().then((res: any) => {
-          this.image.imgURItoBlob(res).then((blob: any) => {
-            console.log(blob);
-            let name = this.image.generateImageName("hello.jpg");
-            resolve({ file: blob, name: name });
+          resolve(res);
+          // this.image.imgURItoBlob(res).then((blob: any) => {
+         
+          //   // console.log(blob);
+          //   // let name = this.image.generateImageName("hello.jpg");
+          //   // resolve({ file: blob, name: name, preview:res });
 
 
-          })
+          // })
 
         })
 
@@ -390,7 +476,7 @@ export class MediaProvider {
   getImageByGallery() {
     console.log("media provider");
     return new Promise((resolve, reject) => {
-      if (this.plt.is('cordova')) {
+      if(this.plt.is('cordova')){
         console.log('In is cordova-------------------');
 
         this.camera.getPicture({
@@ -405,17 +491,31 @@ export class MediaProvider {
         }).then((data) => {
           let path = data;
           console.log('gallerypath', path);
-          this.readAsBlob(path).then((res) => {
-            if (res == 0) {
-              // this.loading.hide();
-              resolve(0);
-            }
-            else {
-              resolve(res);
-              console.log("get blob successfull", res);
+          let options = {
+            uri: path,
+            quality: 100,
+            width: this.plt.width() * 2,
+            height: this.plt.height() * 2,
 
-            }
-          });
+          } as ImageResizerOptions;
+
+          this.imageResizer
+            .resize(options)
+            .then((filePath: string) => {
+              console.log('FilePath--------------==', filePath);
+              this.readAsBlob(filePath).then((res) => {
+                if (res == 0) {
+                  // this.loading.hide();
+                  resolve(0);
+                }
+                else {
+                  resolve(res);
+                  console.log("get blob successfull", res);
+
+                }
+              });
+            })
+            .catch(e => console.log(e));
           //   resolve('data:image/png;base64,' + data);
         }, (err) => {
           reject('Unable to take photo: ' + err);
@@ -424,6 +524,7 @@ export class MediaProvider {
       else {
         this.getWebImage().then((res: any) => {
           console.log('In is getWebImage-------------------');
+          
           resolve(res);
         })
 
@@ -437,7 +538,6 @@ export class MediaProvider {
     return new Promise((resolve, reject) => {
       if (Camera['installed']()) {
         this.camera.getPicture({
-
           sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
           mediaType: this.camera.MediaType.VIDEO
         }).then(async (data) => {
@@ -450,28 +550,57 @@ export class MediaProvider {
             var dirpath = data.substr(0, data.lastIndexOf('/') + 1);
 
             dirpath = dirpath.includes("file://") ? dirpath : "file://" + dirpath;
-            // try {
-            //   var dirUrl = await this.file.resolveDirectoryUrl(dirpath);
-            //   var retrievedFile = await this.file.getFile(dirUrl, filename, {});
+            try {
+              var dirUrl = await this.file.resolveDirectoryUrl(dirpath);
+              var retrievedFile = await this.file.getFile(dirUrl, filename, {});
 
 
-            // } catch(err) {
-            //   console.log('try error');
-            //   this.loading.hide();
-            //   return 0;//this.alert.s("Error","Something went wrong.");
-            // }
+            } catch (err) {
+              console.log('try error');
+              this.loading.hide();
+              // resolve(0);
+              return 0;//this.alert.s("Error","Something went wrong.");
+            }
 
-            // retrievedFile.file( f => {
-            //     this.loading.hide();
-            //     console.log('retrieved file size:',f.size);
-            //     console.log('retrieved file mime:',f.type);
-            //     console.log("retrieve",f)
-            //     // if (data.size > MAX_FILE_SIZE) return this.presentAlert("Error", "You cannot upload more than 5mb.");
-            //     // if (data.type !== ALLOWED_MIME_TYPE) return this.presentAlert("Error", "Incorrect file type.");
+            retrievedFile.file(f => {
+              this.loading.hide();
+              console.log('retrieved file size:', f.size);
+              console.log('retrieved file mime:', f.type);
+              console.log("retrieve", f)
+              if (f.type !== ALLOWED_MIME_TYPE) {
+                resolve(0);
+                return this.alert.show("Alert!", 'Incorrect file format!');
+              }
+              if (f.size > MAX_FILE_SIZE) {
+                resolve(0);
+                return this.alert.show("Alert!", 'Please add video that have size less than 4 mb.');
+              } else {
+                this.readAsBlob(dirpath + filename).then((res) => {
+                  if (res == 0) {
+                    this.loading.hide();
+                    resolve(0);
+                  }
+                  else {
+                    console.log("get blob successfull", res);
+                    this.getThumbByVideo(path).then((thmb: any) => {
+                      this.loading.hide();
+                      if (thmb == 0) {
+                        resolve(0);
+                      }
+                      else {
+                        resolve({ thumb: thmb, video: res })
+                      }
 
-            //     // this.selectedVideo = retrievedFile.nativeURL;
-            // });
-            // let path =  "file://"+data;
+
+                    });
+                  }
+                });
+              }
+
+
+
+              // this.selectedVideo = retrievedFile.nativeURL;
+            });
             this.readAsBlob(dirpath + filename).then((res) => {
               if (res == 0) {
                 this.loading.hide();
@@ -492,6 +621,9 @@ export class MediaProvider {
                 });
               }
             });
+
+
+
           }
           else {
             console.log('did not get any data');

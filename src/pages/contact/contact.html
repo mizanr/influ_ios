@@ -6,20 +6,36 @@
 </ion-header>
 
 <ion-content class="back" padding>
+  <form [formGroup]="contactForm">
+    <ion-list no-lines>
 
-  <ion-list no-lines>
+      <div style="margin-bottom: 20px;">
+        <ion-item class="input_1">
+          <ion-input type="email" formControlName="email" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}">
+          </ion-input>
+        </ion-item>
+        <div *ngIf="contactForm.controls.email.value=='' && contactForm.controls.email.touched" style="margin-top: 8px;"
+          ion-text padding-horizontal color="danger">
+          {{'PLEASE_ENTER_EMAIL' | translate}}</div>
+        <div
+          *ngIf="!contactForm.controls.email.valid && contactForm.controls.email.value!='' && contactForm.controls.email.touched"
+          style="margin-top: 8px;" ion-text padding-horizontal color="danger">{{'PLEASE_ENTER_VALID_EMAIL' |
+          translate}}</div>
+      </div>
 
-    <ion-item class="input_1">
-      <ion-input type="password" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}"></ion-input>
-    </ion-item>
+      <div style="margin-bottom: 20px;">
+        <ion-item class="input_1" no-lines>
+          <textarea formControlName="msg" rows="6" placeholder="{{'TYPE_YOUR_MESSAGE_HERE' | translate}}"></textarea>
+        </ion-item>
+        <div *ngIf="contactForm.controls.msg.value=='' && contactForm.controls.msg.touched" style="margin-top: 8px;"
+          ion-text padding-horizontal color="danger">
+          {{'PLEASE_ENTER_MESSAGE' | translate}}</div>
+      </div>
 
-    <ion-item class="input_1" no-lines>
-      <textarea rows="6" placeholder="{{'TYPE_YOUR_MESSAGE_HERE' | translate}}"></textarea>
-    </ion-item>
 
+    </ion-list>
 
-  </ion-list>
-
-  <button class="btn-theme" ion-button block round>{{'SUBMIT' | translate}}</button>
-
+    <button [disabled]="!contactForm.valid" class="btn-theme" (click)="submit()" ion-button block round>{{'SUBMIT' |
+      translate}}</button>
+  </form>
 </ion-content>

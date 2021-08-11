@@ -1,0 +1,459 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{navParams.get('JobTitle')}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="noDatadiv" *ngIf="chat?.length==0">
+    <ion-icon name="ios-search-outline"></ion-icon>
+    <p>{{'NO_DATA_FOUND' | translate}}</p>
+  </div>
+  <div *ngFor="let item of chat;let i=index">
+
+    <div *ngIf="item.sender_id!=auth.getCurrentUserId()" class="user" [ngClass]="item.msg_type=='audio'?'hasaudio':''">
+      <ion-row>
+        <ion-col col-2>
+          <div class="user_img">
+            <img [src]="other_user.image">
+          </div>
+        </ion-col>
+
+        <ion-col col-10>
+          <ion-item no-padding class="after_1">
+            <p *ngIf="item.msg_type=='text'" style="padding-top: 8px;" class="dat">{{item.message}}</p>
+            <img (click)="openSlider([{name:baseUrl+item.message}],0)" *ngIf="item.msg_type=='image'"
+              [src]="baseUrl+item.message">
+            <div *ngIf="item.msg_type=='file'">
+              <div (click)="openFile(item.message)" class="fileContainer">
+                <ion-icon name="md-document"></ion-icon>{{item.message}}
+              </div>
+            </div>
+
+
+            <div item-content class="audio_div">
+
+              <div text-left *ngIf="item.msg_type=='audio' && auth.getUserLanguage()=='en'" margin-bottom>
+
+                <div class="container" style="padding: 0;width: 100%;">
+                  <ion-row align-items-center class="audio_send">
+                    <ion-col no-padding col-auto>
+                      <button small *ngIf="!item.isplayaudio" class="playBtn" style="transform: rotate(0deg);"
+                        ion-button icon-only (click)="run_audio(item,i)" clear>
+                        <ion-icon slot="start" name="ios-play"></ion-icon>
+                      </button>
+                      <!-- <button small *ngIf="!item.isplayaudio" class="playBtn" ion-button icon-only
+												(click)="run_audio(item,i)" clear>
+												<ion-icon slot="start" name="ios-play"></ion-icon>
+											</button> -->
+                      <button *ngIf="item.isplayaudio==true && player.isLoaded==false" clear class="playBtn" ion-button
+                        icon-only>
+                        <ion-spinner></ion-spinner>
+                      </button>
+                    </ion-col>
+                    <ion-col no-padding col-auto *ngIf="item.isplayaudio==true && player.isLoaded==true">
+                      <button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button icon-only>
+                        <ion-icon name="ios-square"></ion-icon>
+                      </button>
+                    </ion-col>
+                    <ion-col col-10>
+                      <ion-range *ngIf="item.isplayaudio" min="0" no-padding max="{{player.duration}}" margin-left
+                        [disabled]="true" [(ngModel)]="player.position" color="primary" pin="true">
+                      </ion-range>
+                      <ion-range [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
+                        max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj" color="primary" pin="true">
+                      </ion-range>
+                      <div class="time1" *ngIf="!item.isplayaudio">
+                        <span class="t1">00:00</span>
+                        <span class="t2">{{item.time_ago | date:'short'}}</span>
+                      </div>
+                      <div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
+                        <span class="t1">{{item.time_ago | date:'short'}}</span>
+                        <span class="t2">{{player.getMMSS(player.duration-player.position)}}</span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+              <div *ngIf="item.msg_type=='audio' && auth.getUserLanguage()!='en'" margin-bottom class="audio_div">
+
+                <div class="container">
+                  <ion-row align-items-center class="audio_send">
+
+                    <ion-col no-padding col-auto>
+                      <!-- <button small *ngIf="!item.isplayaudio" class="playBtn" ion-button clear icon-only
+												(click)="run_audio(item,i)">
+												<ion-icon slot="start" name="ios-play"></ion-icon>
+											</button> -->
+                      <button small *ngIf="!item.isplayaudio" class="playBtn" style="transform: rotate(180deg);"
+                        ion-button clear icon-only (click)="run_audio(item,i)">
+                        <ion-icon slot="start" name="ios-play"></ion-icon>
+                      </button>
+                      <button *ngIf="item.isplayaudio==true && player.isLoaded==false" clear class="playBtn" ion-button
+                        icon-only>
+                        <ion-spinner></ion-spinner>
+                      </button>
+                    </ion-col>
+                    <ion-col no-padding col-auto *ngIf="item.isplayaudio==true && player.isLoaded==true">
+                      <button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button icon-only>
+                        <ion-icon name="ios-square"></ion-icon>
+                      </button>
+                    </ion-col>
+                    <ion-col col-10>
+                      <ion-range *ngIf="item.isplayaudio" [disabled]="true" min="0" no-padding max="{{player.duration}}"
+                        margin-left [(ngModel)]="player.position" color="primary" pin="true" class="rotate_range"
+                        style="transform: rotate(180deg);">
+                      </ion-range>
+                      <ion-range [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
+                        max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj" color="primary" pin="true"
+                        class="rotate_range" style="transform: rotate(180deg);">
+                      </ion-range>
+                      <div class="time1" *ngIf="!item.isplayaudio">
+                        <span class="t1">00:00</span>
+                        <span class="t2">00:00</span>
+                      </div>
+                      <div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
+                        <span class="t1">00:00</span>
+                        <span class="t2">{{player.getMMSS(player.duration-player.position)}}</span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+
+            </div>
+            <div class="rate">
+              <p style="line-height: 13px !important;height: 17px;" class="dat">{{item.time_ago | date:'short'}}</p>
+            </div>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </div>
+
+
+    <div *ngIf="item.sender_id==auth.getCurrentUserId()" class="user" [ngClass]="item.msg_type=='audio'?'hasaudio':''">
+      <ion-row>
+        <ion-col col-10 [ngClass]="auth.getUserLanguage()=='en'?'text-right':'text-left'">
+          <ion-item no-padding class="after_1">
+            <p style="padding-top: 8px;" *ngIf="item.msg_type=='text'" class="dat">{{item.message}}</p>
+            <img (click)="openSlider([{name:baseUrl+item.message}],0)" *ngIf="item.msg_type=='image'"
+              [src]="baseUrl+item.message">
+            <!-- <img *ngIf="item.msg_type=='image' && !item.id" [src]="item.id?baseUrl+item.message:item.preview"> -->
+            <div *ngIf="item.msg_type=='file'">
+              <div *ngIf="item.id" (click)="openFile(item.message)" class="fileContainer">
+                <ion-icon name="md-document"></ion-icon>{{item.message}}
+              </div>
+              <div *ngIf="!item.id" class="fileContainer">
+                <ion-icon name="md-document"></ion-icon>{{item.preview}}
+              </div>
+            </div>
+            <div item-content class="audio_div">
+
+              <div text-left *ngIf="item.msg_type=='audio' && auth.getUserLanguage()=='en'" margin-bottom>
+
+                <div class="container" style="padding: 0;width: 100%;">
+                  <ion-row align-items-center class="audio_send">
+                    <ion-col no-padding col-auto>
+                      <button small *ngIf="!item.isplayaudio" class="playBtn" style="transform: rotate(0deg);"
+                        ion-button icon-only (click)="run_audio(item,i)" clear>
+                        <ion-icon slot="start" name="ios-play"></ion-icon>
+                      </button>
+                      <!-- <button small *ngIf="!item.isplayaudio" class="playBtn" ion-button icon-only
+												(click)="run_audio(item,i)" clear>
+												<ion-icon slot="start" name="ios-play"></ion-icon>
+											</button> -->
+                      <button *ngIf="item.isplayaudio==true && player.isLoaded==false" clear class="playBtn" ion-button
+                        icon-only>
+                        <ion-spinner></ion-spinner>
+                      </button>
+                    </ion-col>
+                    <ion-col no-padding col-auto *ngIf="item.isplayaudio==true && player.isLoaded==true">
+                      <button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button icon-only>
+                        <ion-icon name="ios-square"></ion-icon>
+                      </button>
+                    </ion-col>
+                    <ion-col col-10>
+                      <ion-range *ngIf="item.isplayaudio" [disabled]="true" min="0" no-padding max="{{player.duration}}"
+                        margin-left [(ngModel)]="player.position" color="primary" pin="true">
+                      </ion-range>
+                      <ion-range *ngIf="!item.isplayaudio" [disabled]="true" min="0" no-padding
+                        max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj" color="primary" pin="true">
+                      </ion-range>
+                      <div class="time1" *ngIf="!item.isplayaudio">
+                        <span class="t1">00:00</span>
+                        <span class="t2">{{item.time_ago | date:'short'}}</span>
+                      </div>
+                      <div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
+                        <span class="t1">{{item.time_ago | date:'short'}}</span>
+                        <span class="t2">{{player.getMMSS(player.duration-player.position)}}</span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+              <div *ngIf="item.msg_type=='audio' && auth.getUserLanguage()!='en'" margin-bottom class="audio_div">
+
+                <div class="container">
+                  <ion-row align-items-center class="audio_send">
+
+                    <ion-col no-padding col-auto>
+                      <!-- <button small *ngIf="!item.isplayaudio" class="playBtn" ion-button clear icon-only
+												(click)="run_audio(item,i)">
+												<ion-icon slot="start" name="ios-play"></ion-icon>
+											</button> -->
+                      <button small *ngIf="!item.isplayaudio" class="playBtn" style="transform: rotate(180deg);"
+                        ion-button clear icon-only (click)="run_audio(item,i)">
+                        <ion-icon slot="start" name="ios-play"></ion-icon>
+                      </button>
+                      <button *ngIf="item.isplayaudio==true && player.isLoaded==false" clear class="playBtn" ion-button
+                        icon-only>
+                        <ion-spinner></ion-spinner>
+                      </button>
+                    </ion-col>
+                    <ion-col no-padding col-auto *ngIf="item.isplayaudio==true && player.isLoaded==true">
+                      <button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button icon-only>
+                        <ion-icon name="ios-square"></ion-icon>
+                      </button>
+                    </ion-col>
+                    <ion-col col-10>
+                      <ion-range *ngIf="item.isplayaudio" min="0" no-padding max="{{player.duration}}" margin-left
+                        [disabled]="true" [(ngModel)]="player.position" color="primary" pin="true" class="rotate_range"
+                        style="transform: rotate(180deg);">
+                      </ion-range>
+                      <ion-range *ngIf="!item.isplayaudio" min="0" no-padding max="{{player.duration}}" margin-left
+                        [disabled]="true" [(ngModel)]="item.hjhj" color="primary" pin="true" class="rotate_range"
+                        style="transform: rotate(180deg);">
+                      </ion-range>
+                      <div class="time1" *ngIf="!item.isplayaudio">
+                        <span class="t1">00:00</span>
+                        <span class="t2">{{item.time_ago | date:'short'}}</span>
+                      </div>
+                      <div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
+                        <span class="t1">{{player.getMMSS(player.duration-player.position)}}</span>
+                        <span class="t2">{{item.time_ago | date:'short'}}</span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div item-content class="audio_div">
+							<div *ngIf="item.msg_type=='audio' && item.id" margin-bottom class="audio_div">
+
+								<div class="container">
+									<ion-row align-items-center class="audio_send">
+										<ion-col no-padding col-auto>
+											<button small *ngIf="!item.isplayaudio" class="playBtn" style=" transform: rotate(0deg);" ion-button clear icon-only
+												(click)="run_audio(item,i)">
+												<ion-icon slot="start" name="ios-play"></ion-icon>
+											</button>
+											<button *ngIf="item.isplayaudio==true && player.isLoaded==false" clear
+												class="bttn" ion-button icon-only>
+												<ion-spinner></ion-spinner>
+											</button>
+										</ion-col>
+										<ion-col no-padding col-auto
+											*ngIf="item.isplayaudio==true && player.isLoaded==true">
+											<button (click)="audio_pauseaudio(item)" small class="playBtn" clear ion-button
+												icon-only>
+												<ion-icon name="ios-square"></ion-icon>
+											</button>
+										</ion-col>
+										<ion-col col-10>
+											<ion-range *ngIf="item.isplayaudio" min="0" no-padding
+												max="{{player.duration}}" margin-left [(ngModel)]="player.position"
+												color="primary" pin="true">
+											</ion-range>
+											<ion-range *ngIf="!item.isplayaudio" min="0" no-padding
+												max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj"
+												color="primary" pin="true">
+											</ion-range>
+											<div class="time1" *ngIf="!item.isplayaudio">
+												<span class="t1">00:00</span>
+												<span class="t2">00:00</span>
+											</div>
+											<div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
+												<span class="t1">00:00</span>
+												<span
+													class="t2">{{player.getMMSS(player.duration-player.position)}}</span>
+											</div>
+										</ion-col>
+									</ion-row>
+								</div>
+							</div>
+						</div> -->
+
+
+            <!-- <div *ngIf="item.msg_type=='audio' && !item.id">
+							<button ion-button class="audio" disabled clear>
+								<ion-icon class="ref" name="mic"></ion-icon>&nbsp;&nbsp;Audio
+							</button>
+							<p style="padding-top: 8px;" class="dat">{{item.preview}}</p>
+						</div> -->
+            <div class="rate">
+              <p style="line-height: 13px !important;height: 17px;" class="dat">{{item.time_ago | date:'short'}}</p>
+            </div>
+          </ion-item>
+        </ion-col>
+        <ion-col col-2>
+          <div class="user_img">
+            <img [src]="current_user.image">
+          </div>
+        </ion-col>
+
+      </ion-row>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer>
+
+  <div *ngIf="auth.getUserLanguage()=='en'">
+    <button *ngIf="media.recordingStatus==0" class="emoj" ion-button clear icon-only (click)="toggled = !toggled"
+      [(emojiPickerIf)]="toggled" [emojiPickerDirection]="'top'" (emojiPickerSelect)="handleSelection($event)">
+      <ion-icon class="icon-theme" name="ios-happy"></ion-icon>
+    </button>
+    <ion-toolbar class="chatfooter">
+      <div class="inputdesign" *ngIf=" media.recordingStatus==0">
+
+        <!-- <form (ngSubmit)="sendMsg()"> -->
+        <textarea (keydown)="sss($event)" [minRows]="1" [maxRows]="8" autosize #message
+          (keypress)="eventHandler($event.keyCode)" class="text" placeholder="Type message..." name="msg"
+          [(ngModel)]="msg">
+
+            </textarea>
+
+        <!-- <textarea #message (keypress)="eventHandler($event.keyCode)" class="text" placeholder="Type a message" name="msg" [(ngModel)]="msg"></textarea> -->
+        <!-- <button  class="camera1" ion-button clear icon-only  color="calm" >
+                  &nbsp; &nbsp;
+            </button> -->
+        <button (click)="attach()" style="width: 41px;" class="attach_icon" clear ion-button no-padding item-start>
+          <ion-icon style="font-size: 28px;font-weight: bold;padding: 0 2px;" class="icon-theme" name="ios-link">
+          </ion-icon>
+        </button>
+        <!-- style="height: 24px !important;" -->
+
+      </div>
+      <div class="inputdesign" *ngIf=" media.recordingStatus==1">
+        <span class="timer">
+          <ion-icon class="blinker icon-theme" color="danger" name="ios-mic"></ion-icon> {{media.timer}}
+        </span>
+        <button ion-button clear color="danger" class="cancel" (click)="media.resetRecording()">Cancel
+          Recording</button>
+      </div>
+      <div class="inputdesign audio" *ngIf=" media.recordingStatus==2">
+        <button *ngIf="media.isPlay==false" ion-button clear icon-only (click)="media.playaudio()">
+          <ion-icon class="icon-theme" name="ios-play"></ion-icon>
+        </button>
+        <button *ngIf="media.isPlay==true" ion-button clear icon-only (click)="media.pauseaudio()">
+          <ion-icon class="icon-theme" name="ios-pause"></ion-icon>
+        </button>
+        <ion-range min="0" max="{{media.duration}}" [(ngModel)]="media.position" [disabled]="true" color="danger"
+          pin="true">
+        </ion-range>
+
+        <div class="timer">{{media.getMMSS(media.duration)}}</div>
+        <button class="delete" ion-button clear icon-only (click)="media.resetRecording()">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </div>
+      <button *ngIf="msg" class="submit1 send" ion-button icon-only clear color="calm"
+        (mousedown)="send(msg,'text');$event.preventDefault()">
+        <!-- <img *ngIf="msg" height="16" src="../assets/send.png">  -->
+        <ion-icon class="icon-theme" name="ios-send" style="font-size:35px"></ion-icon>
+      </button>
+      <button *ngIf="!msg && media.recordingStatus==0" class="submit1" ion-button icon-only clear color="calm"
+        (click)="startaudio()">
+        <!-- <img  height="17" src="assets/imgs/mice.png"> -->
+        <ion-icon style="font-size:30px" class="icon-theme" name="ios-mic"></ion-icon>
+      </button>
+      <button *ngIf="!msg && media.recordingStatus==1" class="submit1" ion-button icon-only clear color="calm"
+        (click)="media.stopAudioRecording()">
+        <ion-icon style="font-size:19px" class="icon-theme" name="ios-square"></ion-icon>
+      </button>
+      <button *ngIf="!msg && media.recordingStatus==2" class="submit1 send" ion-button icon-only clear color="calm"
+        (click)="sendFile(media.blob['file'],media.blob['name'],'audio','','')">
+        <!-- <img *ngIf="msg" height="16" src="../assets/send.png">  -->
+        <ion-icon name="ios-send" class="icon-theme" style="font-size:35px"></ion-icon>
+      </button>
+      <!-- </form> -->
+    </ion-toolbar>
+  </div>
+
+
+  <div class="language_change" *ngIf="auth.getUserLanguage()=='he'">
+    <button *ngIf="media.recordingStatus==0" class="emoj" ion-button clear icon-only (click)="toggled = !toggled"
+      [(emojiPickerIf)]="toggled" [emojiPickerDirection]="'top'" (emojiPickerSelect)="handleSelection($event)">
+      <ion-icon class="icon-theme" name="ios-happy"></ion-icon>
+    </button>
+    <ion-toolbar class="chatfooter">
+      <div class="inputdesign" *ngIf=" media.recordingStatus==0">
+
+        <!-- <form (ngSubmit)="sendMsg()"> -->
+        <textarea (keydown)="sss($event)" [minRows]="1" [maxRows]="8" autosize #message
+          (keypress)="eventHandler($event.keyCode)" class="text" placeholder="Type message..." name="msg"
+          [(ngModel)]="msg">
+
+            </textarea>
+
+        <!-- <textarea #message (keypress)="eventHandler($event.keyCode)" class="text" placeholder="Type a message" name="msg" [(ngModel)]="msg"></textarea> -->
+        <!-- <button  class="camera1" ion-button clear icon-only  color="calm" >
+                  &nbsp; &nbsp;
+            </button> -->
+        <button (click)="attach()" style="width: 41px;" class="attach_icon" clear ion-button no-padding item-start>
+          <ion-icon style="font-size: 28px;font-weight: bold;padding: 0 2px;" class="icon-theme" name="ios-link">
+          </ion-icon>
+        </button>
+        <!-- style="height: 24px !important;" -->
+
+      </div>
+      <div class="inputdesign" *ngIf=" media.recordingStatus==1">
+        <span class="timer">
+          <ion-icon class="blinker icon-theme" color="danger" name="ios-mic"></ion-icon> {{media.timer}}
+        </span>
+        <button ion-button clear color="danger" class="cancel" (click)="media.resetRecording()">Cancel
+          Recording</button>
+      </div>
+      <div class="inputdesign audio" *ngIf=" media.recordingStatus==2">
+        <button *ngIf="media.isPlay==false" ion-button clear icon-only (click)="media.playaudio()"
+          style="transform: rotate(180deg);">
+          <ion-icon class="icon-theme" name="ios-play"></ion-icon>
+        </button>
+        <button *ngIf="media.isPlay==true" ion-button clear icon-only (click)="media.pauseaudio()">
+          <ion-icon class="icon-theme" name="ios-pause"></ion-icon>
+        </button>
+        <ion-range min="0" max="{{media.duration}}" [disabled]="true" [(ngModel)]="media.position" color="danger"
+          pin="true">
+        </ion-range>
+
+        <div class="timer timer2">{{media.getMMSS(media.duration)}}</div>
+        <button class="delete" ion-button clear icon-only (click)="media.resetRecording()">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </div>
+      <button *ngIf="msg" class="submit1 send" ion-button icon-only clear color="calm"
+        (mousedown)="send(msg,'text');$event.preventDefault()">
+        <!-- <img *ngIf="msg" height="16" src="../assets/send.png">  -->
+        <ion-icon class="icon-theme" name="ios-send" style="font-size:35px"></ion-icon>
+      </button>
+      <button *ngIf="!msg && media.recordingStatus==0" class="submit1 submit2" ion-button icon-only clear color="calm"
+        (click)="startaudio()">
+        <!-- <img  height="17" src="assets/imgs/mice.png"> -->
+        <ion-icon style="font-size:30px" class="icon-theme" name="ios-mic"></ion-icon>
+      </button>
+      <button style="transform: rotate(0deg);" *ngIf="!msg && media.recordingStatus==1" class="submit1" ion-button
+        icon-only clear color="calm" (click)="media.stopAudioRecording()">
+        <ion-icon style="font-size:19px;" class="icon-theme" name="ios-square"></ion-icon>
+      </button>
+      <button *ngIf="!msg && media.recordingStatus==2" class="submit1 send" ion-button icon-only clear color="calm"
+        (click)="sendFile(media.blob['file'],media.blob['name'],'audio','','')">
+        <!-- <img *ngIf="msg" height="16" src="../assets/send.png">  -->
+        <ion-icon name="ios-send" class="icon-theme" style="font-size:35px"></ion-icon>
+      </button>
+      <!-- </form> -->
+    </ion-toolbar>
+  </div>
+</ion-footer>

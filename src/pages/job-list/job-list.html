@@ -12,7 +12,8 @@
   </div>
   <ion-item class="job_item" no-lines no-padding *ngFor="let k of jobs">
     <ion-avatar (click)="jobdetail(k.Id)" item-start>
-      <img [src]="k.images[0].name">
+      <img *ngIf="k.images[0].file_type=='image'" [src]="k.images[0].name">
+      <img *ngIf="k.images[0].file_type=='video'" [src]="k.images[0].thumb">
     </ion-avatar>
     <!-- <p style="color: #acacac;">Company Name, USA</p> -->
     <h2 style="color: #333;">{{k.title}}</h2>
@@ -22,8 +23,8 @@
       translate}}</button>
     <button ion-button round (click)="deleteJob(k.Id)" small class="btn-theme btn_view">{{'DELETE' |
       translate}}</button>
-    <button (click)="openApplied(k.Id)" style="margin: 0;" ion-button round small
-      class="btn-theme btn_view">Applied By</button>
+    <button (click)="openApplied(k.Id)" style="margin: 0;" ion-button round small class="btn-theme btn_view">Applied
+      By</button>
   </ion-item>
 
 </ion-content>

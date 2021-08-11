@@ -44,11 +44,6 @@ export class HiredServicesPage {
     this.navCtrl.push('InfluencerProfilePage', { InfluId: id, PostId: pId });
   }
 
-  openHiredBy(k) {
-    let modal = this.api.modalCtrl.create('HiredByPage', { company: k.Hired_by }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
-    modal.present();
-  }
-
   
   postdetail(id) {
     // let profileModal = this.modalCtrl.create('PostDetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });

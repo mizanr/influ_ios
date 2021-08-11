@@ -11,8 +11,12 @@
     <ion-icon style="font-size: 3.4rem;" color="light" name="ios-arrow-back"></ion-icon>
   </button> -->
 
-  <div class="Image_create">
-    <img src="assets/imgs/back-pro.png" style="height: 140px;width: 100%;object-fit: cover;margin-bottom: 65px;">
+  <div class="Image_create" style="position: relative;">
+    <img *ngIf="auth.getUserDetails().background_image" [src]="auth.getUserDetails().background_image"
+      style="height: 140px;width: 100%;object-fit: cover;margin-bottom: 65px;">
+    <button (click)="changeCover()" style="top: 106px;right: 16px;z-index: 999;" class="btn-theme camera" ion-button icon-only>
+      <ion-icon color="light" name="md-camera"></ion-icon>
+    </button>
     <div class="topbar">
       <button class="backBtn" (click)="navCtrl.pop()" ion-button clear icon-only>
         <!-- <ion-icon style="font-size: 3.4rem;" color="light" name="ios-arrow-back"></ion-icon> -->
@@ -24,11 +28,11 @@
       <!-- <div style="width:15%;"></div> -->
     </div>
 
-    <ion-item (click)="editImage()" no-lines class="chat_item">
-      <ion-avatar item-start>
-        <div class="user_img">
-          <img [src]="formData.image">
-          <button class="btn-theme camera" ion-button icon-only>
+    <ion-item  no-lines class="chat_item" style="pointer-events: none;">
+      <ion-avatar item-start >
+        <div class="user_img" >
+          <img [src]="formData.image" style="pointer-events: all;" (click)="editImage()">
+          <button  class="btn-theme camera" ion-button icon-only (click)="editImage(); $event.stopPropagation()">
             <ion-icon color="light" name="md-camera"></ion-icon>
           </button>
           <!-- <img class="camera" src="assets/imgs/csamera.png"> -->
@@ -142,16 +146,16 @@
     </ion-item>
 
 
-    <ion-item (click)="edit()" *ngIf="formData.user_type=='1'" no-lines>
+    <!-- <ion-item (click)="edit()" *ngIf="formData.user_type=='1'" no-lines>
       <p>{{'COMPANY_LOGO' | translate}}</p>
       <img style="margin-top: 8px;" [src]="formData.company_logo">
-    </ion-item>
+    </ion-item> -->
 
 
   </ion-list>
 
   <div padding>
-    <button class="btn-theme" ion-button block round (click)="update()">{{'UPDATE_PROFILE' | translate}}</button>
+    <button class="btn-theme" ion-button block round (click)="update(true)">{{'UPDATE_PROFILE' | translate}}</button>
   </div>
 
 </ion-content>

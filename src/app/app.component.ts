@@ -1,20 +1,23 @@
+import { AlertProvider } from './../providers/alert/alert';
 import { DownloadProvider } from './../providers/download/download';
 import { GooglePlusProvider } from './../providers/google-plus/google-plus';
 import { RestApiProvider } from './../providers/rest-api/rest-api';
 import { OnesignalProvider } from './../providers/onesignal/onesignal';
-import { SuccessfullPage } from './../pages/successfull/successfull';
-
 import { AuthProvider } from './../providers/auth/auth';
-
 import { Component, ViewChild } from '@angular/core';
-import { ActionSheetController, Config, Events, Nav, Platform } from 'ionic-angular';
+import { ActionSheetController, Config, Events, Nav, Platform, App, IonicApp } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { PreloginPage } from './../pages/prelogin/prelogin';
 import { TabsPage } from '../pages/tabs/tabs';
-import { MyPostPage } from '../pages/my-post/my-post';
 import { TranslateService } from '@ngx-translate/core';
-
+import * as firebase from 'firebase';
+const config = {
+  apiKey: 'AIzaSyC0ALZAVZCK8bRgP2Rm1ihdjwT-tSLk3tE',
+  authDomain: 'fir-85886.firebaseapp.com',
+  databaseURL: 'https://fir-85886.firebaseio.com',
+  projectId: 'fir-85886',
+  storageBucket: 'fir-85886.appspot.com',
+};
 @Component({
   templateUrl: 'app.html'
 })
@@ -32,76 +35,93 @@ export class MyApp {
     public api: RestApiProvider,
     public google: GooglePlusProvider,
     public download: DownloadProvider,
-    public config: Config) {
+    // public config: Config,
+    public app: App,
+    public ionicApp: IonicApp,
+    public alert: AlertProvider,) {
     platform.ready().then(() => {
-      this.onesignal.init();
-      // this.config.set('backButtonIcon', 'md-arrow-back');
-      this.onesignal.open.subscribe((data: any) => {
-        console.log('Notidata----------', data);
+      if (platform.is('cordova')) {
+        this.setBackButton();
+        this.onesignalsetup();
+        statusBar.styleLightContent();
+        statusBar.backgroundColorByHexString('#10b4ed');
+        splashScreen.hide();
+      }
 
-        if (data != 0 && data) {
-
-          if (data.other.screen == 'ChatDetailsPage') {
-            setTimeout(() => {
-              this.nav.push('ChatDetailsPage', { JobId: data.other.job_id, ReceiverId: data.other.receiver });
-            }, 700)
-          } else if (data.other.screen == 'InfluencerProfile') {
-            setTimeout(() => {
-              this.nav.push('InfluencerProfilePage', { InfluId: data.other.influId });
-            }, 700)
-          }
-
-        }
-      });
       this.event.subscribe('LoggedIn', r => {
         this.updateDeviceId();
       });
-
-
       this.event.subscribe('LogOut', r => {
         this.removeDeviceId();
       });
+
+      event.subscribe('UpdateUserDetails', r => {
+        this.getProfile(r);
+      });
+
+
       this.lang = this.auth.getUserLanguage();
       console.log(this.lang);
       if (this.lang) {
-        this.translate.setDefaultLang(this.lang);
-        if (this.lang == 'he') {
-          this.platform.setDir('rtl', true);
-        }
+            this.translate.setDefaultLang(this.lang);
+            if (this.lang == 'he') {
+                this.platform.setDir('rtl', true);
+            }
       } else {
-        this.translate.setDefaultLang('en');
+            this.translate.setDefaultLang('en');
       }
-      // if (l) {
-      //   translate.setDefaultLang(l);
-      // } else {
-      //   translate.setDefaultLang('en');
-      // }
-      statusBar.styleLightContent();
-      statusBar.backgroundColorByHexString('#10b4ed');
-      splashScreen.hide();
-
 
       if (this.auth.isUserLoggedIn()) {
-        if (this.auth.getUserDetails().email_verified == 1) {
-          this.rootPage = TabsPage;
-          this.updateDeviceId();
-          this.google.silentLogin();
-          // this.rootPage = 'SuccessfullPage';
+              if (this.auth.getUserDetails().email_verified == 1) {
+                    this.rootPage = TabsPage;
+                    this.updateDeviceId();
+                    this.google.silentLogin();
 
-        } else {
-          this.rootPage = 'VerifyPage';
-        }
+              } else {
+                    this.rootPage = 'VerifyPage';
+              }
       } else {
+            if (this.lang) {
+              this.rootPage = 'PreloginPage'
+            } else {
+              this.rootPage = 'SelectLangPage'
+            }
+      }
 
-        if (this.lang) {
-          this.rootPage = 'PreloginPage'
-        } else {
-          this.rootPage = 'SelectLangPage'
+    });
+
+    firebase.initializeApp(config);
+  }
+
+
+
+
+
+  onesignalsetup(){
+    
+    this.onesignal.init();
+    // this.config.set('backButtonIcon', 'md-arrow-back');
+    this.onesignal.open.subscribe((data: any) => {
+      console.log('Notidata----------', data);
+
+      if (data != 0 && data) {
+
+        if (data.other.screen == 'ChatDetailsPage') {
+          setTimeout(() => {
+            // this.nav.push('ChatDetailsPage', { JobId: data.other.job_id, ReceiverId: data.other.receiver });
+          }, 700)
+        } else if (data.other.screen == 'InfluencerProfile') {
+          setTimeout(() => {
+            this.nav.push('InfluencerProfilePage', { InfluId: data.other.influId });
+          }, 700)
         }
-        // this.rootPage = CreatePasswordPage;
+
       }
     });
 
+    this.onesignal.received.subscribe((data: any) => {
+      this.event.publish('GetNotiCount');
+    });
   }
 
   change() {
@@ -189,9 +209,6 @@ export class MyApp {
   }
 
   removeDeviceId() {
-    // if(this.platform.is('cordova')){
-    // this.onesignal.id().then(identity => {
-    // console.log('-------Device Id----------',identity);
     let Data = {
       user_id: { "value": this.auth.getCurrentUserId(), "type": 'NO' },
       device_id: { "value": '', "type": 'NO' },
@@ -199,8 +216,63 @@ export class MyApp {
     this.api.postData(Data, 0, 'UpdateDeviceId').then((result: any) => {
       console.log(result);
     })
-    // })
-    // }
   }
 
+
+
+  setBackButton() {
+    this.platform.registerBackButtonAction(() => {
+      let navView = this.app.getActiveNav();
+      let activePortal = this.ionicApp._loadingPortal.getActive() || this.ionicApp._modalPortal.getActive() || this.ionicApp._toastPortal.getActive() || this.ionicApp._overlayPortal.getActive();
+      //activePortal is the active overlay like a modal,toast,etc 
+      if (activePortal) {
+        activePortal.dismiss();
+        return;
+      }
+      let view = this.nav.getActive();      // As none of the above have occurred, its either a page pushed from menu or tab 
+      let activeVC = this.nav.getActive();      //get the active view 
+      let page = activeVC.instance;      //page is the current view's instance i.e  the current component I suppose 
+
+      if (!(page instanceof TabsPage)) {     // Check if the current page is pushed from a menu click 
+        if (this.nav.canGoBack() || view && view.isOverlay) {
+          if (activeVC.name == 'TabsPage') {
+
+          } else {
+            this.nav.pop();   //pop if page can go back or if its an overlay over a menu page 
+          }
+        }
+        return;
+      }
+      let tabs = this.app.getActiveNav(); // So it must be a view from a tab.   The current tab's nav can be accessed by this.app.getActiveNav(); 
+      if (!tabs.canGoBack()) {
+        this.alert.confirmationAlert('Alert!', 'Do you want to exit from the app?').then(r => {
+          if (r) {
+            this.platform.exitApp();
+          }
+        })
+        console.log("check", tabs, navView.parent);
+      }
+      return tabs.pop();
+    }, 0);
+  }
+
+  getProfile(s) {
+    let data = {
+      "id": this.auth.getCurrentUserId()
+    }
+    this.api.get(data, s, 'GetUserProfile').then((res: any) => {
+      if (res.status == 1) {
+        this.auth.updateUserDetails(res.data)
+      }
+      else {
+      }
+    })
+  }
+
+  newChat() {
+    this.nav.push('SigninPage');
+  }
+  blocklist(){
+    this.nav.push('BlocklistPage');
+  }
 }

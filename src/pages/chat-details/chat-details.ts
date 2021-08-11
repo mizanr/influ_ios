@@ -11,6 +11,18 @@ import { NavController, NavParams, IonicPage, Content, ActionSheetController } f
 import { Observable } from 'Rxjs/rx';
 import { Subscription } from "rxjs/Subscription";
 import { MediaProvider } from '../../providers/media/media';
+import * as firebase from 'Firebase';
+export const snapshotToArray = snapshot => {
+  let returnArr = [];
+
+  snapshot.forEach(childSnapshot => {
+    let item = childSnapshot.val();
+    item.key = childSnapshot.key;
+    returnArr.push(item);
+  });
+
+  return returnArr;
+};
 @IonicPage()
 @Component({
   selector: 'page-chat-details',
@@ -39,11 +51,8 @@ export class ChatDetailsPage {
     public download: DownloadProvider,
     public player: PlayAudioProvider) {
 
-    if (this.auth.getUserDetails().user_type == 1) {
-      this.senderImage = this.auth.getUserDetails().company_logo
-    } else {
       this.senderImage = this.auth.getUserDetails().image
-    }
+    
   }
 
   ionViewWillEnter() {
@@ -385,4 +394,18 @@ export class ChatDetailsPage {
     }
     // this.media.pauseaudio();
   }
+
+  
+  // sendMessage() {
+  //   let newData = firebase.database().ref('chatrooms/' + this.roomkey + '/chats').push();
+  //   console.log('Roomkey-------------',this.roomkey);
+    
+  //   newData.set({
+  //     type: this.data.type,
+  //     user: this.data.nickname,
+  //     message: this.data.message,
+  //     sendDate: Date()
+  //   });
+  //   this.data.message = '';
+  // }
 }

@@ -8,17 +8,17 @@
     </ion-buttons>
 
 
-    <ion-buttons end >
+    <ion-buttons end>
       <!-- <ion-badge class="bad" style="right: 9px;padding: 4px;" no-margin item-end *ngIf="auth.unread_noti>0">
         {{auth.unread_noti}}</ion-badge> -->
-      <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
+      <!-- <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
         <ion-icon style="font-size: 32px;" class="icon-theme" name="md-notifications"></ion-icon>
         <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti<99 && auth.unread_noti!=0">
           {{auth.unread_noti}}</ion-badge>
         <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>99">
           {{auth.unread_noti}}</ion-badge>
-      </button>
-
+      </button> -->
+      <header-icon></header-icon>
     </ion-buttons>
     <ion-title>{{'CHAT' | translate}}</ion-title>
   </ion-navbar>
@@ -34,11 +34,13 @@
     <ion-item-sliding #item *ngFor="let k of chatList" (click)="details(k)">
       <ion-item class="chat_list" no-lines>
         <ion-avatar item-start>
-          <img [src]="k.sender.image">
+          <img *ngIf="users['user_'+k.other_user]" [src]="users['user_'+k.other_user].image">
         </ion-avatar>
-        <h3 text-capitalize>{{k.sender.first_name}}&nbsp;{{k.sender.last_name}}</h3>
+        <h3 text-capitalize>
+          <span *ngIf="users['user_'+k.other_user]">{{users['user_'+k.other_user].first_name}}</span> &nbsp;
+        </h3>
         <p>{{k.last_message}}</p>
-        <span item-end style="font-size: 9px;color: #3370d0;">{{k.human_time}}</span>
+        <span item-end style="font-size: 9px;color: #3370d0;">{{k.last_message_at | date:'short'}}</span>
         <ion-badge style="position: absolute;top: 2px;right: 6px;background: #af419a;" *ngIf="k.unread_msg>0"
           class="bad" no-margin item-end>{{k.unread_msg}}</ion-badge>
       </ion-item>

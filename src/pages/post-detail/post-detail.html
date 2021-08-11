@@ -9,11 +9,18 @@
 
 <ion-content padding>
   <div *ngIf="detail">
-    <ion-slides [dir]="auth.getUserLanguage()=='en'?'':'rtl'" style="height: 200px !important;" [pager]="true" paginationType="fraction">
-      <ion-slide *ngFor="let img of detail.images">
-        <div class="swiper-zoom-container">
-          <img style="object-fit: cover;height: 200px;width: 100%;" [src]="img.name" alt="">
-        </div>
+    <ion-slides slidesPerView='1' [dir]="auth.getUserLanguage()=='en'?'':'rtl'" style="height: 200px !important; max-width:100%"
+      [pager]="true" paginationType="fraction">
+      <ion-slide *ngFor="let img of detail.images" >
+        <!-- <div class="swiper-zoom-container"> -->
+          <img style="object-fit: cover;height: 200px;width: 100%;" *ngIf="img.file_type=='image'" [src]="img.name"
+            alt="">
+          <video controls="controls" *ngIf="img.file_type=='video'"
+            style="object-fit: contain; height: 200px; width: 100%;" preload="metadata"
+            webkit-playsinline="webkit-playsinline" [poster]="img.thumb">
+            <source [src]="img.name" />
+          </video>
+        <!-- </div> -->
       </ion-slide>
     </ion-slides>
 
@@ -58,16 +65,15 @@
         class="btn-theme" small ion-button>
         {{'BUY_NOW' | translate}}
       </button>
-      <button *ngIf="detail.isPayment==1" (click)="details();$event.stopPropagation()" class="btn-theme" small
-        ion-button>
+      <button (click)="details();$event.stopPropagation()" class="btn-theme" small ion-button>
         {{'MESSAGE' | translate}}
       </button>
     </div>
-    <div text-center>
+    <!-- <div text-center>
       <button *ngIf="hiredStatus==1" (click)="details();$event.stopPropagation()" class="btn-theme" small ion-button>
         {{'MESSAGE' | translate}}
       </button>
-    </div>
+    </div> -->
   </div>
 
 

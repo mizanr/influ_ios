@@ -1,3 +1,4 @@
+import { ComponentsModule } from './../../components/components.module';
 import { AddjobInfluPage } from './addjob-influ';
 
 import { NgModule } from '@angular/core';
@@ -6,11 +7,12 @@ import { IonicPageModule } from 'ionic-angular';
 
 @NgModule({
   declarations: [
-    AddjobInfluPage,
+    AddjobInfluPage
   ],
   imports: [
     IonicPageModule.forChild(AddjobInfluPage),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    ComponentsModule
   ],
 })
 export class AddjobInfluPageModule { }

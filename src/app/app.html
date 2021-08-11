@@ -1,7 +1,6 @@
 <ion-menu [side]="auth.getUserLanguage()=='en'?'left':'right'" [content]="nav" type="overlay" persistent="true">
 
   <ion-content>
-
     <div *ngIf="auth.isUserLoggedIn() && auth.getUserDetails().user_type==1">
 
       <div class="user">
@@ -12,7 +11,7 @@
             style="background-color: transparent;;padding-left: 15px !important">
             <ion-avatar item-start class="avtar_menu">
               <div class="user_img">
-                <img style="object-fit: cover;" [src]="auth.getUserDetails().company_logo">
+                <img style="object-fit: cover;" [src]="auth.getUserDetails().image">
               </div>
             </ion-avatar>
             <h6 (click)="event.publish('SelectTab',3)" text-wrap class="heading_int" menuClose
@@ -24,12 +23,16 @@
       </div>
       <ion-list [ngClass]="auth.getUserLanguage()=='he'?'arrowRight':''" class="menu-btn">
 
-        <button ion-item menuClose no-lines>
+        <button (click)="event.publish('SelectTab', 0)" ion-item menuClose no-lines>
           <img src="assets/imgs/side/home.png">{{'HOME' | translate}}
         </button>
 
         <button ion-item menuClose no-lines (click)="profile()">
           <img src="assets/imgs/side/profile.png">{{'MY_PROFILE' | translate}}
+        </button>
+
+        <button ion-item menuClose no-lines (click)="newChat()">
+          <img src="assets/imgs/side/profile.png">New Chat
         </button>
 
         <button ion-item menuClose no-lines (click)="change()">
@@ -48,7 +51,9 @@
           <img src="assets/imgs/side/list.png"> {{'HIRED_SERVICES' | translate}}
         </button>
 
-
+        <button ion-item menuClose no-lines (click)="blocklist()">
+          <ion-icon text-center name="md-remove-circle"></ion-icon>{{'BLOCKED_INFLUENCER' | translate}}
+        </button>
         <button ion-item menuClose no-lines (click)="settings()">
           <img src="assets/imgs/side/settings.png"> {{'SETTINGS' | translate}}
         </button>
@@ -83,10 +88,13 @@
 
       <ion-list [ngClass]="auth.getUserLanguage()=='he'?'arrowRight':''" class="menu-btn">
 
-        <button ion-item menuClose no-lines>
+        <button (click)="event.publish('SelectTab', 0)" ion-item menuClose no-lines>
           <img src="assets/imgs/side/home.png">{{'HOME' | translate}}
         </button>
-
+<!-- 
+        <button ion-item menuClose no-lines (click)="newChat()">
+          <img src="assets/imgs/side/profile.png">New Chat
+        </button> -->
         <button ion-item menuClose no-lines (click)="profile()">
           <img src="assets/imgs/side/profile.png">{{'MY_PROFILE' | translate}}
         </button>
@@ -111,7 +119,9 @@
           <ion-icon text-center name="md-lock"></ion-icon>{{'CHANGE_PASSWORD' | translate}}
         </button>
 
-
+        <button ion-item menuClose no-lines (click)="blocklist()">
+          <ion-icon text-center name="md-remove-circle"></ion-icon>{{'BLOCKED_COMPANY' | translate}}
+        </button>
 
         <!-- <button ion-item menuClose no-lines (click)="jobrequest()">
           <img src="assets/imgs/side/list.png"> {{'JOB_REQUEST_LIST' | translate}}

@@ -21,11 +21,11 @@
     </ion-buttons>
 
     <ion-buttons *ngIf="!editId" end>
-      <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>0">{{auth.unread_noti}}</ion-badge>
+      <!-- <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>0">{{auth.unread_noti}}</ion-badge>
       <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
         <ion-icon style="font-size: 32px;" class="icon-theme" name="md-notifications"></ion-icon>
-      </button>
-
+      </button> -->
+<header-icon></header-icon>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -115,9 +115,13 @@
       </ion-row>
 
       <ion-row *ngIf="!editId">
-        <ion-col col-3 *ngFor="let m of formData.images;let i = index">
+        <ion-col [ngClass]="m.type=='video'?'col12':''" col-3 *ngFor="let m of formData.images;let i = index">
           <div *ngIf="formData.images.length>0" class="add_image">
-            <img [src]="m.preview">
+            <img *ngIf="m.type=='image'" [src]="m.preview">
+            <video preload="metadata" webkit-playsinline="webkit-playsinline" *ngIf="m.type=='video' && m.preview"
+              [poster]="m.thumbNail.preview">
+              <source [src]="m.preview" />
+            </video>
             <button (click)="delImage(i)" class="btn-theme cross" ion-button icon-only>
               <ion-icon name="close"></ion-icon>
             </button>
@@ -125,8 +129,8 @@
         </ion-col>
         <ion-col *ngIf="formData.images.length<5" col-3 text-center>
           <div class="add_image">
-            <img (click)="getPicture()" src="assets/imgs/add.png">
-            {{'IMAGE' | translate}}
+            <img (click)="openAction('toAdd')" src="assets/imgs/add.png">
+            {{'MEDIA' | translate}}
           </div>
         </ion-col>
       </ion-row>
@@ -134,7 +138,11 @@
       <ion-row *ngIf="editId">
         <ion-col col-3 *ngFor="let m of formData.images;let i = index">
           <div *ngIf="formData.images.length>0" class="add_image">
-            <img [src]="m.name">
+            <img *ngIf="m.file_type=='image'" [src]="m.name">
+            <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"
+              *ngIf="m.file_type=='video'" [poster]="m.thumb">
+              <source [src]="m.name" />
+            </video>
             <button (click)="delServerImage(m.id)" class="btn-theme cross" ion-button icon-only>
               <ion-icon name="close"></ion-icon>
             </button>
@@ -142,7 +150,11 @@
         </ion-col>
         <ion-col col-3 *ngFor="let m of newImagesArr;let i = index">
           <div *ngIf="newImagesArr.length>0" class="add_image">
-            <img [src]="m.preview">
+            <img *ngIf="m.type=='image'" [src]="m.preview">
+            <video preload="metadata" webkit-playsinline="webkit-playsinline" *ngIf="m.type=='video' && m.preview"
+              [poster]="m.thumbNail.preview">
+              <source [src]="m.preview" />
+            </video>
             <button (click)="delImageE(i)" class="btn-theme cross" ion-button icon-only>
               <ion-icon name="close"></ion-icon>
             </button>
@@ -150,13 +162,13 @@
         </ion-col>
         <ion-col text-center *ngIf="(formData.images.length + this.newImagesArr.length)<5" col-3>
           <div class="add_image">
-            <img (click)="getPictureEdit()" src="assets/imgs/add.png">
-            {{'IMAGE' | translate}}
+            <img (click)="openAction('toEdit')" src="assets/imgs/add.png">
+            {{'MEDIA' | translate}}
           </div>
         </ion-col>
       </ion-row>
       <div *ngIf="validations.isImageEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
-        {{'PLEASE_ADD_A_IMAGE' | translate}}</div>
+        {{'PLEASE_ADD_A_MEDIA' | translate}}</div>
       <!-- <h3 class="heading">Service type</h3> -->
       <!-- 
       <ion-row [(ngModel)]="formData.post_type"  class="item_check">

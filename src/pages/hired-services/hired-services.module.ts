@@ -1,3 +1,4 @@
+import { ComponentsModule } from './../../components/components.module';
 import { HiredServicesPage } from './hired-services';
 
 import { NgModule } from '@angular/core';
@@ -10,7 +11,8 @@ import { IonicPageModule } from 'ionic-angular';
   ],
   imports: [
     IonicPageModule.forChild(HiredServicesPage),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    ComponentsModule
   ],
 })
 export class HiredServicesPageModule {}

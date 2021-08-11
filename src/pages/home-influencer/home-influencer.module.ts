@@ -1,4 +1,5 @@
-import { JobComponent } from './../../components/job/job';
+import { ComponentsModule } from './../../components/components.module';
+
 import { HomeInfluencerPage } from './home-influencer';
 
 
@@ -9,11 +10,11 @@ import { IonicPageModule } from 'ionic-angular';
 @NgModule({
   declarations: [
     HomeInfluencerPage,
-    JobComponent
   ],
   imports: [
     IonicPageModule.forChild(HomeInfluencerPage),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    ComponentsModule
   ],
 })
 export class HomeInfluencerPageModule { }

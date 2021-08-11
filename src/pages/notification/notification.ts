@@ -44,6 +44,7 @@ export class NotificationPage {
       "user_id": this.auth.getCurrentUserId(),
     }
     this.api.get(data, 0, 'make_as_read_notification').then((result: any) => {
+      this.auth.unread_noti = 0;
     })
   }
 
@@ -51,12 +52,13 @@ export class NotificationPage {
 
     if (data.screen == 'ChatDetailsPage') {
       setTimeout(() => {
-        this.navCtrl.push('ChatDetailsPage', { JobId: data.JobId, ReceiverId: data.receiver });
+        // this.navCtrl.push('ChatDetailsPage', { JobId: data.JobId, ReceiverId: data.receiver });
       }, 700)
-    } else if (data.other.screen == 'InfluencerProfile') {
-      setTimeout(() => {
-        this.navCtrl.push('InfluencerProfilePage', { InfluId: data.InfluId });
-      }, 700)
+    } else if (data.screen == 'InfluencerProfile') {
+      this.navCtrl.push('JobDetialPage', { JobId: data.jobId });
+      // setTimeout(() => {
+      //   this.navCtrl.push('InfluencerProfilePage', { InfluId: data.InfluId });
+      // }, 700)
     }
   }
 }

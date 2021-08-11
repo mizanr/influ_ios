@@ -1,7 +1,7 @@
 import { HeaderIconComponent } from './../components/header-icon/header-icon';
 import { Media } from '@ionic-native/media';
 import { DownloadProvider } from './../providers/download/download';
-// import { OneSignal } from '@ionic-native/onesignal';
+import { OneSignal } from '@ionic-native/onesignal';
 import { OnesignalProvider } from './../providers/onesignal/onesignal';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
@@ -48,6 +48,10 @@ import { FileTransfer } from '@ionic-native/file-transfer';
 import { AutosizeModule } from 'ngx-autosize';
 import { PlayAudioProvider } from '../providers/play-audio/play-audio';
 import { FileOpener } from '@ionic-native/file-opener';
+import { FirebaseProvider } from '../providers/firebase/firebase';
+import { ChatmoduleProvider } from '../providers/chatmodule/chatmodule';
+import { ComponentsModule } from '../components/components.module';
+import { CommonModule } from '@angular/common';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,14 +60,15 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     MyApp,
-    TabsPage,
-    HeaderIconComponent
+    TabsPage
   ],
   imports: [
     BrowserModule,
     AutosizeModule,
     ReactiveFormsModule,
     VirtualScrollerModule,
+    ComponentsModule,
+    // CommonModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -109,14 +114,16 @@ export function createTranslateLoader(http: HttpClient) {
     AES256,
     EncryptProvider,
     OnesignalProvider,
-    // OneSignal,
+    OneSignal,
     FileChooser,
     FilePath,
     FileTransfer,
     DownloadProvider,
     Media,
     PlayAudioProvider,
-    FileOpener
+    FileOpener,
+    FirebaseProvider,
+    ChatmoduleProvider
   ]
 })
 export class AppModule { }

@@ -4,7 +4,7 @@ import { ImageProvider } from './../../providers/image/image';
 import { AuthProvider } from './../../providers/auth/auth';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 @IonicPage()
 
 @Component({
@@ -32,6 +32,7 @@ export class EditProfilePage {
     youtube_channel: '',
     Instagram_channel: '',
     facebook_channel: '',
+    background_image: ''
   }
   blob_name: any = '';
   blob: any = '';
@@ -45,7 +46,8 @@ export class EditProfilePage {
     public auth: AuthProvider,
     public imageP: ImageProvider,
     public alert: AlertProvider,
-    public translate: TranslateService) {
+    public translate: TranslateService,
+    public evetns: Events) {
     var d = new Date();
     var m = d.getMonth() + 1;
 
@@ -53,6 +55,15 @@ export class EditProfilePage {
 
     this.getCategory();
     this.formData = this.auth.getUserDetails();
+    if (this.formData.Instagram_channel == null) {
+      this.formData.Instagram_channel = '';
+    }
+    if (this.formData.facebook_channel == null) {
+      this.formData.facebook_channel = '';
+    }
+    if (this.formData.youtube_channel == null) {
+      this.formData.youtube_channel = '';
+    }
     if (this.formData.user_type == '2') {
       let k = this.formData.category;
       for (let index = 0; index < k.length; index++) {
@@ -61,7 +72,7 @@ export class EditProfilePage {
     }
   }
 
-  update() {
+  update(doPop) {
     if (this.formData.company_logo == '') {
       this.alert.showEmptyMessage('CIMAGE');
       return;
@@ -105,7 +116,9 @@ export class EditProfilePage {
     this.api.postData(data, 1, 'edit_profile').then((res: any) => {
       if (res.status == 1) {
         this.auth.updateUserDetails(res.data);
-        this.navCtrl.pop();
+        if (doPop) {
+          this.navCtrl.pop();
+        }
       }
       else {
       }
@@ -124,13 +137,14 @@ export class EditProfilePage {
       })
     })
   }
-  
+
   editImage() {
     this.imageP.getImage().then((res: any) => {
       this.formData.image = res;
       this.profile_blob_name = this.imageP.generateImageName('hello.png');
       this.imageP.imgURItoBlob(res).then((b) => {
         this.profile_blob = b;
+        this.update(false);
       });
     })
   }
@@ -168,6 +182,30 @@ export class EditProfilePage {
       }
       else {
         this.alert.show(this.translate.instant('ALERT'), res.message);
+      }
+    })
+  }
+
+  changeCover() {
+    this.imageP.getImage().then((res: any) => {
+      this.formData.background_image = res;
+      let name = this.imageP.generateImageName('hello.png');
+      this.imageP.imgURItoBlob(res).then((blb) => {
+        this.updateCover(blb, name);
+      });
+    })
+  }
+
+  updateCover(blob, name) {
+    let data = {
+      "background_image": { "value": blob, name: name, "type": "NO" },
+      "user_id": { "value": this.auth.getCurrentUserId(), "type": "NO" }
+    }
+    this.api.postData(data, 0, 'uploadBackgrounImage').then((res: any) => {
+      if (res.status == 1) {
+        this.evetns.publish('UpdateUserDetails');
+      }
+      else {
       }
     })
   }

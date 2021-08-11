@@ -32,6 +32,7 @@ export class HomeInfluencerPage {
     post_type: ''
   };
   previousPostCount: any;
+  noMoreRecords = false;
   public ngIfCtrl() {
 
     this.buttonClicked = !this.buttonClicked;
@@ -46,23 +47,23 @@ export class HomeInfluencerPage {
 
   ionViewWillEnter() {
     this.start = 0;
-    this.startInterval();
+    this.getService('', 1, '');
   }
 
   ionViewWillLeave() {
-    this.observableVar.unsubscribe();
+    // this.observableVar.unsubscribe();
   }
 
-  startInterval() {
-    this.getService('', 1, '');
-    // // let user =  JSON.parse(localStorage.getItem("userDetailsUserGF"))
-    // this.currentUser = this.auth.getCurrentUserId();
-    // this.currentUsername = this.navParams.get("name");
-    this.observableVar = Observable.interval(10000).subscribe(() => {
+  // startInterval() {
+  //   this.getService('', 1, '');
+  //   // // let user =  JSON.parse(localStorage.getItem("userDetailsUserGF"))
+  //   // this.currentUser = this.auth.getCurrentUserId();
+  //   // this.currentUsername = this.navParams.get("name");
+  //   this.observableVar = Observable.interval(10000).subscribe(() => {
 
-      this.getService1();
-    });
-  }
+  //     this.getService1();
+  //   });
+  // }
 
   profile(id) {
     this.navCtrl.push('CompanyProfilePage', { ID: id })
@@ -106,6 +107,11 @@ export class HomeInfluencerPage {
         if (this.start != 0) {
           if (res.data.length != 0) {
             this.services = this.services.concat(res.data);
+          } else {
+            if (inf != '') {
+              inf.enable(false);
+              this.noMoreRecords = true;
+            }
           }
         } else {
           this.services = res.data;
@@ -124,29 +130,29 @@ export class HomeInfluencerPage {
   }
 
 
-  getService1() {
-    let data = {
-      "user_id": this.auth.getCurrentUserId(),
-      "type": 1,
-    }
-    this.api.get(data, 0, 'getPostList').then((res: any) => {
-      if (res.status == 1) {
-        let tp = parseInt(res.total_post_count);
-        let pp = parseInt(this.previousPostCount);
-        console.log('----------', tp, '------------', pp);
+  // getService1() {
+  //   let data = {
+  //     "user_id": this.auth.getCurrentUserId(),
+  //     "type": 1,
+  //   }
+  //   this.api.get(data, 0, 'getPostList').then((res: any) => {
+  //     if (res.status == 1) {
+  //       let tp = parseInt(res.total_post_count);
+  //       let pp = parseInt(this.previousPostCount);
+  //       console.log('----------', tp, '------------', pp);
 
-        if (tp > pp) {
-          this.start = 0;
-          this.getService('', 1,'');
-        }
-      }
-      else {
-      }
-    })
-  }
+  //       if (tp > pp) {
+  //         this.start = 0;
+  //         this.getService('', 1, '');
+  //       }
+  //     }
+  //     else {
+  //     }
+  //   })
+  // }
 
   doInfinite(infiniteScroll) {
-    this.getService(infiniteScroll, 0,'');
+    this.getService(infiniteScroll, 0, '');
   }
 
 
@@ -155,7 +161,7 @@ export class HomeInfluencerPage {
       // title: this.trans.instant('REPORT_THIS_POST'),
       buttons: [
         {
-          text: this.trans.instant('BLOCK_COMPANY'),
+          text: this.trans.instant('REPORT_COMPOANY'),
           handler: () => {
             this.alert.show('Alert!', 'Coming Soon!')
           }
@@ -190,7 +196,7 @@ export class HomeInfluencerPage {
   }
 
   message(obj) {
-    this.navCtrl.push('ChatDetailsPage', { JobId: obj.Id, ReceiverId: obj.created_by.id })
+    // this.navCtrl.push('ChatDetailsPage', { JobId: obj.Id, ReceiverId: obj.created_by.id })
   }
 
 

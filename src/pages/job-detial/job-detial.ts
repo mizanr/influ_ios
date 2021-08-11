@@ -1,16 +1,11 @@
+import { FirebaseProvider } from './../../providers/firebase/firebase';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AlertProvider } from './../../providers/alert/alert';
 import { AuthProvider } from './../../providers/auth/auth';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the JobDetialPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import * as firebase from 'Firebase';
 
 @IonicPage()
 @Component({
@@ -19,15 +14,19 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class JobDetialPage {
   detail: any;
+  user:any;
+  ref = firebase.database().ref('chatrooms1/');
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public api: RestApiProvider,
     public auth: AuthProvider,
-    public alert:AlertProvider,
-    public trans:TranslateService) {
+    public alert: AlertProvider,
+    public trans: TranslateService,
+    public fireP: FirebaseProvider) {
   }
 
   ionViewWillEnter() {
     this.getJob()
+    this.user= this.auth.getUserDetails();
   }
 
   getJob() {
@@ -72,7 +71,7 @@ export class JobDetialPage {
     })
   }
 
-  
+
   send(obj) {
     let profileModal = this.api.modalCtrl.create('SendMessagePage', { JobTitle: obj.title }, { cssClass: "mymodal" });
     profileModal.onDidDismiss(data => {
@@ -84,24 +83,24 @@ export class JobDetialPage {
   }
 
 
-  sendMsg(obj, m) {
-    let Data = {
-      JobId: { "value": obj.Id, "type": "NO" },
-      sender: { "value": this.auth.getCurrentUserId(), "type": "NO" },
-      receiver: { "value": obj.created_by.id, "type": "NO" },
-      message: { "value": m, "type": "MSG" },
-      msg_type: { "value": 'text', "type": "NO" },
-    }
-    this.api.postData(Data, 0, 'SendMessage').then((result: any) => {
-      console.log(result);
-      if (result.status == 1) {
-        this.apply(obj);
-      } else {
-      }
-    })
-  }
+  // sendMsg(obj, m) {
+  //   let Data = {
+  //     JobId: { "value": obj.Id, "type": "NO" },
+  //     sender: { "value": this.auth.getCurrentUserId(), "type": "NO" },
+  //     receiver: { "value": obj.created_by.id, "type": "NO" },
+  //     message: { "value": m, "type": "MSG" },
+  //     msg_type: { "value": 'text', "type": "NO" },
+  //   }
+  //   this.api.postData(Data, 0, 'SendMessage').then((result: any) => {
+  //     console.log(result);
+  //     if (result.status == 1) {
+  //       this.apply(obj);
+  //     } else {
+  //     }
+  //   })
+  // }
 
-  
+
   apply(obj) {
     obj.applied_status = 1;
     let data = {
@@ -118,9 +117,117 @@ export class JobDetialPage {
 
   }
 
-  
+
   message(obj) {
-    this.navCtrl.push('ChatDetailsPage', { JobId: obj.Id, ReceiverId: obj.created_by.id })
+    // this.navCtrl.push('ChatDetailsPage', { JobId: obj.Id, ReceiverId: obj.created_by.id });
+    let other_user_id = parseInt(this.detail.created_by.id);
+    let user_id = parseInt(this.auth.getCurrentUserId());
+    let job_id = this.detail.Id;
+    let job_title = this.detail.title;
+    let rooms: any = [];
+    let smartKey = other_user_id > user_id ? user_id + '_' + other_user_id : other_user_id + '_' + user_id;
+    let rN = 'Room_' + job_id + '_' + smartKey;
+    console.log('Unique room name---------', rN);
+
+    this.fireP.getRooms().then(res => {
+      rooms = res;
+      let smartKey = other_user_id > user_id ? user_id + '_' + other_user_id : other_user_id + '_' + user_id;
+      let rN = 'Room_' + job_id + '_' + smartKey;
+
+      for (let index = 0; index < rooms.length; index++) {
+        if (rooms[index].room_name == rN) {
+          this.navCtrl.push('ConversationPage', { RoomKey: rooms[index].key, JobTitle: job_title, JobId: job_id, other_user: this.detail.created_by });
+          return;
+        }
+      }
+
+
+    });
+  }
+
+
+
+  sendMsg(msg: string, roomKey) {
+    msg = msg.trim();
+    if (!msg) {
+      return;
+    }
+
+
+
+    let newData = firebase.database().ref('chatrooms1/' + roomKey + '/chats').push();
+
+    // let obj = firebase.database().ref
+
+    // console.log('Roomkey-------------', chat_room.child('last_message'));
+    // console.log('receiver-------------', this.navParams.get('ReceiverId'));
+    let time = (new Date()).toISOString();
+
+    let data = {
+      msg_type: 'text',
+      message: msg,
+      time_ago: time,
+      sender_id: this.auth.getCurrentUserId(),
+      sender_image: this.auth.getUserDetails().image
+    }
+    data["unread_" + this.auth.getCurrentUserId()] = true;
+    newData.set(data);
+    let chat_room = firebase.database().ref('chatrooms1/' + roomKey);
+    chat_room.update({ last_message: msg, last_message_at: time })
+
+  }
+
+
+  createRoom(job_id, job_title, other_user, item) {
+
+    let profileModal = this.api.modalCtrl.create('SendMessagePage', { JobTitle: item.title }, { cssClass: "mymodal" });
+    profileModal.onDidDismiss(result1 => {
+      if (result1) {
+
+
+        let other_user_id = parseInt(this.detail.created_by.id);
+        let user_id = parseInt(this.auth.getCurrentUserId());
+        let user1_name = "";
+        let user2_name = "";
+        let newData = this.ref.push();
+        let smartKey = other_user_id > user_id ? user_id + '_' + other_user_id : other_user_id + '_' + user_id;
+        let rN = 'Room_' + job_id + '_' + smartKey;
+        let data = {
+
+          room_name: rN,
+          user1: other_user_id,
+          user2: parseInt(this.auth.getCurrentUserId()),
+          job_id: job_id,
+          job_title: job_title,
+          last_message: ''
+
+        }
+        data['user_' + other_user_id + '_open'] = false;
+        data['user_' + this.auth.getCurrentUserId() + '_open'] = false;
+        console.log('data------------', data);
+
+        newData.set(data);
+        this.fireP.getRooms().then((res: any) => {
+          let rooms = res;
+          for (let index = 0; index < rooms.length; index++) {
+            if (rooms[index].room_name == rN) {
+              // this.navCtrl.push('ConversationPage', { RoomKey: rooms[index].key, JobTitle: rooms[index].Job_detail.title, JobId: this.detail.Id });
+              // return;
+              this.sendMsg(result1, rooms[index].key);
+
+              this.apply(item)
+            }
+          }
+        });
+
+
+
+      }
+    });
+    profileModal.present();
+
+
+
   }
 
 }

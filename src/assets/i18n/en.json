@@ -238,5 +238,16 @@
     "JOB_DESCRIPTION": "Job Description",
     "JOB_TYPE": "Job Type",
     "JOB_TITLE": "Job Title",
-    "APPLIED_JOBS": "Applied Jobs"
+    "APPLIED_JOBS": "Applied Jobs",
+    "NO_MORE_RECORDS": "No more records",
+    "WE_WILL_REACH_YOU_BACK_SOON": "We will reach you back soon.",
+    "ADD_IMAGE": "Add Image",
+    "ADD_VIDEO": "Add Video",
+    "PLEASE_ADD_A_MEDIA":"Please add a media",
+    "BLOCKED_INFLUENCER":"Blocked Influencer",
+    "BLOCKED_COMPANY":"Blocked Componies",
+    "BLOCKED_SUCCESSFULL":"This user has been blocked successfully!",
+    "UNBLOCKED_SUCCESSFULL":"This user has been unblocked successfully!",
+    "BLOCK_THIS_COMPANY":"Blocked this company",
+    "REPORT_COMPOANY":"Report this company"
 }

@@ -5,7 +5,7 @@ import { AlertProvider } from './../../providers/alert/alert';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { AuthProvider } from './../../providers/auth/auth';
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, IonicPage } from 'ionic-angular';
+import { NavController, NavParams, AlertController, IonicPage, ActionSheetController } from 'ionic-angular';
 @IonicPage()
 
 @Component({
@@ -51,7 +51,9 @@ export class AddJobPage {
     public image: ImageProvider,
     public alertCtrl: AlertController,
     public medaiP: MediaProvider,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public actionSheetCtrl: ActionSheetController,
+    public trans: TranslateService
   ) {
     this.editId = this.navParams.get('EditId');
     if (this.editId) {
@@ -227,32 +229,6 @@ export class AddJobPage {
       return false
   }
   Post() {
-
-    // if (this.formData.title.length < 5 || this.formData.title.length > 50) {
-    //   this.alert.showMessage('TITLE');
-    //   return
-    // }
-    // if (this.formData.descriptions.length < 20 || this.formData.descriptions.length > 500) {
-    //   this.alert.showMessage('DESC');
-    //   return
-    // }
-    // if (this.formData.price == null) {
-    //   this.alert.showEmptyMessage('PRICE');
-    //   return
-    // } else if (!this.isInteger()) {
-    //   this.alert.show('Alert!', 'Price should be integer only!');
-    //   return
-    // }
-    // if (this.formData.images.length == 0) {
-    //   this.alert.showEmptyMessage('IMAGE');
-    //   return;
-    // }
-
-    // for (let index = 0; index < this.service_types.length; index++) {
-    //   if (this.service_types[index].checked) {
-    //     this.formData.post_type.push(this.service_types[index].value)
-    //   }
-    // }
     let data = {
       "created_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
       "type": { "value": 1, "type": "NO" },
@@ -264,7 +240,10 @@ export class AddJobPage {
       "country": { "value": this.formData.country.id, "type": "COUNTRY" },
     }
     for (let i = 0; i < this.formData.images.length; i++) {
-      data["images[" + i + "]"] = { "value": this.formData.images[i].file, "type": "IMAGE", "name": this.formData.images[i].name }
+      data["images[" + i + "]"] = { "value": this.formData.images[i].file, "type": "NO", "name": this.formData.images[i].name };
+      data["thumb[" + i + "]"] = {
+        "value": this.formData.images[i].thumbNail.file, type: "NO", name: this.formData.images[i].thumbNail.name
+      };
     }
     this.api.postData(data, 0, 'InsertJob').then((res: any) => {
       if (res.status == 1) {
@@ -290,60 +269,39 @@ export class AddJobPage {
     })
   }
 
-  getPicture() {
-    // this.alertCtrl.create({
-    //   title: 'Set Photo',
-    //   message: 'Do you want to take a photo or choose multiple images from your photo gallery?',
-    //   buttons: [
-    //     {
-    //       text: 'Cancel',
-    //       handler: data => { }
-    //     },
-    //     {
-    //       text: 'Choose from Gallery',
-    //       handler: () => {
-    //         this.getMultiplePicture('e');
-    //       }
-    //     },
-    //     {
-    //       text: 'Take Photo',
-    //       handler: () => {
-    //         this.image.getImageFromCamera().then((img: any) => {
-    //           console.log();
-    //           let blob = this.image.imgURItoBlobR(img);
-    //           let blob_name = this.image.generateImageName('hello.jpg');
-    //           let data = { file: blob, name: blob_name, preview: img };
-    //           this.formData.images = this.formData.images.concat(data);
-    //           console.log('file array----', this.formData.images);
-    //         })
-    //       }
-    //     }
-    //   ]
-    // }).present();
-    this.image.getImage().then((img: any) => {
-      console.log();
-      let blob = this.image.imgURItoBlobR(img);
-      let blob_name = this.image.generateImageName('hello.jpg');
-      let data = { file: blob, name: blob_name, preview: img };
-      this.formData.images = this.formData.images.concat(data);
-      console.log('file array----', this.formData.images);
+
+  getPicture(to) {
+    this.medaiP.getCompressedImage().then((res: any) => {
+      console.log('res-----------==', res);
+      // let blob = this.image.imgURItoBlobR(img);
+      // let blob_name = this.image.generateImageName('hello.jpg');
+      const reader = new FileReader();
+      const nullBlob = new Blob([reader.result], {
+        type: '',
+      });
+      console.log('Null blob-----', nullBlob);
+
+      let k = {
+        file: nullBlob,
+        name: 'no',
+      }
+      let data = { file: res.file, name: res.name, preview: res.preview, type: 'image', thumbNail: k };
+      if (to == 'toAdd') {
+        this.formData.images = this.formData.images.concat(data);
+        console.log('file array----', this.formData.images);
+      } else {
+        this.newImagesArr = this.newImagesArr.concat(data);
+      }
+
       this.onKeyT()
     })
-    // this.image.getImage().then((res: any) => {
-    //   this.formData.company_logo = res;
-    //   this.blob_name = this.imageP.generateImageName('hello.png');
-    //   this.imageP.imgURItoBlob(res).then((b) => {
-    //     this.blob = b;
-    //   })
-    // })
   }
 
   getPictureEdit() {
-    this.image.getImage().then((img: any) => {
+    this.medaiP.getCompressedImage().then((res: any) => {
       console.log();
-      let blob = this.image.imgURItoBlobR(img);
-      let blob_name = this.image.generateImageName('hello.jpg');
-      let data = { file: blob, name: blob_name, preview: img };
+
+      let data = { file: res.file, name: res.name, preview: res.preview };
       this.newImagesArr = this.newImagesArr.concat(data);
       this.onKeyT()
     })
@@ -378,26 +336,6 @@ export class AddJobPage {
   }
 
   update() {
-    // if (this.formData.title.length < 5 || this.formData.title.length > 50) {
-    //   this.alert.showMessage('TITLE');
-    //   return
-    // }
-    // if (this.formData.descriptions.length < 20 || this.formData.descriptions.length > 500) {
-    //   this.alert.showMessage('DESC');
-    //   return
-    // }
-
-    // if (this.formData.price == null) {
-    //   this.alert.showEmptyMessage('PRICE');
-    //   return
-    // } else if (!this.isInteger()) {
-    //   this.alert.show('Alert!', 'Price should be integer only!');
-    //   return
-    // }
-    // if ((this.formData.images.length + this.newImagesArr.length) == 0) {
-    //   this.alert.showEmptyMessage('IMAGE');
-    //   return;
-    // }
     let data = {
       "id": { "value": this.editId, "type": "NO" },
       "created_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
@@ -410,8 +348,12 @@ export class AddJobPage {
       "country": { "value": this.formData.country.id, "type": "COUNTRY" },
 
     }
+
     for (let i = 0; i < this.newImagesArr.length; i++) {
-      data["images[" + i + "]"] = { "value": this.newImagesArr[i].file, "type": "IMAGE", "name": this.newImagesArr[i].name }
+      data["images[" + i + "]"] = { "value": this.newImagesArr[i].file, "type": "NO", "name": this.newImagesArr[i].name }
+      data["thumb[" + i + "]"] = {
+        "value": this.newImagesArr[i].thumbNail.file, type: "NO", name: this.newImagesArr[i].thumbNail.name
+      };
     }
     this.api.postData(data, 0, 'UpdateJob').then((res: any) => {
       if (res.status == 1) {
@@ -534,4 +476,63 @@ export class AddJobPage {
   openNoti() {
     this.navCtrl.push('NotificationPage');
   }
+
+
+  openAction(status) {
+    const actionSheet = this.actionSheetCtrl.create({
+      // title: this.trans.instant('REPORT_THIS_POST'),
+      buttons: [
+        {
+          text: this.trans.instant('ADD_VIDEO'),
+          handler: () => {
+            this.getVideo(status);
+          }
+        },
+        {
+          text: this.trans.instant('ADD_IMAGE'),
+          handler: () => {
+            this.getPicture(status);
+          }
+        },
+        {
+          text: this.trans.instant('CANCEL'),
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+
+    this.onKeyT()
+  }
+
+
+  getVideo(to) {
+    this.medaiP.getVideoByGallery().then((res1: any) => {
+      if (res1 != 0) {
+        console.log("res1=-=-=-=-=-=-=-=-=-=-=-=", res1);
+        // this.vdoRes = res1;
+        // this.formData.lession_video = this.vdoRes.video.preview;
+        // this.formData.video_thumbnail = this.vdoRes.thumb.preview;
+
+        // let k = {
+        //   file: res1.video.file,
+        //   name: this.image.generateImageName('hello.jpg')
+        // }
+
+        let data = { file: res1.video.file, name: res1.video.name, preview: res1.video.preview, type: 'video', thumbNail: res1.thumb };
+        if (to == 'toAdd') {
+          this.formData.images = this.formData.images.concat(data);
+        } else {
+          this.newImagesArr = this.newImagesArr.concat(data);
+        }
+      } else {
+      }
+
+      this.onKeyT()
+    });
+  }
+
 }

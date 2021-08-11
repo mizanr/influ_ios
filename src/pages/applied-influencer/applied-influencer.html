@@ -16,7 +16,8 @@
     </ion-avatar>
     <!-- <p style="color: #acacac;">Company Name, USA</p> -->
     <h2 text-capitalize (click)="profile(k.apply_by,k.jobId)" style="color: #333;">{{k.userName}}</h2>
-    <button style="width: 63px;" (click)="chat(k.apply_by)" ion-button round small class="btn-theme btn_view">{{'CHAT' |
+    <button style="width: 63px;" *ngIf="auth.getCurrentUserId()==k.created_by.id" (click)="chat(k.apply_by,k.Id,k.title,k.userImage)"
+      ion-button round small class="btn-theme btn_view">{{'CHAT' |
       translate}}</button>
   </ion-item>
 

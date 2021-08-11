@@ -1,8 +1,9 @@
+import { TranslateService } from '@ngx-translate/core';
 import { AuthProvider } from './../../providers/auth/auth';
 import { AlertProvider } from './../../providers/alert/alert';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component } from '@angular/core';
-import { NavController, NavParams, IonicPage } from 'ionic-angular';
+import { NavController, NavParams, IonicPage, ActionSheetController } from 'ionic-angular';
 
 /**
  * Generated class for the CompanyProfilePage page.
@@ -34,6 +35,8 @@ export class CompanyProfilePage {
   noHireData = false;
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public api: RestApiProvider,
+    public trans:TranslateService,
+    public actionSheetCtrl:ActionSheetController,
     public alert: AlertProvider,
     public auth: AuthProvider
   ) {
@@ -143,4 +146,53 @@ export class CompanyProfilePage {
   openNoti() {
     this.navCtrl.push('NotificationPage');
   }
+
+
+
+  
+  block_user(){
+    let data = {
+      "block_to":  this.ownerId,
+      "block_by":this.auth.getCurrentUserId()
+    }
+    //https://www.webwiders.com/WEB01/Influ/Api/BlockCompany?block_by=51&block_to=52
+      this.api.get(data,1,'BlockCompany').then((res:any)=>{
+            if(res.status==1){
+              this.navCtrl.pop();
+              //this.getProfile();
+            }
+      })
+    
+  }
+
+
+
+  openAction(id) {
+    const actionSheet = this.actionSheetCtrl.create({
+      title: this.trans.instant('BLOCK_THIS_COMPANY'),
+      buttons: [
+        {
+          text: this.trans.instant('BLOCK'),
+          handler: () => {
+            this.block_user();
+            // this.navCtrl.pop();
+          }
+        },
+        {
+          text: this.trans.instant('CANCEL'),
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+
+  }
+
+
+
+
+
 }

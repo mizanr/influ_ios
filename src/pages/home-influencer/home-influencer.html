@@ -17,14 +17,15 @@
         <!-- <img src="assets/imgs/filter.png" style="width: 25px;"> -->
         <ion-icon color="light" name="ios-options"></ion-icon>
       </button>
-
+<!-- 
       <button (click)="openNoti()" style="width: 30px;min-width: unset;" ion-button>
         <ion-icon style="font-size: 32px;" class="icon-theme" name="md-notifications"></ion-icon>
         <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti<99 && auth.unread_noti!=0">
           {{auth.unread_noti}}</ion-badge>
         <ion-badge class="bad" no-margin item-end *ngIf="auth.unread_noti>99">
           {{auth.unread_noti}}</ion-badge>
-      </button>
+      </button> -->
+      <header-icon></header-icon>
     </ion-buttons>
     <ion-title>{{'COMPANY_REQUESTS' | translate}}</ion-title>
   </ion-navbar>
@@ -46,11 +47,13 @@
 
   <div *ngIf="services" [virtualScroll]="services">
     <div class="feed" *virtualItem="let k">
-      <job [k]='k'>
-      </job>
+      <post [k]='k'>
+      </post>
     </div>
   </div>
-
+  <div *ngIf="noMoreRecords" text-center padding>
+    <ion-note>{{'NO_MORE_RECORDS' | translate}}</ion-note>
+  </div>
   <ion-infinite-scroll no-padding (ionInfinite)="doInfinite($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="{{'LOADING' | translate}}...">
     </ion-infinite-scroll-content>

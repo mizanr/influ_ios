@@ -53,6 +53,7 @@ export class InfluencerProfilePage {
   getProfile() {
     let data = {
       "id": this.inFluId,
+      "sessionId":this.auth.getCurrentUserId()
     }
     this.api.get(data, 1, 'GetUserProfile').then((res: any) => {
       this.getImages();
@@ -127,7 +128,8 @@ export class InfluencerProfilePage {
         {
           text: this.trans.instant('BLOCK'),
           handler: () => {
-            this.navCtrl.pop();
+            this.block_user();
+            // this.navCtrl.pop();
           }
         },
         {
@@ -174,6 +176,22 @@ export class InfluencerProfilePage {
       }
     })
   }
+
+  block_user(){
+    let data = {
+      "block_to": this.inFluId,
+      "block_by":this.auth.getCurrentUserId()
+    }
+    //https://www.webwiders.com/WEB01/Influ/Api/BlockCompany?block_by=51&block_to=52
+      this.api.get(data,1,'BlockCompany').then((res:any)=>{
+            if(res.status==1){
+              this.navCtrl.pop();
+              //this.getProfile();
+            }
+      })
+    
+  }
+
 
 
   jobdetail(id) {

@@ -7,7 +7,8 @@
 <ion-content class="back">
 
   <div class="Image_create">
-    <img src="assets/imgs/back-pro.png" style="height: 200px;width: 100%;object-fit: cover;margin-bottom: 65px;">
+    <img *ngIf="profile.background_image" [src]="profile.background_image"
+      style="height: 200px;width: 100%;object-fit: cover;margin-bottom: 65px;">
     <div class="topbar">
       <button class="backBtn" *ngIf="navParams.get('InfluId')" ion-button clear no-margin (click)="back()">
 
@@ -80,7 +81,7 @@
 
             <div *ngIf="inFluId==auth.getCurrentUserId()">
               <button (click)="opneEdit()" [ngClass]="auth.getUserLanguage()=='en'?'':'inLeft'" class="inRight"
-                ion-button clear icon-only><img src="../../assets/imgs/edit.png">
+                ion-button clear icon-only><img  width="30" src="../../assets/imgs/edit.png">
               </button>
             </div>
           </div>
@@ -125,26 +126,28 @@
 
       <div *ngIf="profile.youtube_channel && profile.youtube_channel!=null">
         <h3 class="heading">{{'YOUTUBE_CHANNEL' | translate}}</h3>
-        <ion-item (click)="iab.create('https://www.youtube.com/'+profile.youtube_channel)"
+        <ion-item
           class="detail_item detail_item2" no-lines no-padding>
           <ion-avatar item-start>
             <img src="assets/imgs/you.png">
           </ion-avatar>
-          <!-- <h3>Youtube Channel Name</h3> -->
-          <p>{{'GO_TO_CHANNEL' | translate}}</p>
+          <!-- <h3>Youtube Channel Name</h3> --> 
+          <!-- <p>{{'GO_TO_CHANNEL' | translate}}</p> -->
+          <button  (click)="iab.create('https://www.youtube.com/'+profile.youtube_channel)" ion-button small item-end>Open</button>
         </ion-item>
       </div>
 
       <div *ngIf="profile.facebook_channel && profile.facebook_channel!=null">
         <h3 class="heading">{{'FACEBOOK' | translate}}</h3>
 
-        <ion-item (click)="iab.create('https://www.facebook.com/'+profile.facebook_channel)"
+        <ion-item 
           class="detail_item detail_item2" no-lines no-padding>
           <ion-avatar item-start>
             <img src="assets/imgs/facebook.png">
           </ion-avatar>
           <!-- <h3>Facebook Name</h3> -->
-          <p>{{'GO_TO_CHANNEL' | translate}}</p>
+          <!-- <p>{{'GO_TO_CHANNEL' | translate}}</p> -->
+          <button  (click)="iab.create('https://www.facebook.com/'+profile.facebook_channel)" ion-button small item-end>Open</button>
         </ion-item>
       </div>
 
@@ -152,13 +155,14 @@
 
         <h3 class="heading">{{'INSTAGRAM' | translate}}</h3>
 
-        <ion-item (click)="iab.create('https://www.instagram.com/'+profile.Instagram_channel)"
+        <ion-item 
           class="detail_item detail_item2" no-lines no-padding>
           <ion-avatar item-start>
             <img src="assets/imgs/instagram.png">
           </ion-avatar>
           <!-- <h3>Instagram Username</h3> -->
-          <p>{{'GO_TO_CHANNEL' | translate}}</p>
+          <!-- <p>{{'GO_TO_CHANNEL' | translate}}</p> -->
+          <button  (click)="iab.create('https://www.instagram.com/'+profile.Instagram_channel)" ion-button small item-end>Open</button>
         </ion-item>
       </div>
     </div>
@@ -211,8 +215,9 @@
 
             <ion-card class="card_feed">
 
-              <img height="110" style="object-fit: cover;" [src]="k.images[0].name">
-
+              <!-- <img height="110" style="object-fit: cover;" [src]="k.images[0].name"> -->
+              <img height="110" *ngIf="k.images[0].file_type=='image'" [src]="k.images[0].name" style="object-fit: cover;">
+              <img height="110" *ngIf="k.images[0].file_type=='video'" [src]="k.images[0].thumb" style="object-fit: cover;">
               <ion-card-content>
                 <ion-item no-lines no-padding class="info">
                   <p>{{k.descriptions}}</p>
@@ -251,7 +256,8 @@
 
             <ion-card class="card_feed">
 
-              <img height="110" style="object-fit: cover;" [src]="k.images[0].name">
+              <img height="110" *ngIf="k.images[0].file_type=='image'" [src]="k.images[0].name" style="object-fit: cover;">
+              <img height="110" *ngIf="k.images[0].file_type=='video'" [src]="k.images[0].thumb" style="object-fit: cover;">
 
               <ion-card-content>
                 <ion-item no-lines no-padding class="info">

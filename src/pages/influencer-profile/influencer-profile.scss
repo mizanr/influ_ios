@@ -70,12 +70,12 @@ page-influencer-profile {
       min-height: 50px !important;
       border-radius: 50px;
       padding: 1px;
-      background-image: linear-gradient(50deg, #ce2b8a, #10b4ed);
+      // background-image: linear-gradient(50deg, #ce2b8a, #10b4ed);
     }
     ion-avatar img {
       border-radius: 50%;
       overflow: hidden;
-      width: 50px !important;
+      width: auto !important;
       height: 50px !important;
     }
   }
@@ -357,4 +357,24 @@ page-influencer-profile {
     margin: 0 !important;
     width: auto !important;
   }
+
+
+  .Image_create{
+    position:relative;
+    &:before{
+      content:"";
+      position:absolute;
+      height:200px;
+      top:0px;
+      left:0px;
+      width:100%;
+      background-color:rgba(0,0,0,0.3);
+    }
+  }
+
+  .img_profile{
+    background-color:white;
+    border-radius:50%;
+  }
+  
 }

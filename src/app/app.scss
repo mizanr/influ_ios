@@ -337,6 +337,10 @@ ion-menu {
     background-position: left calc(14px + env(safe-area-inset-right)) center !important;
     padding-right: 0px !important;
   }
+  .item-inner {
+    background-image: url(../../assets/imgs/left.png) !important;
+    background-size: 9px 14px !important;
+  }
 }
 
 // .badge-ios {
@@ -519,4 +523,8 @@ ion-menu {
   .back-button-icon {
     transform: rotate(180deg);
   }
+}
+
+.col12 {
+  columns: 12 !important;
 }

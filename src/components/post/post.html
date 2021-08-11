@@ -1,0 +1,66 @@
+<div>
+
+  <ion-item no-lines no-pading class="name_item">
+    <ion-avatar item-start (click)="profile(k);$event.stopPropagation()">
+      <img [src]="k.created_by.image">
+    </ion-avatar>
+    <h3 (click)="profile(k);$event.stopPropagation()" *ngIf="k.created_by.user_type==1">{{k.created_by.company_name}}
+    </h3>
+    <h3 (click)="profile(k);$event.stopPropagation()" *ngIf="k.created_by.user_type==2">
+      {{k.created_by.first_name}}&nbsp;{{k.created_by.last_name}}</h3>
+    <p>{{k.created_at}}</p>
+    <button *ngIf="auth.getCurrentUserId()!=k.created_by.id" ion-button small clear item-end no-padding
+      (click)="openAction(k.created_by);$event.stopPropagation()">
+
+      <ion-icon style="color:#b3b3b3;font-size: 28px;" name="md-more"></ion-icon>
+    </button>
+  </ion-item>
+
+  <!-- <div class="filter_div">
+    <ion-list>
+      <button ion-item no-padding no-lines>{{'HIDE_POST' | translate}}</button>
+      <button ion-item no-padding no-lines>{{'BLOCK_COMPANY' | translate}}</button>
+    </ion-list>
+  </div> -->
+
+
+  <ion-card class="card_feed">
+
+    <!-- <img (click)="openSlider(k.images,0)" height="200" width="100%" style="object-fit: cover;" [src]="k.images[0].name"> -->
+
+    <div class="imagescontainer"
+      [ngClass]="{'one':k.images.length==1,'two':k.images.length==2,'three':k.images.length==3,'four':k.images.length>=4}">
+
+      <div class="set-all" (click)="openSlider(k.images,0)" [ngClass]="im>3?'invisible':''"
+        *ngFor="let img of k.images; let im=index">
+        <img [src]="img.name" *ngIf="img.file_type=='image'">
+        <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"
+          *ngIf="img.file_type=='video'" [poster]="img.thumb">
+          <source [src]="img.name" />
+        </video>
+      </div>
+
+      <div (click)="openSlider(k.images,4);$event.stopPropagation()" *ngIf="k.images.length>4" class="moreimg">
+        <strong><span>+ {{k.images.length - 4}}&nbsp;more</span></strong>
+      </div>
+    </div>
+
+    <ion-card-content>
+      <ion-item no-lines no-padding class="info">
+        <p>{{k.descriptions}}</p>
+        <h3 item-end>${{k.price}}</h3>
+      </ion-item>
+    </ion-card-content>
+
+    <ion-row padding-left>
+      <ion-col no-padding>
+        <button (click)="postdetail(k);$event.stopPropagation()" style="opacity: 1 !important;" ion-button small round
+          class="btn-theme">{{'READ_MORE' | translate}}</button>
+        <!-- <button *ngIf="k.applied_status==1" ion-button small round class="btn-theme" (click)="message(k)">{{'MESSAGE' |
+          translate}}</button> -->
+      </ion-col>
+    </ion-row>
+
+  </ion-card>
+
+</div>
