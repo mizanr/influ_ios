@@ -28,7 +28,7 @@ export class ContactPage {
 
   submit() {
     let data = {
-      "email": { "value": this.contactForm.controls.email.value, "type": "EMAIL" },
+      "email": { "value": this.contactForm.controls.email.value, "type": "NO" },
       "message": { "value": this.contactForm.controls.msg.value, "type": "NO" },
     }
     this.api.postData(data, 0, 'contactUs').then((res: any) => {

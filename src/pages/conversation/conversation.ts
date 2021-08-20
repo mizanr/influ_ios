@@ -1,3 +1,4 @@
+import { OnesignalProvider } from './../../providers/onesignal/onesignal';
 import { FirebaseProvider } from './../../providers/firebase/firebase';
 import { PlayAudioProvider } from './../../providers/play-audio/play-audio';
 import { DownloadProvider } from './../../providers/download/download';
@@ -32,7 +33,7 @@ export const snapshotToArray = snapshot => {
 })
 export class ConversationPage {
   ref = firebase.database().ref('active_users');
-  chats_ref:any;
+  chats_ref: any;
   chat_room_ref: any
   job: any;
   chat: any = [];
@@ -48,6 +49,7 @@ export class ConversationPage {
   roomKey: any;
   other_user: any;
   current_user: any;
+  other_user_device: any = '';
   @ViewChild(Content) content: Content;
   constructor(public navCtrl: NavController, public navParams: NavParams, public api: RestApiProvider,
     public auth: AuthProvider,
@@ -58,7 +60,8 @@ export class ConversationPage {
     public media: MediaProvider,
     public download: DownloadProvider,
     public player: PlayAudioProvider,
-    public fireP: FirebaseProvider) {
+    public fireP: FirebaseProvider,
+    public onesignal: OnesignalProvider) {
     this.other_user = this.navParams.get('other_user');
     this.current_user = this.auth.getUserDetails();
     console.log('other userss', this.other_user, this.current_user);
@@ -67,8 +70,8 @@ export class ConversationPage {
     console.log('Roomkey---------', this.roomKey);
 
     this.chat_room_ref = firebase.database().ref('chatrooms1/' + this.roomKey);
-    this.chats_ref= firebase.database().ref('chatrooms1/' + this.roomKey + '/chats');
-   
+    this.chats_ref = firebase.database().ref('chatrooms1/' + this.roomKey + '/chats');
+
   }
 
 
@@ -93,16 +96,29 @@ export class ConversationPage {
 
 
   ionViewWillEnter() {
+    this.getDevice();
     this.chats_ref.on('value', (resp: any) => {
-        this.chat = [];
-        resp.forEach(childSnapshot => {
+      this.chat = [];
+      resp.forEach(childSnapshot => {
         let item = childSnapshot.val();
         item.key = childSnapshot.key;
         this.chat.push(item);
-        // console.log('other user------',this.other_user);
+        // console.log('item------', item);
         let key = 'unread_' + this.other_user.id;
         if (this.other_user && item[key] == true) {
-          this.mark_as_read_chat(item,key);
+
+          this.mark_as_read_chat(item, key);
+        };
+        let s: any = 'unread_' + this.auth.getCurrentUserId();
+        console.log(item.sender_id, '----', item.noti_status, '------------', item[s]);
+
+        if (item.sender_id == this.auth.getCurrentUserId() && item.noti_status == 0 && item[s] == true) {
+          console.log('In if----------');
+
+          setTimeout(() => {
+            this.check_noti_status(s);
+            // this.sendNoti(item);            
+          }, 2000);
         }
       });
       setTimeout(() => {
@@ -115,15 +131,56 @@ export class ConversationPage {
   }
 
 
-  mark_as_read_chat(item:any,key){
+  check_noti_status(s) {
+    for (let i = 0; i < this.chat.length; i++) {
+      let item: any = this.chat[i];
+      console.log('Item in check noti----', item);
+
+      if (item.sender_id == this.auth.getCurrentUserId() && item.noti_status == 0 && item[s] == true) {
+        this.sendNoti(item);
+        return;
+      }
+    }
+
+  }
+
+
+  mark_as_read_chat(item: any, key) {
     console.log("mark as read chat--------");
-    let data = {};  
+    let data = {};
     data[key] = false;
     let chat_ref = firebase.database().ref('chatrooms1/' + this.roomKey + '/chats/' + item.key);
     chat_ref.update(data);
   }
 
 
+  sendNoti(obj) {
+
+    let u = this.auth.getUserDetails();
+    let msg = u.user_type == 1 ? u.company_name : u.first_name;
+    let d = msg + ' has sent you a message!';
+    let k = {
+      screen: "ChatDetailsPage",
+      RoomKey: this.roomKey,
+      JobTitle: this.navParams.get('JobTitle'),
+      JobId: this.navParams.get('JobId'),
+      other_user: this.auth.getUserDetails(),
+    }
+    console.log('Noti data sending--------------------', k);
+    console.log('Msg at sending--------------------', d);
+    this.onesignal.sendPushNotification(d, [this.other_user_device], k, 'Influ!').then(r => {
+      if (r) {
+        this.mark_noti_send(obj)
+      }
+    });
+  }
+
+  mark_noti_send(k) {
+    let data = {};
+    data['noti_status'] = 1;
+    let chat_ref = firebase.database().ref('chatrooms1/' + this.roomKey + '/chats/' + k.key);
+    chat_ref.update(data);
+  }
 
   send(msg: string, type: string) {
     msg = msg.trim();
@@ -149,33 +206,28 @@ export class ConversationPage {
       sender_image: this.senderImage
     }
     data["unread_" + this.auth.getCurrentUserId()] = true;
+    data["noti_status"] = 0;
+
+
     newData.set(data);
 
     this.chat_room_ref.update({ last_message: msg, last_message_at: time })
     this.msg = '';
-
-
-
-
-
-    //this.sendBtnDisabledS = false;
-    // let Data = {
-    //   JobId: { "value": this.navParams.get('JobId'), "type": "NO" },
-    //   sender: { "value": this.auth.getCurrentUserId(), "type": "NO" },
-    //   receiver: { "value": this.navParams.get('ReceiverId'), "type": "NO" },
-    //   message: { "value": m, "type": "MSG" },
-    //   msg_type: { "value": 'text', "type": "NO" },
-    // }
-    // this.api.postDataNoLoader(Data, 0, 'SendMessage').then((result: any) => {
-    //   console.log(result);
-    //   if (result.status == 1) {
-
-    //     this.msg = "";
-    //   } else {
-    //   }
-    // })
   }
 
+
+
+  getDevice() {
+    let data = {
+      "user_id": this.other_user.id,
+    };
+    this.api.get(data, 0, 'UserListComma').then((result: any) => {
+      if (result.status == 1) {
+        this.other_user_device = result.data[0].device_id
+      }
+    }, (err) => {
+    });
+  }
 
   sendFile(blob1, name1, type, p) {
     // let k = {

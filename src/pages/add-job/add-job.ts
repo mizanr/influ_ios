@@ -228,6 +228,7 @@ export class AddJobPage {
     else
       return false
   }
+
   Post() {
     let data = {
       "created_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
@@ -271,55 +272,52 @@ export class AddJobPage {
 
 
   getPicture(to) {
-    this.medaiP.getCompressedImage().then((res: any) => {
-      console.log('res-----------==', res);
-      // let blob = this.image.imgURItoBlobR(img);
-      // let blob_name = this.image.generateImageName('hello.jpg');
-      const reader = new FileReader();
-      const nullBlob = new Blob([reader.result], {
-        type: '',
-      });
-      console.log('Null blob-----', nullBlob);
-
-      let k = {
-        file: nullBlob,
-        name: 'no',
-      }
-      let data = { file: res.file, name: res.name, preview: res.preview, type: 'image', thumbNail: k };
-      if (to == 'toAdd') {
-        this.formData.images = this.formData.images.concat(data);
-        console.log('file array----', this.formData.images);
-      } else {
-        this.newImagesArr = this.newImagesArr.concat(data);
-      }
-
-      this.onKeyT()
-    })
-  }
-
-  getPictureEdit() {
-    this.medaiP.getCompressedImage().then((res: any) => {
-      console.log();
-
-      let data = { file: res.file, name: res.name, preview: res.preview };
-      this.newImagesArr = this.newImagesArr.concat(data);
-      this.onKeyT()
-    })
-
-  }
-
-  getMultiplePicture(e: any) {
-    let count: any = (5 - this.formData.images.length);
-
-    console.log('count---', count);
-    this.medaiP.selectMultipleImages(count).then((res: any) => {
-      console.log('res-----------==============', res);
-
-      if (res != 0) {
-        this.formData.images = this.formData.images.concat(res);
-      }
+    const reader = new FileReader();
+    const nullBlob = new Blob([reader.result], {
+      type: '',
     });
+    let k = {
+      file: nullBlob,
+      name: 'no',
+    }
+
+    let seletedImgCount=this.formData.images.length+this.newImagesArr.length;
+    let countSelecteabel=5-seletedImgCount;
+    this.medaiP.getCompressedImage(countSelecteabel).then((res: any) => {
+
+      if (res.resType == 'singleImage') {
+
+
+        let data = { file: res.imgRes.file, name: res.imgRes.name, preview: res.imgRes.preview, type: 'image', thumbNail: k };
+        if (to == 'toAdd') {
+          this.formData.images = this.formData.images.concat(data);
+          console.log('file array----', this.formData.images);
+        } else {
+          this.newImagesArr = this.newImagesArr.concat(data);
+        }
+
+
+      } else {
+
+
+        let imgArr = res.imgRes
+        for (let index = 0; index < imgArr.length; index++) {
+          let data = { file: imgArr[index].file, name: imgArr[index].name, preview: imgArr[index].preview, type: 'image', thumbNail: k };
+          if (to == 'toAdd') {
+            this.formData.images.push(data);
+          } else {
+            this.newImagesArr.push(data);
+          }
+        }
+
+
+      }
+
+      this.onKeyT()
+    })
   }
+
+
 
 
   delImage(I: any) {

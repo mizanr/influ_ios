@@ -1,5 +1,5 @@
 <div *ngIf="auth.getUserDetails().user_type==1">
-  <ion-tabs #companyTabs>
+  <ion-tabs (ionChange)="tabChanged($event)" #companyTabs>
     <ion-tab [root]="tab1Root" tabTitle="" tabIcon="home"></ion-tab>
     <ion-tab [root]="tab2Root" tabTitle="" tabIcon="information-circle"></ion-tab>
     <ion-tab [root]="tab3Root" [tabBadge]="mesgCount>0?mesgCount:null" tabTitle="" tabIcon="contacts"></ion-tab>
@@ -8,7 +8,7 @@
 </div>
 
 <div *ngIf="auth.getUserDetails().user_type==2">
-  <ion-tabs #influTabs>
+  <ion-tabs (ionChange)="tabChanged($event)" #influTabs>
     <ion-tab [root]="tab5Root" tabTitle="" tabIcon="home"></ion-tab>
     <ion-tab [root]="tab6Root" tabTitle="" tabIcon="information-circle"></ion-tab>
     <ion-tab [root]="tab7Root" tabTitle="" [tabBadge]="mesgCount>0?mesgCount:null" tabIcon="contacts"></ion-tab>

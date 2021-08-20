@@ -51,8 +51,8 @@ export class ChatDetailsPage {
     public download: DownloadProvider,
     public player: PlayAudioProvider) {
 
-      this.senderImage = this.auth.getUserDetails().image
-    
+    this.senderImage = this.auth.getUserDetails().image
+
   }
 
   ionViewWillEnter() {
@@ -287,8 +287,8 @@ export class ChatDetailsPage {
 
 
   openFile(link) {
-    console.log('link----=-=-=-=',link);
-    
+    console.log('link----=-=-=-=', link);
+
     this.download.checkFileExistOrNot(link).then((res) => {
       if (res == 1) {
         this.alert.confirmationAlert(this.trans.instant('CONFIRMATION'), this.trans.instant('FILE_ALREADY_EXISTS')).then((res) => {
@@ -395,11 +395,11 @@ export class ChatDetailsPage {
     // this.media.pauseaudio();
   }
 
-  
+
   // sendMessage() {
   //   let newData = firebase.database().ref('chatrooms/' + this.roomkey + '/chats').push();
   //   console.log('Roomkey-------------',this.roomkey);
-    
+
   //   newData.set({
   //     type: this.data.type,
   //     user: this.data.nickname,

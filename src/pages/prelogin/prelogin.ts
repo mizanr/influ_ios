@@ -6,7 +6,7 @@ import { AlertProvider } from './../../providers/alert/alert';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 // import { LoginPage } from './../login/login';
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, IonicPage } from 'ionic-angular';
+import { NavController, NavParams, Platform, IonicPage, Events } from 'ionic-angular';
 @IonicPage()
 
 @Component({
@@ -21,7 +21,8 @@ export class PreloginPage {
     public google: GooglePlusProvider,
     public plt: Platform,
     public auth: AuthProvider,
-    public translate: TranslateService) {
+    public translate: TranslateService,
+    public events:Events) {
   }
 
   ionViewWillEnter() {
@@ -141,6 +142,7 @@ export class PreloginPage {
       } else if (result.status == 1) {
         this.auth.updateUserDetails(result.user);
         this.navCtrl.setRoot(TabsPage);
+        this.events.publish('LoggedIn');
       }
     })
   }

@@ -12,7 +12,8 @@
 	</div>
 	<div *ngFor="let item of chat;let i=index">
 
-		<div *ngIf="item.sender.id!=auth.getCurrentUserId()" class="user"  [ngClass]="item.msg_type=='audio'?'hasaudio':''">
+		<div *ngIf="item.sender.id!=auth.getCurrentUserId()" class="user"
+			[ngClass]="item.msg_type=='audio'?'hasaudio':''">
 			<ion-row>
 				<ion-col col-2>
 					<div class="user_img">
@@ -55,17 +56,17 @@
 										</ion-col>
 										<ion-col no-padding col-auto
 											*ngIf="item.isplayaudio==true && player.isLoaded==true">
-											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear
-												ion-button icon-only>
+											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button
+												icon-only>
 												<ion-icon name="ios-square"></ion-icon>
 											</button>
 										</ion-col>
 										<ion-col col-10>
 											<ion-range *ngIf="item.isplayaudio" min="0" no-padding
-												max="{{player.duration}}" margin-left [disabled]="true" [(ngModel)]="player.position"
-												color="primary" pin="true">
+												max="{{player.duration}}" margin-left [disabled]="true"
+												[(ngModel)]="player.position" color="primary" pin="true">
 											</ion-range>
-											<ion-range  [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
+											<ion-range [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
 												max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj"
 												color="primary" pin="true">
 											</ion-range>
@@ -105,8 +106,8 @@
 										</ion-col>
 										<ion-col no-padding col-auto
 											*ngIf="item.isplayaudio==true && player.isLoaded==true">
-											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear
-												ion-button icon-only>
+											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button
+												icon-only>
 												<ion-icon name="ios-square"></ion-icon>
 											</button>
 										</ion-col>
@@ -116,7 +117,7 @@
 												color="primary" pin="true" class="rotate_range"
 												style="transform: rotate(180deg);">
 											</ion-range>
-											<ion-range  [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
+											<ion-range [disabled]="true" *ngIf="!item.isplayaudio" min="0" no-padding
 												max="{{player.duration}}" margin-left [(ngModel)]="item.hjhj"
 												color="primary" pin="true" class="rotate_range"
 												style="transform: rotate(180deg);">
@@ -145,9 +146,10 @@
 		</div>
 
 
-		<div *ngIf="item.sender.id==auth.getCurrentUserId()" class="user"  [ngClass]="item.msg_type=='audio'?'hasaudio':''">
+		<div *ngIf="item.sender.id==auth.getCurrentUserId()" class="user"
+			[ngClass]="item.msg_type=='audio'?'hasaudio':''">
 			<ion-row>
-				<ion-col col-10  [ngClass]="auth.getUserLanguage()=='en'?'text-right':'text-left'">
+				<ion-col col-10 [ngClass]="auth.getUserLanguage()=='en'?'text-right':'text-left'">
 					<ion-item no-padding class="after_1">
 						<p style="padding-top: 8px;" *ngIf="item.msg_type=='text'" class="dat">{{item.message}}</p>
 						<img (click)="openSlider([{name:baseUrl+item.message}],0)"
@@ -185,14 +187,14 @@
 										</ion-col>
 										<ion-col no-padding col-auto
 											*ngIf="item.isplayaudio==true && player.isLoaded==true">
-											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear
-												ion-button icon-only>
+											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button
+												icon-only>
 												<ion-icon name="ios-square"></ion-icon>
 											</button>
 										</ion-col>
 										<ion-col col-10>
 											<ion-range *ngIf="item.isplayaudio" [disabled]="true" min="0" no-padding
-												max="{{player.duration}}"  margin-left [(ngModel)]="player.position"
+												max="{{player.duration}}" margin-left [(ngModel)]="player.position"
 												color="primary" pin="true">
 											</ion-range>
 											<ion-range *ngIf="!item.isplayaudio" [disabled]="true" min="0" no-padding
@@ -235,20 +237,20 @@
 										</ion-col>
 										<ion-col no-padding col-auto
 											*ngIf="item.isplayaudio==true && player.isLoaded==true">
-											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear
-												ion-button icon-only>
+											<button (click)="audio_pauseaudio(i)" small class="playBtn" clear ion-button
+												icon-only>
 												<ion-icon name="ios-square"></ion-icon>
 											</button>
 										</ion-col>
 										<ion-col col-10>
 											<ion-range *ngIf="item.isplayaudio" min="0" no-padding
-												max="{{player.duration}}" margin-left [disabled]="true" [(ngModel)]="player.position"
-												color="primary" pin="true" class="rotate_range"
-												style="transform: rotate(180deg);">
+												max="{{player.duration}}" margin-left [disabled]="true"
+												[(ngModel)]="player.position" color="primary" pin="true"
+												class="rotate_range" style="transform: rotate(180deg);">
 											</ion-range>
 											<ion-range *ngIf="!item.isplayaudio" min="0" no-padding
-												max="{{player.duration}}" margin-left [disabled]="true" [(ngModel)]="item.hjhj"
-												color="primary" pin="true" class="rotate_range"
+												max="{{player.duration}}" margin-left [disabled]="true"
+												[(ngModel)]="item.hjhj" color="primary" pin="true" class="rotate_range"
 												style="transform: rotate(180deg);">
 											</ion-range>
 											<div class="time1" *ngIf="!item.isplayaudio">
@@ -256,9 +258,9 @@
 												<span class="t2">{{item.time_ago}}</span>
 											</div>
 											<div class="time1" *ngIf="item.isplayaudio && player.isLoaded==true">
-												<span class="t1">{{player.getMMSS(player.duration-player.position)}}</span>
 												<span
-													class="t2">{{item.time_ago}}</span>
+													class="t1">{{player.getMMSS(player.duration-player.position)}}</span>
+												<span class="t2">{{item.time_ago}}</span>
 											</div>
 										</ion-col>
 									</ion-row>
@@ -380,7 +382,8 @@
 				<button *ngIf="media.isPlay==true" ion-button clear icon-only (click)="media.pauseaudio()">
 					<ion-icon class="icon-theme" name="ios-pause"></ion-icon>
 				</button>
-				<ion-range min="0" max="{{media.duration}}" [(ngModel)]="media.position" [disabled]="true" color="danger" pin="true">
+				<ion-range min="0" max="{{media.duration}}" [(ngModel)]="media.position" [disabled]="true"
+					color="danger" pin="true">
 				</ion-range>
 
 				<div class="timer">{{media.getMMSS(media.duration)}}</div>
@@ -455,7 +458,8 @@
 				<button *ngIf="media.isPlay==true" ion-button clear icon-only (click)="media.pauseaudio()">
 					<ion-icon class="icon-theme" name="ios-pause"></ion-icon>
 				</button>
-				<ion-range min="0" max="{{media.duration}}"  [disabled]="true" [(ngModel)]="media.position" color="danger" pin="true">
+				<ion-range min="0" max="{{media.duration}}" [disabled]="true" [(ngModel)]="media.position"
+					color="danger" pin="true">
 				</ion-range>
 
 				<div class="timer timer2">{{media.getMMSS(media.duration)}}</div>

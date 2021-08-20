@@ -28,7 +28,7 @@
 
     <!-- <img (click)="openSlider(k.images,0)" height="200" width="100%" style="object-fit: cover;" [src]="k.images[0].name"> -->
 
-    <div class="imagescontainer"
+    <!-- <div class="imagescontainer"
       [ngClass]="{'one':k.images.length==1,'two':k.images.length==2,'three':k.images.length==3,'four':k.images.length>=4}">
 
       <div class="set-all" (click)="openSlider(k.images,0)" [ngClass]="im>3?'invisible':''"
@@ -43,7 +43,18 @@
       <div (click)="openSlider(k.images,4);$event.stopPropagation()" *ngIf="k.images.length>4" class="moreimg">
         <strong><span>+ {{k.images.length - 4}}&nbsp;more</span></strong>
       </div>
-    </div>
+    </div> -->
+
+    <ion-slides pagination [dir]="auth.getUserLanguage()=='en'?'':'rtl'" [pager]="true">
+      <ion-slide (click)="openSlider(k.images,im);$event.stopPropagation()" *ngFor="let img of k.images; let im=index">
+        <img [src]="img.name" *ngIf="img.file_type=='image'">
+        <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"
+          *ngIf="img.file_type=='video'" [poster]="img.thumb">
+          <source [src]="img.name" />
+        </video>
+      </ion-slide>
+    </ion-slides>
+
 
     <ion-card-content>
       <ion-item no-lines no-padding class="info">

@@ -425,8 +425,7 @@ page-chat-details {
       font-size: 28px !important;
       background: -webkit-linear-gradient(50deg, #ce2b8a, #10b4ed);
       -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
+      -webkit-text-fill-color: transparent;
     }
   }
   .language_change {
@@ -497,7 +496,6 @@ page-chat-details {
       top: 2px !important;
       width: 95%;
       text-align: right;
-
     }
     ion-toolbar .inputdesign.audio button.delete {
       left: initial;
@@ -532,10 +530,10 @@ page-chat-details {
   .audio_div {
     // width: 100%;
     // display: inline;
-    .container{
+    .container {
       display: contents;
     }
-    .audio_send{
+    .audio_send {
       position: absolute;
       max-width: 100%;
       left: 0;
@@ -549,56 +547,50 @@ page-chat-details {
       font-size: 10px;
     }
     .range-ios .range-bar {
-           height: 2px;
+      height: 2px;
     }
   }
 
-  .rotate_range{
-margin-left: 0 !important;
-  .range-knob{
-    box-shadow: 0 -3px 1px rgba(0,0,0,0.10) !important;
-  }
-}
-
-
-
-.user{
-  ion-item{
-    display:inline-block !important;
-    min-height:40px !important;
-    width:auto !important;
-    min-width:120px !important;
-    .item-inner{
-      width:100%;
-      display:inline-block !important;
+  .rotate_range {
+    margin-left: 0 !important;
+    .range-knob {
+      box-shadow: 0 -3px 1px rgba(0, 0, 0, 0.1) !important;
     }
-
-
   }
 
+  .user {
+    ion-item {
+      display: inline-block !important;
+      min-height: 40px !important;
+      width: auto !important;
+      min-width: 120px !important;
+      .item-inner {
+        width: 100%;
+        display: inline-block !important;
+      }
+    }
 
-  &.hasaudio{
-    ion-item{
-      width:100% !important;
-      min-height:60px !important;
+    &.hasaudio {
+      ion-item {
+        width: 100% !important;
+        min-height: 60px !important;
+      }
+      ion-row {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+      }
     }
-    ion-row{
-      padding-top:0px !important;
-      padding-bottom:0px !important;
-    }
-    
   }
-}
 
-.text-right{
-  text-align:right !important;
-}
+  .text-right {
+    text-align: right !important;
+  }
 
-.text-left{
-  text-align:left !important;
-}
+  .text-left {
+    text-align: left !important;
+  }
 
-ion-range{
-  opacity:1 !important;
-}
+  ion-range {
+    opacity: 1 !important;
+  }
 }

@@ -66,7 +66,7 @@ export class TabsPage {
           let m = firebase.database().ref('chatrooms1/' + item.key + '/chats').orderByChild('unread_' + otheruser).equalTo(true);//.orderByChild('sender_id');//.equalTo(item["other_user"]);
           m.on('value', (aaa) => {
             item['unread_msg'] = aaa.numChildren();
-            console.log('tabs data ',item['unread_msg']);
+            // console.log('tabs data ',item['unread_msg']);
             this.mesgCount = this.mesgCount + item['unread_msg'];
             
             m.off('value');
@@ -95,4 +95,9 @@ export class TabsPage {
 
 
 
+  tabChanged($ev) {
+    console.log("Tab Change------------------",$ev)
+  //  $ev.setRoot($ev.root);
+    $ev.popToRoot();//($ev.root);
+  }
 }

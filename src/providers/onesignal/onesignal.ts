@@ -1,7 +1,7 @@
 import { Platform } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OneSignal } from '@ionic-native/onesignal';
+import { OneSignal, OSNotification } from '@ionic-native/onesignal';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 /*
   Generated class for the OnesignalProvider provider.
@@ -19,7 +19,7 @@ export class OnesignalProvider {
   received: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(public http: HttpClient,
-    private oneSignal: OneSignal,
+    public oneSignal: OneSignal,
     private platform: Platform
   ) {
     console.log('Hello OnesignalProvider Provider');
@@ -98,5 +98,30 @@ export class OnesignalProvider {
   });
     *************one signal end**************** */
 
+
+  sendPushNotification(message: string, token: any, data: any, heading: string) {
+
+    return new Promise((resolve, reject) => {
+      let obj: OSNotification = {
+        app_id: 'e9e0534e-18dd-4951-9ab7-1e62be4f03af',
+        contents: { 'en': message },
+        include_player_ids: token,
+        data: data
+      }
+
+      if (heading) {
+        obj['headings'] = { 'en': heading };
+      }
+
+      console.log('notification sending data', obj);
+      this.oneSignal.postNotification(obj).then((res) => {
+        console.log("success", res);
+        resolve(true);
+      }).catch((res) => {
+        console.log("error", res);
+        resolve(false);
+      })
+    });
+  }
 
 }

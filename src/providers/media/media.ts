@@ -364,7 +364,7 @@ export class MediaProvider {
 
   }
 
-  getCompressedImage() {
+  getCompressedImage(no) {
     return new Promise((resolve, reject) => {
 
       this.alertCtrl.create({
@@ -378,8 +378,12 @@ export class MediaProvider {
           {
             text: this.trans.instant('CHOOSE_FROM_GALLERY'),
             handler: () => {
-              this.getImageByGallery().then((res: any) => {
-                resolve(res);
+              this.selectMultipleImages(no).then((res: any) => {
+                let k = {
+                  imgRes:res,
+                  resType:'multipleImage'
+                }
+                resolve(k);
               })
 
             }
@@ -388,13 +392,109 @@ export class MediaProvider {
             text: this.trans.instant('TAKE_PHOTO'),
             handler: () => {
               this.getImageByCamera().then((res: any) => {
-                resolve(res);
+                let k = {
+                  imgRes:res,
+                  resType:'singleImage'
+                }
+                resolve(k);
               })
             }
           }
         ]
       }).present();
     });
+  }
+
+  
+  selectMultipleImages(imgCount: any) {
+    this.file_array = [];
+    return new Promise((resolve, reject) => {
+      let file_array = [];
+      this.filePath_array = [];
+      let options = {
+        maximumImagesCount: imgCount,
+      }
+      this.imagePicker.getPictures(options).then((results: any) => {
+        console.log('results----------------', results);
+        this.getCompressedblobFromMultiple(results, 0, results.length).then(file_array => {
+          console.log('file_array before resolve ====--------------', file_array);
+          resolve(file_array);
+        })
+      }, (err) => {
+        reject(err);
+      });
+    })
+  }
+
+  
+  getCompressedblobFromMultiple(results, i, n) {
+    // console.log("get blob for multiple", i,n);
+    console.log('getblobFromMultiple', i, n);
+    return new Promise((resolve, reject) => {
+      let options = {
+        uri: results[i],
+        quality: 100,
+        width: this.plt.width() * 2,
+        height: this.plt.height() * 2
+      } as ImageResizerOptions;
+      this.imageResizer.resize(options).then((filePath: string) => {
+        console.log('resizer sucess----------------------', filePath);
+        this.readAsBlob(filePath).then((res) => {
+          console.log('i-------', results.length, i)
+          if (res != 0) {
+            this.file_array.push(res);
+            // console.log('file_array--------------', this.file_array);
+            console.log('blob_file--------', this.file_array);
+
+          }
+          else {
+
+          }
+          if (i < n - 1) {
+            // console.log('this.getblobFromMultiple(results,i+1,n)==========', this.getblobFromMultiple(results, i + 1, n));
+
+            this.getCompressedblobFromMultiple(results, i + 1, n).then((resa) => {
+              resolve(resa)
+            });
+          }
+          else {
+            console.log('this.file_array ====--------------', this.file_array);
+            resolve(this.file_array)
+          }
+        })
+      }).catch(e => console.log('resizer Error----------------------', e));
+    })
+  }
+
+
+  readAsBlob(path) {
+    return new Promise((resolve, reject) => {
+      console.log(path);
+      this.file.resolveLocalFilesystemUrl(path)
+        .then(entry => {
+          console.log('entry----------------------', entry);
+          (<FileEntry>entry).file(file => {
+            console.log('file----------------------', file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const blob = new Blob([reader.result], {
+                type: file.type,
+              });
+              console.log("blob.....", blob);
+              resolve({ name: file.name, file: blob, preview: (<any>window).Ionic.WebView.convertFileSrc(path) });
+              // this.blob['name']=file.name;
+              // this.blob['file']=blob;
+              //  console.log("got blob file successfully", this.blob);
+            };
+            reader.readAsArrayBuffer(file);
+          })
+
+        })
+        .catch(err => {
+          console.log("localfilesytem resolve.....", err);
+          resolve(0);
+        });
+    })
   }
 
   getImageByCamera() {
@@ -716,72 +816,6 @@ export class MediaProvider {
     })
   }
 
-  getCompressedblobFromMultiple(results, i, n) {
-    // console.log("get blob for multiple", i,n);
-    console.log('getblobFromMultiple', i, n);
-    return new Promise((resolve, reject) => {
-      let options = {
-        uri: results[i],
-        quality: 100,
-        width: this.plt.width() * 2,
-        height: this.plt.height() * 2
-      } as ImageResizerOptions;
-      this.imageResizer.resize(options).then((filePath: string) => {
-        console.log('resizer sucess----------------------', filePath);
-        this.readAsBlob(filePath).then((res) => {
-          console.log('i-------', results.length, i)
-          if (res != 0) {
-            this.file_array.push(res);
-            // console.log('file_array--------------', this.file_array);
-            console.log('blob_file--------', this.file_array);
-
-          }
-          else {
-
-          }
-          if (i < n - 1) {
-            // console.log('this.getblobFromMultiple(results,i+1,n)==========', this.getblobFromMultiple(results, i + 1, n));
-
-            this.getCompressedblobFromMultiple(results, i + 1, n).then((resa) => {
-              resolve(resa)
-            });
-          }
-          else {
-            console.log('this.file_array ====--------------', this.file_array);
-            resolve(this.file_array)
-          }
-        })
-      }).catch(e => console.log('resizer Error----------------------', e));
-    })
-  }
-
-
-  selectMultipleImages(imgCount: any) {
-    this.file_array = [];
-    return new Promise((resolve, reject) => {
-      let file_array = [];
-      this.filePath_array = [];
-      let options = {
-        maximumImagesCount: imgCount,
-      }
-      this.imagePicker.getPictures(options).then((results: any) => {
-        console.log('results----------------', results);
-        this.getCompressedblobFromMultiple(results, 0, results.length).then(file_array => {
-          console.log('file_array before resolve ====--------------', file_array);
-          resolve(file_array);
-        })
-
-        // if (results.length > 0) {
-        //   this.imageresizer(results, 0);
-        // }
-
-
-
-      }, (err) => {
-        reject(err);
-      });
-    })
-  }
 
 
   getMime(path) {
@@ -803,33 +837,4 @@ export class MediaProvider {
   }
 
 
-  readAsBlob(path) {
-    return new Promise((resolve, reject) => {
-      console.log(path);
-      this.file.resolveLocalFilesystemUrl(path)
-        .then(entry => {
-          console.log('entry----------------------', entry);
-          (<FileEntry>entry).file(file => {
-            console.log('file----------------------', file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const blob = new Blob([reader.result], {
-                type: file.type,
-              });
-              console.log("blob.....", blob);
-              resolve({ name: file.name, file: blob, preview: (<any>window).Ionic.WebView.convertFileSrc(path) });
-              // this.blob['name']=file.name;
-              // this.blob['file']=blob;
-              //  console.log("got blob file successfully", this.blob);
-            };
-            reader.readAsArrayBuffer(file);
-          })
-
-        })
-        .catch(err => {
-          console.log("localfilesytem resolve.....", err);
-          resolve(0);
-        });
-    })
-  }
 }

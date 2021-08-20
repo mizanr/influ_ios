@@ -15,7 +15,7 @@ import { removeDebugNodeFromIndex } from '@angular/core/src/debug/debug_node';
   templateUrl: 'post-detail.html',
 })
 export class PostDetailPage {
-  @ViewChild(Slides) slide:Slides;
+  @ViewChild(Slides) slide: Slides;
   detail: any = '';
   influServiceFee: any;
   influeServiceInPercent: any;
@@ -116,7 +116,7 @@ export class PostDetailPage {
       let rN = 'Room_' + job_id + '_' + smartKey;
       this.roomName = rN;
       if (rooms.length == 0) {
-        this.createRoom(rN, job_id, job_title, other_user_id);
+        this.createRoom(rN, job_id, job_title, this.detail.created_by);
         return;
       }
       for (let index = 0; index < rooms.length; index++) {
@@ -157,10 +157,13 @@ export class PostDetailPage {
     data['user_' + this.auth.getCurrentUserId() + '_open'] = false;
     newData.set(data);
     this.fireP.getRooms().then((res: any) => {
+      console.log('other user-----', data.user1);
+      console.log('Room name----', this.roomName);
+
       let rooms = res;
       for (let index = 0; index < rooms.length; index++) {
-        if (rooms[index].roomname == this.roomName) {
-          this.navCtrl.push('ConversationPage', { RoomKey: rooms[index].key, JobTitle: rooms[index].Job_detail.title, JobId: this.detail.Id, other_user: 'user_' + data.user1 });
+        if (rooms[index].room_name == this.roomName) {
+          this.navCtrl.push('ConversationPage', { RoomKey: rooms[index].key, JobTitle: rooms[index].job_title, JobId: this.detail.Id, other_user: this.detail.created_by });
           return;
         }
       }

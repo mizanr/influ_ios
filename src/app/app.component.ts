@@ -1,3 +1,5 @@
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+
 import { AlertProvider } from './../providers/alert/alert';
 import { DownloadProvider } from './../providers/download/download';
 import { GooglePlusProvider } from './../providers/google-plus/google-plus';
@@ -38,7 +40,9 @@ export class MyApp {
     // public config: Config,
     public app: App,
     public ionicApp: IonicApp,
-    public alert: AlertProvider,) {
+    public alert: AlertProvider,
+    public aP: AndroidPermissions
+  ) {
     platform.ready().then(() => {
       if (platform.is('cordova')) {
         this.setBackButton();
@@ -59,33 +63,40 @@ export class MyApp {
         this.getProfile(r);
       });
 
+      // this.aP.requestPermissions([this.aP.PERMISSION.ACCESS_NOTIFICATION_POLICY,
+      //    this.aP.PERMISSION.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS, 
+      //    this.aP.PERMISSION.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED]).then(r => {
+      //   console.log('success in get permision---', r);
+
+      // });
+
 
       this.lang = this.auth.getUserLanguage();
       console.log(this.lang);
       if (this.lang) {
-            this.translate.setDefaultLang(this.lang);
-            if (this.lang == 'he') {
-                this.platform.setDir('rtl', true);
-            }
+        this.translate.setDefaultLang(this.lang);
+        if (this.lang == 'he') {
+          this.platform.setDir('rtl', true);
+        }
       } else {
-            this.translate.setDefaultLang('en');
+        this.translate.setDefaultLang('en');
       }
 
       if (this.auth.isUserLoggedIn()) {
-              if (this.auth.getUserDetails().email_verified == 1) {
-                    this.rootPage = TabsPage;
-                    this.updateDeviceId();
-                    this.google.silentLogin();
+        if (this.auth.getUserDetails().email_verified == 1) {
+          this.rootPage = TabsPage;
+          this.updateDeviceId();
+          this.google.silentLogin();
 
-              } else {
-                    this.rootPage = 'VerifyPage';
-              }
+        } else {
+          this.rootPage = 'VerifyPage';
+        }
       } else {
-            if (this.lang) {
-              this.rootPage = 'PreloginPage'
-            } else {
-              this.rootPage = 'SelectLangPage'
-            }
+        if (this.lang) {
+          this.rootPage = 'PreloginPage'
+        } else {
+          this.rootPage = 'SelectLangPage'
+        }
       }
 
     });
@@ -97,22 +108,28 @@ export class MyApp {
 
 
 
-  onesignalsetup(){
-    
+  onesignalsetup() {
+
     this.onesignal.init();
     // this.config.set('backButtonIcon', 'md-arrow-back');
+    this.onesignal.oneSignal.addPermissionObserver().subscribe(r => {
+      console.log('resp-------------', r);
+
+    })
     this.onesignal.open.subscribe((data: any) => {
       console.log('Notidata----------', data);
 
       if (data != 0 && data) {
 
-        if (data.other.screen == 'ChatDetailsPage') {
+        if (data.screen == 'ChatDetailsPage') {
           setTimeout(() => {
             // this.nav.push('ChatDetailsPage', { JobId: data.other.job_id, ReceiverId: data.other.receiver });
+            this.nav.push('ConversationPage', { RoomKey: data.RoomKey, JobTitle: data.JobTitle, JobId: data.JobId, other_user: data.other_user });
+
           }, 700)
-        } else if (data.other.screen == 'InfluencerProfile') {
+        } else if (data.screen == 'InfluencerProfile') {
           setTimeout(() => {
-            this.nav.push('InfluencerProfilePage', { InfluId: data.other.influId });
+            this.nav.push('InfluencerProfilePage', { InfluId: data.InfluId });
           }, 700)
         }
 
@@ -272,7 +289,7 @@ export class MyApp {
   newChat() {
     this.nav.push('SigninPage');
   }
-  blocklist(){
+  blocklist() {
     this.nav.push('BlocklistPage');
   }
 }
