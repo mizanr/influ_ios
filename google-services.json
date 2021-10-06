@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "81695652763",
+    "firebase_url": "https://fir-85886.firebaseio.com",
+    "project_id": "fir-85886",
+    "storage_bucket": "fir-85886.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81695652763:android:c6050c41b7ce4a019d3f3e",
+        "android_client_info": {
+          "package_name": "webwiders.influ.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81695652763-5b04vsm4gbre3hii2febecm477m7eu0p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6KSjeGl6oLQMBdVhWQ5Mg8Q8s1-Z0pzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81695652763-5b04vsm4gbre3hii2febecm477m7eu0p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

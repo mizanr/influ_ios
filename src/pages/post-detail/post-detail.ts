@@ -7,7 +7,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, ViewController, IonicPage, Slides } from 'ionic-angular';
 import * as firebase from 'Firebase';
 import { removeDebugNodeFromIndex } from '@angular/core/src/debug/debug_node';
-
+import { RatePopupPage } from '../rate-popup/rate-popup';
 @IonicPage()
 
 @Component({
@@ -17,11 +17,20 @@ import { removeDebugNodeFromIndex } from '@angular/core/src/debug/debug_node';
 export class PostDetailPage {
   @ViewChild(Slides) slide: Slides;
   detail: any = '';
+  hired_id:any;
   influServiceFee: any;
   influeServiceInPercent: any;
   hiredStatus: any;
+  public buttonClicked: boolean = false;
+  filter_counts:any=new Array();
+  ratings:any=new Array();
+  all_ratings:any=new Array();
   ref = firebase.database().ref('chatrooms1/');
   roomName: any;
+  ismark:any;
+  rate_status:any;
+  isdeleted:any;
+  delete_reason:any;
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController,
     public auth: AuthProvider, public api: RestApiProvider,
     public alert: AlertProvider,
@@ -30,24 +39,33 @@ export class PostDetailPage {
 
   }
   ionViewWillEnter() {
-    this.getPost()
+    this.getPost(1);
   }
 
-  getPost() {
+  getPost(lodr:any) {
     let data = {
       "user_id": this.auth.getCurrentUserId(),
       "job_id": this.navParams.get('PostId'),
     }
-    this.api.get(data, 1, 'GetJobById').then((res: any) => {
+    this.api.get(data, lodr, 'GetJobById').then((res: any) => {
       if (res.status == 1) {
         // this.categories = res.data
         this.detail = res.data[0];
+        this.filter_counts=res.filter_count;
         // setTimeout(()=>{
         //   this.slide.update();
         // },1000)
+        this.ratings=res.data[0].rate_list;
+        this.all_ratings=res.data[0].rate_list;
+        this.rate_status=res.data[0].is_rated;
         this.influServiceFee = res.influ_service_fee;
         this.influeServiceInPercent = res.influ_service_fee_percent;
         this.hiredStatus = res.hired_status;
+        this.hired_id=res.is_complete_id;
+        this.ismark=res.is_complete;
+
+        this.isdeleted=res.data[0].is_delete;
+        this.delete_reason=res.data[0].is_reason;
       }
       else {
       }
@@ -88,6 +106,7 @@ export class PostDetailPage {
       "jobId": { "value": post_id, "type": "NO" },
       "amount": { "value": amt, "type": "NO" },
       "trasnsactionId": { "value": tId, "type": "NO" },
+      admin_comission:{value:this.influServiceFee,type:'NO'},
     }
     this.api.postData(data, 0, 'jobHiring').then((res: any) => {
       if (res.status == 1) {
@@ -107,6 +126,9 @@ export class PostDetailPage {
     console.log("created by --------", this.detail)
     let other_user_id = parseInt(this.detail.created_by.id);
     let user_id = parseInt(this.auth.getCurrentUserId());
+
+    console.log(other_user_id,'---------',user_id);
+    
     let job_id = this.detail.Id;
     let job_title = this.detail.title;
     let rooms: any = [];
@@ -190,4 +212,84 @@ export class PostDetailPage {
   edit(i) {
     this.navCtrl.push('AddjobInfluPage', { EditId: i })
   }
+
+  rate_now() {
+    let ratemodal = this.api.modalCtrl.create(RatePopupPage, {data:this.detail.created_by}, { cssClass: 'ratemodal' });
+    ratemodal.present();
+    ratemodal.onDidDismiss((data) => {
+      if(data){
+        this.getPost(0);
+      }
+    })
+  }
+
+  rating_filter(filter:any) {
+    console.log(filter);
+    this.ratings=this.all_ratings.filter((item) => {
+      return item.rate==filter;
+    })
+  }
+
+  public ngIfCtrl() {
+    this.buttonClicked = !this.buttonClicked;
+  }
+
+  mark_as_complete(service:any) {
+    console.log(service);
+    this.alert.confirmationAlert('Complete Service','Are you sure?').then((res:any) => {
+      console.log(res);
+      if(res==true){
+        let Data = {
+          id:service.Id,
+          user_id:this.auth.getCurrentUserId(),
+          hired_id:this.hired_id,
+          //company_id:this.
+        }
+        this.api.get(Data,1,'MarkAsComplete').then((res:any) => {
+          console.log(res);
+          if(res.status==1){
+              this.getPost(0);
+              if(this.detail.is_rated==0){
+                setTimeout(() => {
+                  this.rate_now();
+                }, 200);
+              }              
+          }
+        })
+      }
+    })    
+  }
+
+
+  hired_by() {
+    this.navCtrl.push('HiredListPage',{service_id:this.navParams.get('PostId')});
+  }
+
+  reject_() {
+    let data = {
+      user_id:{value:this.auth.getCurrentUserId(),type:'NO'},
+      service_id:{value:this.detail.Id,type:'NO'},
+    }
+    this.api.postData(data,0,'reject').then((res:any) => {
+      console.log(res);
+      if(res.status==1){
+        this.getPost(0);
+      }
+    })
+  }
+
+  accept() {
+    let data = {
+      hiredId:{value:this.hired_id,type:'NO'},
+      jobId:{value:this.detail.Id,type:'NO'},
+      user_id:{value:this.auth.getCurrentUserId(),type:'NO'},
+    } 
+    this.api.postData(data,0,'HiredAccept').then((res:any) => {
+      console.log(res);
+      if(res.status==1){
+        this.getPost(0);
+      }
+    })
+  }
+
 }

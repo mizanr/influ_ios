@@ -1,4 +1,12 @@
 page-add-job {
+
+	ion-spinner * {
+		width: 28px;
+		height: 28px;
+		stroke: #444;
+		fill: #222;
+	  }
+	  
 	.bg {
 		/* The image used */
 		background-image: url("../../assets/signup/back.png");

@@ -6,6 +6,7 @@ import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { AuthProvider } from './../../providers/auth/auth';
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, IonicPage, ActionSheetController } from 'ionic-angular';
+import {LoadingProvider} from '../../providers/loading/loading';
 @IonicPage()
 
 @Component({
@@ -25,6 +26,7 @@ export class AddJobPage {
       nicename: ""
     }
   };
+  is_spinner:any=false;
   validations = {
     isTitleEmpty: true,
     isTitleWrong: false,
@@ -52,6 +54,7 @@ export class AddJobPage {
     public alertCtrl: AlertController,
     public medaiP: MediaProvider,
     public translate: TranslateService,
+    public loading:LoadingProvider,
     public actionSheetCtrl: ActionSheetController,
     public trans: TranslateService
   ) {
@@ -285,15 +288,20 @@ export class AddJobPage {
     let countSelecteabel=5-seletedImgCount;
     this.medaiP.getCompressedImage(countSelecteabel).then((res: any) => {
 
+      // if(res!=0)
+
       if (res.resType == 'singleImage') {
 
 
         let data = { file: res.imgRes.file, name: res.imgRes.name, preview: res.imgRes.preview, type: 'image', thumbNail: k };
         if (to == 'toAdd') {
+          
           this.formData.images = this.formData.images.concat(data);
           console.log('file array----', this.formData.images);
+          this.is_spinner=false;
         } else {
           this.newImagesArr = this.newImagesArr.concat(data);
+          this.is_spinner=false;
         }
 
 
@@ -305,13 +313,17 @@ export class AddJobPage {
           let data = { file: imgArr[index].file, name: imgArr[index].name, preview: imgArr[index].preview, type: 'image', thumbNail: k };
           if (to == 'toAdd') {
             this.formData.images.push(data);
+            this.is_spinner=false;
           } else {
             this.newImagesArr.push(data);
+            this.is_spinner=false;
           }
         }
 
 
       }
+      // else 
+      // this.is_spinner=false;
 
       this.onKeyT()
     })
@@ -477,6 +489,7 @@ export class AddJobPage {
 
 
   openAction(status) {
+    this.is_spinner=true;
     const actionSheet = this.actionSheetCtrl.create({
       // title: this.trans.instant('REPORT_THIS_POST'),
       buttons: [
@@ -496,6 +509,7 @@ export class AddJobPage {
           text: this.trans.instant('CANCEL'),
           role: 'cancel',
           handler: () => {
+            this.is_spinner=false;
             console.log('Cancel clicked');
           }
         }
@@ -510,6 +524,7 @@ export class AddJobPage {
   getVideo(to) {
     this.medaiP.getVideoByGallery().then((res1: any) => {
       if (res1 != 0) {
+        
         console.log("res1=-=-=-=-=-=-=-=-=-=-=-=", res1);
         // this.vdoRes = res1;
         // this.formData.lession_video = this.vdoRes.video.preview;
@@ -523,10 +538,13 @@ export class AddJobPage {
         let data = { file: res1.video.file, name: res1.video.name, preview: res1.video.preview, type: 'video', thumbNail: res1.thumb };
         if (to == 'toAdd') {
           this.formData.images = this.formData.images.concat(data);
+          this.is_spinner=false;
         } else {
           this.newImagesArr = this.newImagesArr.concat(data);
+          this.is_spinner=false;
         }
       } else {
+        this.is_spinner=false;
       }
 
       this.onKeyT()

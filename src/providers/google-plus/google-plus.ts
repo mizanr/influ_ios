@@ -6,8 +6,11 @@ import { compareDates } from 'ionic-angular/umd/util/datetime-util';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { LoadingController } from 'ionic-angular';
 /*
-ionic cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID=com.googleusercontent.apps.314185524564-qs5n513mt9opgbd6a7a4obes7e58jgl5
+ionic cordova plugin add cordova-plugin-googleplus --variable REVERSED_CLIENT_ID=com.googleusercontent.apps.726081508891-sdok2n8o0vtd3l5nkn9il3r54n2cmgo1 // Prasoon office account using for key generate
 npm install --save @ionic-native/google-plus@4
+
+
+726081508891-sdok2n8o0vtd3l5nkn9il3r54n2cmgo1.apps.googleusercontent.com
 
 import { GooglePlus } from '@ionic-native/google-plus';
 

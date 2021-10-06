@@ -19,6 +19,9 @@
 
   <ion-list>
     <ion-item (click)="open(item.other)" no-padding *ngFor="let item of notiList">
+      <ion-avatar item-start>
+        <img src="assets/imgs/icon.png">
+      </ion-avatar> 
       <p text-capitalize text-wrap>{{item.message}}</p>
       <!-- <p color="primary" ion-text item-end>2 mins ago</p> -->
     </ion-item>

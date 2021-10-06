@@ -14,8 +14,20 @@
     <ion-avatar (click)="profile(k.apply_by,k.jobId)" item-start>
       <img [src]="k.userImage">
     </ion-avatar>
-    <!-- <p style="color: #acacac;">Company Name, USA</p> -->
     <h2 text-capitalize (click)="profile(k.apply_by,k.jobId)" style="color: #333;">{{k.userName}}</h2>
+    <p>
+      <ion-icon [name]="k?.avg_rate>=1?'star':'star'" 
+        [color]="k?.avg_rate>=1?'star':'gray'"></ion-icon>
+       <ion-icon [name]="k?.avg_rate>=2?'star':'star'" 
+      [color]="k?.avg_rate>=2?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=3?'star':'star'" 
+        [color]="k?.avg_rate>=3?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=4?'star':'star'" 
+        [color]="k?.avg_rate>=4?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=5?'star':'star'" 
+        [color]="k?.avg_rate>=5?'star':'gray'"></ion-icon>
+        <span><b>({{k.avg_rate}})</b></span>
+    </p> 
     <button style="width: 63px;" *ngIf="auth.getCurrentUserId()==k.created_by.id" (click)="chat(k.apply_by,k.Id,k.title,k.userImage)"
       ion-button round small class="btn-theme btn_view">{{'CHAT' |
       translate}}</button>

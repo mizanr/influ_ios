@@ -27,6 +27,19 @@
     <ion-item no-lines no-padding margin-top>
       <h3>{{'SERVICE_TITLE' | translate}}</h3>
       <p text-wrap text-capitalize>{{detail.title}}</p>
+      <!-- <p item-end>
+        <ion-icon [name]="detail?.avg_rate>=1?'star':'star'" 
+          [color]="detail?.avg_rate>=1?'star':'gray'"></ion-icon>
+         <ion-icon [name]="detail?.avg_rate>=2?'star':'star'" 
+        [color]="detail?.avg_rate>=2?'star':'gray'"></ion-icon>
+        <ion-icon [name]="detail?.avg_rate>=3?'star':'star'" 
+          [color]="detail?.avg_rate>=3?'star':'gray'"></ion-icon>
+        <ion-icon [name]="detail?.avg_rate>=4?'star':'star'" 
+          [color]="detail?.avg_rate>=4?'star':'gray'"></ion-icon>
+        <ion-icon [name]="detail?.avg_rate>=5?'star':'star'" 
+          [color]="detail?.avg_rate>=5?'star':'gray'"></ion-icon>
+          <span><b>({{detail.avg_rate}})</b></span>
+      </p>  -->
     </ion-item>
 
     <ion-item no-lines no-padding margin-top>
@@ -59,12 +72,157 @@
       <p text-wrap text-capitalize>${{auth.getFloat(detail.price)+ auth.getFloat(influServiceFee)}}</p>
     </ion-item>
 
-    <div text-center *ngIf="auth.getUserDetails().user_type==1">
+    <ion-item no-lines no-padding margin-top *ngIf="isdeleted==1">
+      <h3>Reason</h3>
+      <p text-wrap text-capitalize>{{delete_reason}}</p>
+    </ion-item>
+
+    <!-- <h3 *ngIf="ratings.length>0">Reviws</h3> -->
+    <!-- <div item-start class="start_rvw">
+      {{detail?.avg_rate}}
+    </div> -->
+
+    <!-- <div *ngFor="let r of ratings | slice:0:4">
+      <ion-item class="detail_item detail_item2" no-lines no-padding>
+        <ion-avatar item-start>
+          <img src="assets/imgs/add-img.png">
+        </ion-avatar>
+        <h3>{{r.rated_by.first_name}}</h3>
+        <p>{{r.time_ago}}</p>
+      </ion-item>
+
+      <ion-item class="review_item" no-lines no-padding>
+        <p>{{r.comment}}</p>
+        <div class="star_rate">
+          <p>
+            <ion-icon [name]="r?.rate>=1?'star':'star'" 
+              [color]="r?.rate>=1?'star':'gray'"></ion-icon>
+             <ion-icon [name]="r?.rate>=2?'star':'star'" 
+            [color]="r?.rate>=2?'star':'gray'"></ion-icon>
+            <ion-icon [name]="r?.rate>=3?'star':'star'" 
+              [color]="r?.rate>=3?'star':'gray'"></ion-icon>
+            <ion-icon [name]="r?.rate>=4?'star':'star'" 
+              [color]="r?.rate>=4?'star':'gray'"></ion-icon>
+            <ion-icon [name]="r?.rate>=5?'star':'star'" 
+              [color]="r?.rate>=5?'star':'gray'"></ion-icon>
+              <span class="start_rvw start_rvw2">
+               {{r.rate}}
+              </span>
+          </p>          
+        </div>
+      </ion-item>
+    </div> -->
+
+    <!-- <div class="scroll_div" *ngIf="all_ratings.length>0">
+      <ion-item no-lines no-padding class="sec_review">
+        <div item-start class="start_rvw">
+          {{detail?.avg_rate}}
+        </div>
+        <h3>{{'AVERAGE_TOTAL_REVIEW' | translate}}</h3> -->
+        <!-- <img src="assets/imgs/star.png" style="width: 100px;"> -->
+        <!-- <p>
+          <ion-icon [name]="detail?.avg_rate>=1?'star':'star'" 
+            [color]="detail?.avg_rate>=1?'star':'gray'"></ion-icon>
+           <ion-icon [name]="detail?.avg_rate>=2?'star':'star'" 
+          [color]="detail?.avg_rate>=2?'star':'gray'"></ion-icon>
+          <ion-icon [name]="detail?.avg_rate>=3?'star':'star'" 
+            [color]="detail?.avg_rate>=3?'star':'gray'"></ion-icon>
+          <ion-icon [name]="detail?.avg_rate>=4?'star':'star'" 
+            [color]="detail?.avg_rate>=4?'star':'gray'"></ion-icon>
+          <ion-icon [name]="detail?.avg_rate>=5?'star':'star'" 
+            [color]="detail?.avg_rate>=5?'star':'gray'"></ion-icon>
+        </p>
+
+      </ion-item>
+
+      <div class="div_show">
+        <h3 class="heading"
+          style="display: flex;align-items: center;justify-content: space-between;margin: 0;min-height: 50px;">
+          {{'ALL_RATINGS' | translate}} <span class="filter_btn" (click)="ngIfCtrl()">{{'FILTER' | translate}}
+            <ion-icon name="ios-arrow-down-outline">
+            </ion-icon>
+          </span></h3>
+        <div class="filter_div"  *ngIf="buttonClicked">
+          <ion-list>
+            <button ion-item no-padding no-lines (click)="rating_filter(1)"><img src="assets/imgs/star1.png"> ({{filter_counts[0]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(2)"><img src="assets/imgs/star2.png"> ({{filter_counts[1]}})</button>
+            <button ion-item no-padding no-lines
+            (click)="rating_filter(3)"><img src="assets/imgs/star3.png"> ({{filter_counts[2]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(4)"><img src="assets/imgs/star4.png"> ({{filter_counts[3]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(5)"><img src="assets/imgs/star5.png"> ({{filter_counts[4]}})</button>
+          </ion-list>
+        </div>
+      </div> -->
+
+      <!-- <div *ngFor="let r of ratings">
+        <ion-item class="detail_item detail_item2" no-lines no-padding>
+          <ion-avatar item-start>
+            <img src="assets/imgs/add-img.png">
+          </ion-avatar>
+          <h3>{{r.rated_by.first_name}}</h3>
+          <h4>({{r.service_title}})</h4>
+          <p>{{r.time_ago}}</p>
+        </ion-item>
+
+        <ion-item class="review_item" no-lines no-padding>
+          <p>{{r.comment}}</p>
+          <div class="star_rate">
+            <p>
+              <ion-icon [name]="r?.rate>=1?'star':'star'" 
+                [color]="r?.rate>=1?'star':'gray'"></ion-icon>
+               <ion-icon [name]="r?.rate>=2?'star':'star'" 
+              [color]="r?.rate>=2?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=3?'star':'star'" 
+                [color]="r?.rate>=3?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=4?'star':'star'" 
+                [color]="r?.rate>=4?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=5?'star':'star'" 
+                [color]="r?.rate>=5?'star':'gray'"></ion-icon>
+                <span class="start_rvw start_rvw2">
+                 {{r.rate}}
+                </span>
+            </p>
+            
+          </div>
+        </ion-item>
+
+
+      </div> -->
+      
+      <!-- <div class="noDatadiv" *ngIf="ratings.length==0">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
+      </div> -->
+    <!-- </div> -->
+
+    
+
+
+    <div text-center *ngIf="auth.getUserDetails().user_type==1&&isdeleted==0" margin-top>
       <button *ngIf="detail.isPayment==0"
         (click)="hire(detail,detail.created_by.id,detail.Id,auth.getFloat(detail.price)+ auth.getFloat(influServiceFee));$event.stopPropagation()"
         class="btn-theme" small ion-button>
         {{'BUY_NOW' | translate}}
       </button>
+      <!-- *ngIf="hiredStatus==1" -->
+      <ion-col col-auto>
+      <button ion-button  *ngIf="ismark==1"
+        (click)="mark_as_complete(detail)" 
+        small class="btn-theme btn_view">
+       {{'MARK_AS' | translate}}
+      </button>
+
+      <button ion-button  *ngIf="ismark==0&&detail.isPayment==1"
+        small class="btn-theme btn_view">
+        {{'PENDING' | translate}}
+      </button>
+
+    </ion-col>
+
+      <!-- <button ion-button *ngIf="detail.isPayment==1&&detail.is_rated==0" class="btn-theme" 
+      (click)="rate_now()"
+      small ion-button>{{'RATE_NOW' | translate}}</button> -->
+
       <button (click)="details();$event.stopPropagation()" class="btn-theme" small ion-button>
         {{'MESSAGE' | translate}}
       </button>
@@ -77,15 +235,27 @@
   </div>
 
 
-  <ion-row *ngIf="auth.getCurrentUserId()==detail?.created_by?.id">
+  <ion-row *ngIf="auth.getCurrentUserId()==detail?.created_by?.id&&isdeleted==0" margin-top>
     <ion-col col-auto>
-      <button style="width: 63px;" (click)="edit(detail.Id)" ion-button round small class="btn-theme btn_view">{{'EDIT'
-        |
-        translate}}</button>
+      <button style="width: 63px;" (click)="edit(detail.Id)" ion-button round small class="btn-theme btn_view">{{'EDIT'| translate}}</button>
     </ion-col>
     <ion-col col-auto>
       <button ion-button round (click)="deleteJob(detail.Id)" small class="btn-theme btn_view">{{'DELETE' |
         translate}}</button>
     </ion-col>
+
+    <!-- <ion-col col-auto *ngIf="hiredStatus==1">
+      <button ion-button round (click)="mark_as_complete(detail)" small class="btn-theme btn_view">Mark As Complete</button>
+    </ion-col> -->
+
+    <ion-col col-auto>
+      <button ion-button round (click)="hired_by(detail)" small class="btn-theme btn_view">
+        Hired By</button>
+    </ion-col>    
+
   </ion-row>
+
+  <div text-center *ngIf="isdeleted==1">
+    <button ion-button  class="btn-theme" block>Service deleted by admin.</button>
+  </div>
 </ion-content>

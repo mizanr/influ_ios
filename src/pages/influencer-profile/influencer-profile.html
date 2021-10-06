@@ -44,7 +44,25 @@
         <h3 text-capitalize>{{profile.first_name}}&nbsp;{{profile.last_name}}<span>{{'AGE' | translate}}
             {{profile.age}}&nbsp;{{'YEARS' | translate}}</span>
         </h3>
-        <p>{{profile.gender}}</p>
+        <p style="margin: 0;">{{profile.gender}}</p>
+        <!-- <ion-icon name="star" color="star"></ion-icon>  -->
+        <p>
+          <ion-icon [name]="profile?.avg_rate>=1?'star':'star'" 
+            [color]="profile?.avg_rate>=1?'star':'gray'"></ion-icon>
+           <ion-icon [name]="profile?.avg_rate>=2?'star':'star'" 
+          [color]="profile?.avg_rate>=2?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=3?'star':'star'" 
+            [color]="profile?.avg_rate>=3?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=4?'star':'star'" 
+            [color]="profile?.avg_rate>=4?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=5?'star':'star'" 
+            [color]="profile?.avg_rate>=5?'star':'gray'"></ion-icon>
+            <span>({{profile?.avg_rate}})</span>
+        </p>
+
+        <button ion-button item-end *ngIf="rate_status==1&&auth.getUserDetails().user_type==1"
+        class="btn-theme" (click)="rate_now()" 
+        small>{{'RATE_NOW' | translate}}</button>
       </ion-item>
 
       <div class="flex_content_dv">
@@ -263,6 +281,18 @@
                 <ion-item no-lines no-padding class="info">
                   <p>{{k.descriptions}}</p>
                   <h3>${{k.price}}</h3>
+                  <!-- <p item-end style="margin: 0;">
+                    <ion-icon [name]="k.avg_rate>=1?'star':'star'" 
+                      [color]="k.avg_rate>=1?'star':'gray'"></ion-icon>
+                     <ion-icon [name]="k.avg_rate>=2?'star':'star'" 
+                    [color]="k.avg_rate>=2?'star':'gray'"></ion-icon>
+                    <ion-icon [name]="k.avg_rate>=3?'star':'star'" 
+                      [color]="k.avg_rate>=3?'star':'gray'"></ion-icon>
+                    <ion-icon [name]="k.avg_rate>=4?'star':'star'" 
+                      [color]="k.avg_rate>=4?'star':'gray'"></ion-icon>
+                    <ion-icon [name]="k.avg_rate>=5?'star':'star'" 
+                      [color]="k.avg_rate>=5?'star':'gray'"></ion-icon>
+                  </p> -->
                 </ion-item>
               </ion-card-content>
 
@@ -289,10 +319,23 @@
 
       <ion-item no-lines no-padding class="sec_review">
         <div item-start class="start_rvw">
-          4.5
+          {{profile?.avg_rate}}
         </div>
         <h3>{{'AVERAGE_TOTAL_REVIEW' | translate}}</h3>
-        <img src="assets/imgs/star.png" style="width: 100px;">
+        <!-- <img src="assets/imgs/star.png" style="width: 100px;"> -->
+        <!-- <p>
+          <ion-icon [name]="profile?.avg_rate>=1?'star':'star'" 
+            [color]="profile?.avg_rate>=1?'star':'gray'"></ion-icon>
+           <ion-icon [name]="profile?.avg_rate>=2?'star':'star'" 
+          [color]="profile?.avg_rate>=2?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=3?'star':'star'" 
+            [color]="profile?.avg_rate>=3?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=4?'star':'star'" 
+            [color]="profile?.avg_rate>=4?'star':'gray'"></ion-icon>
+          <ion-icon [name]="profile?.avg_rate>=5?'star':'star'" 
+            [color]="profile?.avg_rate>=5?'star':'gray'"></ion-icon>
+        </p> -->
+
       </ion-item>
 
       <div class="div_show">
@@ -304,34 +347,55 @@
           </span></h3>
         <div class="filter_div" *ngIf="buttonClicked">
           <ion-list>
-            <button ion-item no-padding no-lines><img src="assets/imgs/star1.png"> (3)</button>
-            <button ion-item no-padding no-lines><img src="assets/imgs/star2.png"> (0)</button>
-            <button ion-item no-padding no-lines><img src="assets/imgs/star3.png"> (1)</button>
-            <button ion-item no-padding no-lines><img src="assets/imgs/star4.png"> (2)</button>
-            <button ion-item no-padding no-lines><img src="assets/imgs/star5.png"> (5)</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(1)"><img src="assets/imgs/star1.png"> ({{filter_counts[0]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(2)"><img src="assets/imgs/star2.png"> ({{filter_counts[1]}})</button>
+            <button ion-item no-padding no-lines
+            (click)="rating_filter(3)"><img src="assets/imgs/star3.png"> ({{filter_counts[2]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(4)"><img src="assets/imgs/star4.png"> ({{filter_counts[3]}})</button>
+            <button ion-item no-padding no-lines (click)="rating_filter(5)"><img src="assets/imgs/star5.png"> ({{filter_counts[4]}})</button>
           </ion-list>
         </div>
       </div>
 
-      <div *ngFor="let k of [0,1,2,3,4]">
+      <div *ngFor="let r of ratings">
         <ion-item class="detail_item detail_item2" no-lines no-padding>
           <ion-avatar item-start>
             <img src="assets/imgs/add-img.png">
           </ion-avatar>
-          <h3>John Smith</h3>
-          <p>3 Days ago</p>
+          <h3>{{r.rated_by.first_name}}</h3>
+          <!-- <h4>({{r.service_title}})</h4> -->
+          <p>{{r.time_ago}}</p>
         </ion-item>
 
         <ion-item class="review_item" no-lines no-padding>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry...</p>
+          <p>{{r.comment}}</p>
           <div class="star_rate">
-            <img src="assets/imgs/star.png" style="width: 100px;"> <span class="start_rvw start_rvw2">
-              4.5
-            </span>
+            <p>
+              <ion-icon [name]="r?.rate>=1?'star':'star'" 
+                [color]="r?.rate>=1?'star':'gray'"></ion-icon>
+               <ion-icon [name]="r?.rate>=2?'star':'star'" 
+              [color]="r?.rate>=2?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=3?'star':'star'" 
+                [color]="r?.rate>=3?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=4?'star':'star'" 
+                [color]="r?.rate>=4?'star':'gray'"></ion-icon>
+              <ion-icon [name]="r?.rate>=5?'star':'star'" 
+                [color]="r?.rate>=5?'star':'gray'"></ion-icon>
+                <span class="start_rvw start_rvw2">
+                 {{r.rate}}
+                </span>
+            </p>
+
+            <!-- <img src="assets/imgs/star.png" style="width: 100px;">  -->
+            
           </div>
         </ion-item>
 
 
+      </div>
+      <div class="noDatadiv" *ngIf="ratings.length==0">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
       </div>
     </div>
 

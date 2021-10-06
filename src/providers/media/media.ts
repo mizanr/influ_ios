@@ -373,7 +373,9 @@ export class MediaProvider {
         buttons: [
           {
             text: 'Cancel',
-            handler: data => { }
+            handler: data => { 
+              resolve(0);
+            }
           },
           {
             text: this.trans.instant('CHOOSE_FROM_GALLERY'),
@@ -415,12 +417,14 @@ export class MediaProvider {
         maximumImagesCount: imgCount,
       }
       this.imagePicker.getPictures(options).then((results: any) => {
+        // alert("selected Images - "+JSON.stringify(results));
         console.log('results----------------', results);
         this.getCompressedblobFromMultiple(results, 0, results.length).then(file_array => {
           console.log('file_array before resolve ====--------------', file_array);
           resolve(file_array);
         })
       }, (err) => {
+        // alert("err on select multiple images - "+JSON.stringify(err));
         reject(err);
       });
     })

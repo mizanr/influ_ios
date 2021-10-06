@@ -1,0 +1,46 @@
+<!--
+  Generated template for the HiredListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'HIRED_BY' | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item *ngFor="let l of lists">
+     <ion-avatar item-start>
+       <img src="{{l.company_image}}">
+     </ion-avatar> 
+     <h3 text-capitalize text-wrap>{{l.company_name}}</h3>
+     <p>{{l.startDate}}</p>
+     <p>${{l.amount}}</p>
+     <!-- <button item-end ion-button *ngIf="l.status==0"
+     small round class="btn-theme btn_view" (click)="mark_as_complete(l)">
+       {{'MARK_AS_COMPLETE' | translate}}</button> -->
+
+        <button ion-button round (click)="accept(l)"  item-end *ngIf="l.status==0"
+         small class="btn-theme btn_view">
+          {{'ACCEPT' | translate}}</button>
+        <button ion-button round (click)="reject_(l)"  item-end *ngIf="l.status==0"
+         small class="btn-theme btn_view">
+          {{'REJECT1' | translate}}</button>
+
+          <button ion-button round (click)="chat(l)" 
+         small class="btn-theme btn_view">
+         {{'MESSAGE' | translate}}
+          </button>
+
+       <button item-end ion-button *ngIf="l.status==1"
+       small round class="btn-theme btn_view">
+        {{'COMPLETE' | translate}}</button>
+  </ion-item>
+
+  <div class="noDatadiv" *ngIf="lists.length==0">
+    <ion-icon name="ios-search-outline"></ion-icon>
+    <p>{{'NO_DATA_FOUND' | translate}}</p>
+  </div>
+</ion-content>

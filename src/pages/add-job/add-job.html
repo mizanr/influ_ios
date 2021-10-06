@@ -132,7 +132,7 @@
           {{'PLEASE_SERVICE_TYPE' | translate}} </div>
       </ion-row>
 
-      <ion-row *ngIf="!editId">
+      <ion-row *ngIf="!editId" items-align-center>
         <ion-col col-3 *ngFor="let m of formData.images;let i = index">
           <div *ngIf="formData.images.length>0" class="add_image">
             <img *ngIf="m.type=='image'" [src]="m.preview">
@@ -145,6 +145,10 @@
             </button>
           </div>
         </ion-col>
+          <!-- <div style="padding: 30px 0;" *ngIf="is_spinner">
+            <ion-spinner name="bubbles" ></ion-spinner>
+          </div> -->
+
         <ion-col text-center *ngIf="formData.images.length<5" col-3>
           <div class="add_image">
             <img (click)="openAction('toAdd')" src="assets/imgs/add.png">
@@ -166,6 +170,9 @@
             </button>
           </div>
         </ion-col>
+        <!-- <div style="padding: 30px 0;" *ngIf="is_spinner">
+          <ion-spinner name="bubbles" ></ion-spinner>
+        </div> -->
         <ion-col col-3 *ngFor="let m of newImagesArr;let i = index">
           <div *ngIf="newImagesArr.length>0" class="add_image">
             <img *ngIf="m.type=='image'" [src]="m.preview">
@@ -178,6 +185,7 @@
             </button>
           </div>
         </ion-col>
+        
         <ion-col text-center *ngIf="(formData.images.length + this.newImagesArr.length)<5" col-3>
           <div class="add_image">
             <img (click)="openAction('toEdit')" src="assets/imgs/add.png">
@@ -185,6 +193,7 @@
           </div>
         </ion-col>
       </ion-row>
+      
       <div *ngIf="validations.isImageEmpty" style="margin-top: 8px;" ion-text padding-horizontal color="danger">
         {{'PLEASE_ADD_A_MEDIA' | translate}}</div>
       <!-- <h3 class="heading">Post type</h3>

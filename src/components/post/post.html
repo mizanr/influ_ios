@@ -9,6 +9,20 @@
     <h3 (click)="profile(k);$event.stopPropagation()" *ngIf="k.created_by.user_type==2">
       {{k.created_by.first_name}}&nbsp;{{k.created_by.last_name}}</h3>
     <p>{{k.created_at}}</p>
+
+    <p *ngIf="k.created_by.user_type==2">
+      <ion-icon [name]="k?.avg_rate>=1?'star':'star'" 
+        [color]="k?.avg_rate>=1?'star':'gray'"></ion-icon>
+       <ion-icon [name]="k?.avg_rate>=2?'star':'star'" 
+      [color]="k?.avg_rate>=2?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=3?'star':'star'" 
+        [color]="k?.avg_rate>=3?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=4?'star':'star'" 
+        [color]="k?.avg_rate>=4?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=5?'star':'star'" 
+        [color]="k?.avg_rate>=5?'star':'gray'"></ion-icon>
+        <!-- <span *ngIf="k?.avg_rate"><b>({{k.avg_rate}})</b></span> -->
+    </p>
     <button *ngIf="auth.getCurrentUserId()!=k.created_by.id" ion-button small clear item-end no-padding
       (click)="openAction(k.created_by);$event.stopPropagation()">
 
@@ -45,7 +59,8 @@
       </div>
     </div> -->
 
-    <ion-slides pagination [dir]="auth.getUserLanguage()=='en'?'':'rtl'" [pager]="true">
+    <ion-slides  [dir]="auth.getUserLanguage()=='en'?'':'rtl'" 
+    [pager]="k.images.length>1?true:false">
       <ion-slide (click)="openSlider(k.images,im);$event.stopPropagation()" *ngFor="let img of k.images; let im=index">
         <img [src]="img.name" *ngIf="img.file_type=='image'">
         <video controls="controls" preload="metadata" webkit-playsinline="webkit-playsinline"

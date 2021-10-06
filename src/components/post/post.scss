@@ -206,4 +206,14 @@ post {
         width: 100%;
         object-fit: cover;
     }
+    .swiper-container{
+        padding-bottom: 20px;
+
+    }
+    .swiper-pagination-fraction, .swiper-pagination-custom, .swiper-container-horizontal > .swiper-pagination-bullets {
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: +111;
+    }
 }

@@ -15,7 +15,7 @@
   <ion-list>
     <ion-item>
       <ion-label style="font-size: 18px;">{{'NOTIFICATION' | translate}}</ion-label>
-      <ion-toggle color="primary" checked="true"></ion-toggle>
+      <ion-toggle color="primary" (ionChange)="noti_event($event)" [(ngModel)]="is_noti"></ion-toggle>
     </ion-item>
   </ion-list>
 

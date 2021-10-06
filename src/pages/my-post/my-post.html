@@ -25,6 +25,20 @@
     <h2 (click)="detail(k.Id)" style="color: #333;">{{k.title}}</h2>
     <h6 style="color: #575757;">${{k.price}}/ yr</h6>
 
+    <!-- <p item-end class="star-css">
+      <ion-icon [name]="k?.avg_rate>=1?'star':'star'" 
+        [color]="k?.avg_rate>=1?'star':'gray'"></ion-icon>
+       <ion-icon [name]="k?.avg_rate>=2?'star':'star'" 
+      [color]="k?.avg_rate>=2?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=3?'star':'star'" 
+        [color]="k?.avg_rate>=3?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=4?'star':'star'" 
+        [color]="k?.avg_rate>=4?'star':'gray'"></ion-icon>
+      <ion-icon [name]="k?.avg_rate>=5?'star':'star'" 
+        [color]="k?.avg_rate>=5?'star':'gray'"></ion-icon>
+        <span><b>({{k?.avg_rate}})</b></span>
+    </p>  -->
+
     <button style="width: 63px;" (click)="edit(k.Id)" ion-button round small class="btn-theme btn_view">{{'EDIT' |
       translate}}</button>
     <button ion-button round (click)="deleteJob(k.Id)" small class="btn-theme btn_view">{{'DELETE' |

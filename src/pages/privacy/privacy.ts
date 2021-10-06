@@ -23,10 +23,15 @@ export class PrivacyPage {
       l = 'privacy_policy'
     }
     let data = {
+      lang:{value:this.auth.getUserLanguage(),type:'NO'},
     }
     this.api.postData(data, 0, l).then((res: any) => {
       if (res.status == 1) {
-        this.content=res.data[0].details
+        if(this.auth.getUserLanguage()=='en'){
+         this.content=res.data[0].details;
+        } else {
+          this.content=res.data[0].details1;
+        }
       }
       else {
       }

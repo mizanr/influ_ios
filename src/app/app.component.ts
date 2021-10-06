@@ -13,6 +13,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { TabsPage } from '../pages/tabs/tabs';
 import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
+import { JobDetialPage } from '../pages/job-detial/job-detial';
 const config = {
   apiKey: 'AIzaSyC0ALZAVZCK8bRgP2Rm1ihdjwT-tSLk3tE',
   authDomain: 'fir-85886.firebaseapp.com',
@@ -63,12 +64,14 @@ export class MyApp {
         this.getProfile(r);
       });
 
-      // this.aP.requestPermissions([this.aP.PERMISSION.ACCESS_NOTIFICATION_POLICY,
-      //    this.aP.PERMISSION.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS, 
-      //    this.aP.PERMISSION.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED]).then(r => {
-      //   console.log('success in get permision---', r);
+      this.aP.requestPermissions(
+        [this.aP.PERMISSION.CAMERA,
+        this.aP.PERMISSION.READ_EXTERNAL_STORAGE,
+      this.aP.PERMISSION.WRITE_EXTERNAL_STORAGE]
+         ).then(r => {
+        console.log('success in get permision---', r);
 
-      // });
+      });
 
 
       this.lang = this.auth.getUserLanguage();
@@ -121,15 +124,43 @@ export class MyApp {
 
       if (data != 0 && data) {
 
+        if(data.screen=='rate'){
+          setTimeout(() => {
+            this.auth.influ_tab_type='Reviews';
+            this.event.publish('SelectTab',3);
+          }, 500);
+        }
+
+        if(data.screen=="job_complete"){
+          setTimeout(() => {
+            this.nav.push('PostDetailPage',{PostId:data.postId});          
+          }, 500);
+      }
+
+        if(data.screen=="job_hired"){
+          setTimeout(() => {
+            this.nav.push('HiredListPage',{service_id:data.postId});            
+          }, 500);
+      }
+
+        if(data.screen=='withdrawal_request'){
+          setTimeout(() => {
+            this.nav.push('WalletPage');
+          }, 700);
+        }
+
         if (data.screen == 'ChatDetailsPage') {
           setTimeout(() => {
             // this.nav.push('ChatDetailsPage', { JobId: data.other.job_id, ReceiverId: data.other.receiver });
             this.nav.push('ConversationPage', { RoomKey: data.RoomKey, JobTitle: data.JobTitle, JobId: data.JobId, other_user: data.other_user });
 
           }, 700)
-        } else if (data.screen == 'InfluencerProfile') {
+        } 
+        else if (data.screen == 'InfluencerProfile') {
           setTimeout(() => {
-            this.nav.push('InfluencerProfilePage', { InfluId: data.InfluId });
+            // this.nav.push('InfluencerProfilePage', { InfluId: data.InfluId });
+            //  this.nav.push('JobDetialPage',{JobId:data.jobId});  
+             this.nav.push('AppliedInfluencerPage', { JobId: data.jobId });
           }, 700)
         }
 

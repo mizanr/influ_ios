@@ -5,6 +5,7 @@ import { AuthProvider } from './../../providers/auth/auth';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component } from '@angular/core';
 import { ActionSheetController, ModalController, NavController, NavParams, IonicPage } from 'ionic-angular';
+import { RatePopupPage } from '../rate-popup/rate-popup';
 
 @IonicPage()
 @Component({
@@ -23,6 +24,11 @@ export class InfluencerProfilePage {
   postId: any = '';
   appliedJobList = [];
   noAppliedData = false;
+  ratings:any = new Array();
+  all_ratings:any = new Array();
+  filter_counts:any=new Array();
+  rate_status:any;
+
   public ngIfCtrl() {
 
     this.buttonClicked = !this.buttonClicked;
@@ -34,7 +40,7 @@ export class InfluencerProfilePage {
     public iab: InAppBrowser,
     public actionSheetCtrl: ActionSheetController,
     public trans: TranslateService) {
-
+      this.grown=this.auth.influ_tab_type || 'Profile';
   }
 
   ionViewWillEnter() {
@@ -58,7 +64,12 @@ export class InfluencerProfilePage {
     this.api.get(data, 1, 'GetUserProfile').then((res: any) => {
       this.getImages();
       if (res.status == 1) {
+
+        this.filter_counts=res.filter_count;
+        this.rate_status=res.rate_status;
         this.profile = res.data;
+        this.ratings=res.data.rate_data;
+        this.all_ratings=res.data.rate_data;
       }
       else {
       }
@@ -204,4 +215,24 @@ export class InfluencerProfilePage {
   openNoti() {
     this.navCtrl.push('NotificationPage');
   }
+
+  rating_filter(filter:any) {
+    console.log(filter);
+    this.ratings=this.all_ratings.filter((item) => {
+      return item.rate==filter;
+    })
+  }
+
+  rate_now() {
+    // console.log('working');
+    let ratemodal = this.api.modalCtrl.create(RatePopupPage, {data:this.profile}, { cssClass: 'ratemodal' });
+    ratemodal.present();
+    ratemodal.onDidDismiss((data) => {
+      if(data){
+        // this.getPost();
+        this.getProfile();
+      }
+    })
+  }
+
 }

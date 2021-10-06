@@ -1,0 +1,51 @@
+<!--
+  Generated template for the RatePopupPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'RATE_NOW' | translate}}</ion-title>
+    <ion-buttons end>
+      <button ion-button clear (click)="view.dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-row>
+    <ion-col col-12>
+      <textarea rows="7" placeholder="{{'PLEASE_ENTER_REVIEW' | translate}}" [(ngModel)]="comment">
+
+      </textarea>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col col-12 text-center>
+      <ionic3-star-rating #rating
+      activeIcon = "ios-star"
+      defaultIcon = "ios-star-outline"
+      activeColor = "#488aff" 
+      defaultColor = "gray"
+      readonly="false"
+      fontSize = "32px"
+      rating="0"
+      (ratingChanged)="logRatingChange($event)">
+  </ionic3-star-rating>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col text-center col-6>
+      <button ion-button block (click)="submit()"
+       [disabled]="!comment.trim()||rate==0">{{'RATE_NOW' | translate}}</button>
+    </ion-col>
+    <ion-col text-center col-6>
+      <button ion-button block (click)="view.dismiss()"
+       >{{'SKIP' | translate}}</button>
+    </ion-col>
+  </ion-row>
+</ion-content>

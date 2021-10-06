@@ -10,19 +10,71 @@
 
   <div class="login_form">
 
-    <!-- <button ion-button icon-only (click)="closemodal()" small clear class="close">
+    <button ion-button icon-only (click)="closemodal()" small clear class="close">
       <ion-icon name="close"></ion-icon>
-    </button> -->
+    </button>
 
-    <h3 style="font-size: 16px;text-align: center;color: #000;margin-bottom: 20px;">Wallet To Account Transfer</h3>
+    <h3 style="font-size: 16px;text-align: center;color: #000;margin-bottom: 20px;">
+     {{'WALLETTOTRANS' | translate}}</h3>
 
     <ion-list>
-      <label>Card Number</label>
+      <!-- <label>{{'ACCOUNTNUMBER' | translate}}</label>
       <ion-item class="input_1" no-lines no-padding>
-        <input type="text" placeholder="xxxxxxx">
+        <input type="text" placeholder="xxxxxxx" [(ngModel)]="bank_detail.account_no">
       </ion-item>
 
-      <ion-row>
+      <label>{{'ROUTINGNUMBER' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'ROUTINGNUMBER' | translate}}" [(ngModel)]="bank_detail.routing">
+      </ion-item>
+
+
+      <label>{{'ACCOUNTHOLDERNAME' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'ACCOUNTHOLDERNAME' | translate}}" [(ngModel)]="bank_detail.user_name">
+      </ion-item>
+
+      <label>{{'BANKNAME' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'BANKNAME' | translate}}" [(ngModel)]="bank_detail.bank_name">
+      </ion-item>
+
+      <label>{{'BRANCHADDRESS' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'BRANCHADDRESS' | translate}}" [(ngModel)]="bank_detail.bank_address">
+      </ion-item>
+
+     
+
+      <label>{{'IFSC_CODE' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'IFSC_CODE' | translate}}" [(ngModel)]="bank_detail.code">
+      </ion-item>
+
+      <label>{{'CITY' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding (click)="OpenAutofillPlaces()">
+        <input type="text" placeholder="{{'CITY' | translate}}" [(ngModel)]="bank_detail.city" readonly>
+      </ion-item>
+
+      <label>{{'COUNTRY' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding (click)="OpenAutofillPlaces()">
+        <input type="text" placeholder="{{'COUNTRY' | translate}}" [(ngModel)]="bank_detail.country" readonly>
+      </ion-item>
+
+      <label>{{'ZIPCODE' | translate}}</label>
+      <ion-item class="input_1" no-lines no-padding>
+        <input type="text" placeholder="{{'ZIPCODE' | translate}}" [(ngModel)]="bank_detail.zipcode">
+      </ion-item> -->
+     
+
+      <label>{{'AMOUNT' | translate}}</label> 
+      <span style="color: red;">(Minimum withdrawal amount ${{user_info?.min_withdraw_amt}},Maximum withdrawal amount ${{user_info?.max_withdraw_amt}}.)</span>
+      <ion-item  no-lines no-padding>
+        <input type="text" placeholder="{{'AMOUNT' | translate}}" [(ngModel)]="amount"
+        class="am-input">
+      </ion-item>
+
+      <!-- <ion-row>
         <ion-col col-6>
           <label>Expiration Date</label>
           <ion-item class="input_1" no-lines no-padding>
@@ -35,14 +87,18 @@
         <input type="text" placeholder="xxxxx">
       </ion-item>
         </ion-col>
-      </ion-row>
+      </ion-row> -->
     </ion-list>
 
 
     <div padding class="btn_grp">
-      <button ion-button round block class="btn-theme" (click)="thank()">Submit</button>
-    </div>
+      <button ion-button round block class="btn-theme" (click)="withdrawal_amount()">{{'SUBMIT' | translate}}</button>
     </div>
 
+      
+
+    </div>
+
+    <!-- <button ion-button block (click)="paypal_login()">add paypal</button> -->
 
 </ion-content>

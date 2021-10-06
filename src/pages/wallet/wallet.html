@@ -8,7 +8,6 @@
   <ion-navbar>
     <ion-title>{{'MY_WALLET' | translate}}</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content padding>
@@ -16,31 +15,95 @@
   <div class="wallet">
     <ion-item no-lines no-padding>
       <ion-avatar item-start>
-        <img src="assets/imgs/add-img.png">
+        <img [src]="user_info?.image">
       </ion-avatar>
-      <h2>John Smith</h2>
+      <h2>{{user_info?.first_name}} {{user_info?.last_name}}</h2>
       <p style="color: #000;">{{'INFLUENCER' | translate}}</p>
     </ion-item>
 
-    <h3>{{'TOTAL_BALANCE' | translate}}<span>$2352.00</span></h3>
+    <h3>{{'TOTAL_BALANCE' | translate}}<span>${{user_info?.wallet_amount | number:'1.2-2'}}</span></h3>
 
-    <div class="btn_theme btn-theme">
-      <p>{{'VIEW_ALL_TRANSACTIONS' | translate}}</p>
-      <p (click)="trans()">{{'TRANSFER_TO_BANK' | translate}}</p>
+    
+    <!-- *ngIf="user_info?.withdraw_pending_status==0&&user_info?.wallet_amount>0" -->
+    <div class="btn_theme btn-theme" *ngIf="user_info?.withdraw_pending_status==0&&user_info?.wallet_amount>0">
+      <!-- <p>{{'VIEW_ALL_TRANSACTIONS' | translate}}</p> -->
+      <p (click)="trans()">Withdrawal Fund's in your paypal</p>
+    </div>
+
+
+
+
+  </div>
+
+  <div id="lippButton" margin text-center></div>
+
+
+  <ion-row class="withdrawal-css" *ngIf="is_dithdrawal">
+      <ion-col col-12>
+        <ion-input type="number" placeholder="{{'ENTER_AMOUNT' | translate}}" [(ngModel)]="withdrawal_amount"></ion-input>
+      </ion-col>
+
+      <ion-col col-12>
+      <button block ion-button class="btn_theme btn-theme" (click)="dithdrawal()"
+      [disabled]="!withdrawal_amount.trim()">{{'WITHDRAWAL' | translate}}</button>
+      </ion-col>
+  </ion-row>
+
+<div>
+  <ion-segment [(ngModel)]="type">
+    <ion-segment-button value="trans" (click)="type='trans'">
+      {{'TRANSACTION_HISTORY' | translate}}
+    </ion-segment-button>
+    <ion-segment-button value="serv" (click)="type='serv'">
+     {{'MY_EARN' | translate}}
+      <!-- {{'TRANSACTION_HISTORY' | translate}} -->
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+
+  <div *ngIf="type=='trans'" margin-top>
+  <h3 class="heading">{{'TRANSACTION_HISTORY' | translate}}</h3>
+
+  <ion-item class="job_item" no-lines no-padding *ngFor="let h of histories">
+    <!-- <ion-avatar item-start>
+      <img src="assets/imgs/you.png">
+    </ion-avatar> -->
+    <h1 item-start>${{h.amount}}</h1>
+    <!-- <p style="color: #acacac;">{{user_info?.first_name}} {{user_info?.last_name}}</p> -->
+    <p text-wrap text-capitalize><b>To :</b>{{h.account_holder}}</p>
+    <p>{{h.created_at}}</p>
+    <!-- <h2 style="color: #333;">Youtube</h2> -->
+    <!-- <h6 style="color: #575757;">$40k/ yr</h6> -->
+
+    <button ion-button round small *ngIf="h.status==0"
+    class="btn-theme btn_view" item-end>{{'PENDING' | translate}}</button>
+    <button ion-button round *ngIf="h.status==1"
+    small class="btn-theme btn_view" item-end>{{'APPROVED' | translate}}</button>
+    <button ion-button round small *ngIf="h.status==2" (click)="reject(h)"
+    class="btn-theme btn_view" item-end>{{'REJECT' | translate}}</button>
+  </ion-item>
+
+  <div class="noDatadiv" *ngIf="histories.length==0">
+    <ion-icon name="ios-search-outline"></ion-icon>
+    <p>{{'NO_DATA_FOUND' | translate}}</p>
+  </div>
+</div>
+
+  <div *ngIf="type=='serv'" margin-top>
+    <ion-item *ngFor="let s of earnings">
+      <h3 (click)="service_detail(s.jobId);$event.stopPropagation();">
+        {{'SERVICE_TITLE' | translate}}: <strong>{{s.job_title}}</strong></h3>
+      <h3 (click)="profile(s.hired_by);$event.stopPropagation();">
+        {{'HIRED_BY' | translate}}: <strong>{{s.company_name}}</strong></h3>
+      <h3>{{'EARN_AMOUNT' | translate}}: ${{s.user_amount}}</h3>
+      <p>{{s.created_at | date:'MMM,dd,yyyy , hh:mm:a'}}</p>
+    </ion-item>
+    <div class="noDatadiv" *ngIf="histories.length==0">
+      <ion-icon name="ios-search-outline"></ion-icon>
+      <p>{{'NO_DATA_FOUND' | translate}}</p>
     </div>
   </div>
 
-  <h3 class="heading">{{'TRANSACTION_HISTORY' | translate}}</h3>
-
-  <ion-item class="job_item" no-lines no-padding *ngFor="let k of [1,2,3,4,5]">
-    <ion-avatar item-start>
-      <img src="assets/imgs/you.png">
-    </ion-avatar>
-    <p style="color: #acacac;">Company Name, USA</p>
-    <h2 style="color: #333;">Youtube</h2>
-    <h6 style="color: #575757;">$40k/ yr</h6>
-
-    <button ion-button round small class="btn-theme btn_view" item-end>{{'VIEW' | translate}}</button>
-  </ion-item>
-
+  
 </ion-content>

@@ -1,3 +1,4 @@
+import { FacebookProvider } from './../../providers/facebook/facebook';
 import { TranslateService } from '@ngx-translate/core';
 import { TabsPage } from './../tabs/tabs';
 import { AuthProvider } from './../../providers/auth/auth';
@@ -20,6 +21,7 @@ export class PreloginPage {
     public alert: AlertProvider,
     public google: GooglePlusProvider,
     public plt: Platform,
+    public facebook:FacebookProvider,
     public auth: AuthProvider,
     public translate: TranslateService,
     public events:Events) {
@@ -47,29 +49,29 @@ export class PreloginPage {
   }
 
   fbLogin() {
-    // if (this.plt.is('cordova')) {
-    //   this.facebook.login().then((res: any) => {
-    //     console.log('Fb res--------------------------', res);
-    //     if (res) {
-    //       this.imageP.imgURLtoURI(res.profilepic).then((base64: any) => {
-    //         this.imageP.imgURItoBlobR(base64).then((blob: any) => {
-    //           console.log('final blob-----',blob);
+    if (this.plt.is('cordova')) {
+      this.facebook.login().then((res: any) => {
+        console.log('Fb res--------------------------', res);
+        if (res) {
+          // this.imageP.imgURLtoURI(res.profilepic).then((base64: any) => {
+          //   this.imageP.imgURItoBlobR(base64).then((blob: any) => {
+          //     console.log('final blob-----',blob);
 
-    //           this.blob_img=blob;
-    //           this.socialLogin(res, 'fb');
-    //         });
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   let k = {
-    //     email: 'a@gmail.com',
-    //     fname: 'a',
-    //     lname: 'b',
-    //     id: '123456789'
-    //   }
-    //   this.socialLogin(k, 'fb');
-    // }
+              //this.blob_img=blob;
+              this.socialLogin(res, 'fb');
+          //   });
+          // });
+        }
+      });
+    } else {
+      let k = {
+        email: 'a@gmail.com',
+        fname: 'a',
+        lname: 'b',
+        id: '123456789'
+      }
+      this.socialLogin(k, 'fb');
+    }
   }
 
 
@@ -137,12 +139,13 @@ export class PreloginPage {
 
       });
       if (result.status == 2) {
-
         this.navCtrl.push('SelectPage', { SignupData: SignUpDetail });
       } else if (result.status == 1) {
         this.auth.updateUserDetails(result.user);
         this.navCtrl.setRoot(TabsPage);
         this.events.publish('LoggedIn');
+      } else {
+        this.alert.presentToast(result.message,'buttom');
       }
     })
   }

@@ -257,6 +257,7 @@ export class HomePage {
       "jobId": { "value": post_id, "type": "NO" },
       "amount": { "value": amt, "type": "NO" },
       "trasnsactionId": { "value": tId, "type": "NO" },
+      // admin_comission:{value:this.influServiceFee,type:'NO'},
     }
     this.api.postData(data, 0, 'jobHiring').then((res: any) => {
       if (res.status == 1) {

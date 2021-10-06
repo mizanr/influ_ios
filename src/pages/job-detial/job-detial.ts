@@ -51,7 +51,7 @@ export class JobDetialPage {
   }
 
   openApplied(i) {
-    this.navCtrl.push('AppliedInfluencerPage', { JobId: i })
+    this.navCtrl.push('AppliedInfluencerPage', { JobId: i });
   }
 
   deleteJob(i) {

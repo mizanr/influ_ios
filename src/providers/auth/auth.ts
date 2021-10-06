@@ -22,6 +22,7 @@ export class AuthProvider {
   unread_cound: any = 0;
   unread_chat_count: any = 0;
   unread_noti: any = 0;
+  influ_tab_type:any='';
   constructor(public app: App,
     public alert: AlertProvider,
     public trans: TranslateService,

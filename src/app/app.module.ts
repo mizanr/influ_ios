@@ -52,7 +52,9 @@ import { FirebaseProvider } from '../providers/firebase/firebase';
 import { ChatmoduleProvider } from '../providers/chatmodule/chatmodule';
 import { ComponentsModule } from '../components/components.module';
 import { CommonModule } from '@angular/common';
-
+import { StarRatingModule } from 'ionic3-star-rating';
+import { RatePopupPage } from '../pages/rate-popup/rate-popup';
+import { Facebook } from '@ionic-native/facebook';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -60,9 +62,11 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     MyApp,
-    TabsPage
+    TabsPage,
+    RatePopupPage,
   ],
   imports: [
+    StarRatingModule,
     BrowserModule,
     AutosizeModule,
     ReactiveFormsModule,
@@ -87,6 +91,7 @@ export function createTranslateLoader(http: HttpClient) {
   entryComponents: [
     MyApp,
     TabsPage,
+    RatePopupPage,
   ],
   providers: [
     StatusBar,
@@ -123,7 +128,9 @@ export function createTranslateLoader(http: HttpClient) {
     PlayAudioProvider,
     FileOpener,
     FirebaseProvider,
-    ChatmoduleProvider
+    ChatmoduleProvider,
+    Facebook,
+    InAppBrowser,
   ]
 })
 export class AppModule { }

@@ -64,7 +64,7 @@ export class ConversationPage {
     public onesignal: OnesignalProvider) {
     this.other_user = this.navParams.get('other_user');
     this.current_user = this.auth.getUserDetails();
-    console.log('other userss', this.other_user, this.current_user);
+    console.log('other userss', this.other_user);
     this.senderImage = this.auth.getUserDetails().image;
     this.roomKey = navParams.get('RoomKey');
     console.log('Roomkey---------', this.roomKey);
@@ -137,7 +137,9 @@ export class ConversationPage {
       console.log('Item in check noti----', item);
 
       if (item.sender_id == this.auth.getCurrentUserId() && item.noti_status == 0 && item[s] == true) {
-        this.sendNoti(item);
+        if(this.other_user.is_noti==1){
+          this.sendNoti(item);
+        }
         return;
       }
     }

@@ -17,7 +17,11 @@ export class HiredServicesPage {
     public auth: AuthProvider,
     public alert: AlertProvider,
     public translate: TranslateService) {
-    this.getService();
+    // this.getService();
+  }
+
+  ionViewWillEnter(){
+   this.getService();
   }
 
   getService() {

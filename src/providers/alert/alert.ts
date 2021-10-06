@@ -5,6 +5,20 @@ import { AlertController, ToastController } from 'ionic-angular';
 // import { RestApiProvider } from '../../providers/rest-api/rest-api';
 
 const messages = {
+  "BANKACC":{ title: 'Invalid Bank Account!', subTitle: 'Please enter valid  bank account!', empty: "Please enter your  bank account!"},
+
+  "BANKNAME":{ title: 'Invalid Bank Name!', subTitle: 'Please enter valid  bank name!', empty: "Please enter your  bank name!"},
+
+  "BANKADDRESS":{ title: 'Invalid Bank Address!', subTitle: 'Please enter valid  bank address!', empty: "Please enter your  bank address!"},
+
+  "USERNAME":{ title: 'Invalid Account Holder Name!', subTitle: 'Please enter valid account holder name!', empty: "Please enter account holder name!"},
+
+  "CODE":{ title: 'Invalid IFSC Code!', subTitle: 'Please enter valid IFSC code!', empty: "Please enter your IFSC code!"},
+  // "CITY":{ title: 'Invalid City!', subTitle: 'Please enter valid city!', empty: "Please enter your city!"},
+  // "COUNTRY":{ title: 'Invalid Country!', subTitle: 'Please enter valid country!', empty: "Please enter your country!"},
+  "ZIPCODE":{ title: 'Invalid Zip Code!', subTitle: 'Please enter valid zip code!', empty: "Please enter your zip code!"},
+  "ROUNTING":{ title: 'Invalid Routing Number!', subTitle: 'Please enter valid routing number!', empty: "Please enter your routing numbrer!"},
+
   "FNAME": {
     title: 'Invalid Name!', subTitle: 'Please enter valid first name!', empty: "Please enter your first name!"
   },
