@@ -14,6 +14,7 @@ import { Observable } from 'Rxjs/rx';
 import { Subscription } from "rxjs/Subscription";
 import { MediaProvider } from '../../providers/media/media';
 import * as firebase from 'Firebase';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 export const snapshotToArray = snapshot => {
   let returnArr = [];
@@ -44,7 +45,7 @@ export class ConversationPage {
   sendBtnDisabledS = false;
   toggled: boolean = false;
   message: string;
-  baseUrl = "https://www.webwiders.com/WEB01/Influ/assets/media/";
+  baseUrl = "";
   senderImage: any;
   roomKey: any;
   other_user: any;
@@ -59,9 +60,11 @@ export class ConversationPage {
     public trans: TranslateService,
     public media: MediaProvider,
     public download: DownloadProvider,
+    private socialSharing: SocialSharing,
     public player: PlayAudioProvider,
     public fireP: FirebaseProvider,
     public onesignal: OnesignalProvider) {
+      this.baseUrl=this.auth.mediaLink
     this.other_user = this.navParams.get('other_user');
     this.current_user = this.auth.getUserDetails();
     console.log('other userss', this.other_user);
@@ -208,12 +211,18 @@ export class ConversationPage {
       sender_image: this.senderImage
     }
     data["unread_" + this.auth.getCurrentUserId()] = true;
+    data['show_id_'+this.auth.getCurrentUserId()]=true;
+    data['show_id_'+this.other_user.id]=true;
     data["noti_status"] = 0;
 
 
-    newData.set(data);
+    newData.set(data);let d = {
+      last_message: msg, last_message_at: time,
+    }
+    d['_show_id_'+this.auth.getCurrentUserId()]=true;
+    d['_show_id_'+this.other_user.id]=true;
 
-    this.chat_room_ref.update({ last_message: msg, last_message_at: time })
+    this.chat_room_ref.update(d)
     this.msg = '';
   }
 
@@ -251,13 +260,14 @@ export class ConversationPage {
       file: { value: blob1, type: 'NO', name: name1 },
       file_type: { value: type, type: 'NO' },
     }
-
-    this.api.postDataNoLoader(data, 0, 'Send_media').then((res: any) => {
+    // alert('send media calling'+ JSON.stringify(data));
+    this.api.postData(data, 0, 'Send_media').then((res: any) => {
+      alert('send media called'+JSON.stringify(res))
       if (res.status == "1") {
         this.send(res.file_name, type);
 
       } else {
-        // this.alertP.show('Alert!', res.message);
+        this.alert.presentToast(res.message,'bottom');
       }
     })
   }
@@ -334,15 +344,22 @@ export class ConversationPage {
           text: this.trans.instant('SEND_FILE'),
           handler: () => {
             this.media.getFile().then((res1: any) => {
+              alert('get file successfull-----');
               console.log('res1------------', res1);
+           
               if (res1 != 0) {
+          
                 if (res1.file.type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || res1.file.type == 'application/msword' || res1.file.type == 'application/pdf') {
-
+              
+                  
                   this.sendFile(res1.file, res1.name, 'file', res1.name);
                 } else {
                   this.alert.show('Alert', 'Only Pdf,Ppt & Document files are allowed!');
                   return;
                 }
+              }
+              else{
+                // this.alert.presentToast('mizantest resss1111 -----000','bottom');
               }
             });
           }
@@ -361,22 +378,24 @@ export class ConversationPage {
 
 
   openFile(link) {
-    console.log('link----=-=-=-=', link);
+    // alert(link);
+    this.socialSharing.share('', '', this.auth.mediaLink+link, null)
+    // console.log('link----=-=-=-=', link);
 
-    this.download.checkFileExistOrNot(link).then((res) => {
-      if (res == 1) {
-        this.alert.confirmationAlert(this.trans.instant('CONFIRMATION'), this.trans.instant('FILE_ALREADY_EXISTS')).then((res) => {
-          if (res) {
+    // this.download.checkFileExistOrNot(link).then((res) => {
+    //   if (res == 1) {
+    //     this.alert.confirmationAlert(this.trans.instant('CONFIRMATION'), this.trans.instant('FILE_ALREADY_EXISTS')).then((res) => {
+    //       if (res) {
 
-            this.download.download(link);
-          }
+    //         this.download.download(link);
+    //       }
 
-        });
-      }
-      else {
-        this.download.download(link);
-      }
-    })
+    //     });
+    //   }
+    //   else {
+    //     this.download.download(link);
+    //   }
+    // })
   }
 
 
@@ -388,6 +407,7 @@ export class ConversationPage {
 
 
   startaudio() {
+    console.log('startuing audio-----');
     // if (this.friend_status.block_by_friend.indexOf('full') > -1) {
     //   this.alert.presentToast(this.profile.full_name + " has blocked you", "bottom")
     // } else if (this.friend_status.block_by_friend.indexOf('all') > -1) {
@@ -409,7 +429,6 @@ export class ConversationPage {
 
 
   sss(e) {
-
     if (e.keyCode == 8 || e.keyCode == 229) {
       this.content.resize();
     }
@@ -421,7 +440,7 @@ export class ConversationPage {
     this.content.resize();
     if (this.msg.length > 0) {
       if (ev == '13' || ev == 13) {
-        this.send(this.msg, 'text');
+       // this.send(this.msg, 'text');
       }
     }
     else {
@@ -482,5 +501,9 @@ export class ConversationPage {
   //   });
   //   this.data.message = '';
   // }
+
+  hidemsg(item:any) {
+    return item['show_id_'+this.auth.getCurrentUserId()];
+  } 
 
 }

@@ -5,6 +5,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { OnesignalProvider } from './../providers/onesignal/onesignal';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 
 import { PayPal } from '@ionic-native/paypal';
@@ -55,6 +56,9 @@ import { CommonModule } from '@angular/common';
 import { StarRatingModule } from 'ionic3-star-rating';
 import { RatePopupPage } from '../pages/rate-popup/rate-popup';
 import { Facebook } from '@ionic-native/facebook';
+import { IOSFilePicker } from '@ionic-native/file-picker';
+import { WithdrawalPopupPage } from '../pages/withdrawal-popup/withdrawal-popup';
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -64,6 +68,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp,
     TabsPage,
     RatePopupPage,
+    WithdrawalPopupPage,
   ],
   imports: [
     StarRatingModule,
@@ -92,6 +97,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp,
     TabsPage,
     RatePopupPage,
+    WithdrawalPopupPage,
   ],
   providers: [
     StatusBar,
@@ -131,6 +137,8 @@ export function createTranslateLoader(http: HttpClient) {
     ChatmoduleProvider,
     Facebook,
     InAppBrowser,
+    IOSFilePicker,
+    SocialSharing
   ]
 })
 export class AppModule { }

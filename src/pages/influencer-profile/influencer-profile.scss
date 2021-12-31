@@ -53,6 +53,7 @@ page-influencer-profile {
           margin: 2px;
           text-align: center;
           font-size: 10px;
+          font-weight: 700;
         }
       }
     }
@@ -75,8 +76,9 @@ page-influencer-profile {
     ion-avatar img {
       border-radius: 50%;
       overflow: hidden;
-      width: auto !important;
-      height: 50px !important;
+      width: 60px!important;
+      height: 60px !important;
+      object-fit: cover;
     }
   }
   .detail_item {

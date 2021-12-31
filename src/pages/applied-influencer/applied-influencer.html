@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{'EMPLOYED_INFLUENCERS' | translate}}</ion-title>
+    <ion-title *ngIf="influs[0]?.is_mark==0 ||influs.length==0 ">{{'EMPLOYED_INFLUENCERS' | translate}}</ion-title>
+    <ion-title *ngIf="influs[0]?.is_mark==1 || influs[0]?.is_mark==3">{{'HIRED_INFLU' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -10,7 +11,8 @@
     <ion-icon name="ios-search-outline"></ion-icon>
     <p>{{'NO_DATA_FOUND' | translate}}</p>
   </div>
-  <ion-item class="job_item" no-lines no-padding *ngFor="let k of influs">
+  <div *ngFor="let k of influs">
+  <ion-item class="job_item" no-lines no-padding *ngIf="k.is_mark==0||k.is_mark==1||k.is_mark==3">
     <ion-avatar (click)="profile(k.apply_by,k.jobId)" item-start>
       <img [src]="k.userImage">
     </ion-avatar>
@@ -31,6 +33,20 @@
     <button style="width: 63px;" *ngIf="auth.getCurrentUserId()==k.created_by.id" (click)="chat(k.apply_by,k.Id,k.title,k.userImage)"
       ion-button round small class="btn-theme btn_view">{{'CHAT' |
       translate}}</button>
-  </ion-item>
 
+
+      <button style="width: 63px;"  (click)="hired(k)" *ngIf="k.is_mark==0"
+      ion-button round small class="btn-theme btn_view">{{'HIRE_NOW' | translate}}</button>
+
+      <button style="width: 63px;"  (click)="reject(k)" *ngIf="k.is_mark==0"
+      ion-button round small class="btn-theme btn_view">{{'REJECT1' | translate}}</button>
+
+      <button   (click)="mark_as_complete(k)" *ngIf="k.is_mark==1"
+      ion-button round small class="btn-theme btn_view">{{'MARK_AS_COMPLETE' | translate}}</button>
+
+      <button *ngIf="k.is_mark==3"
+      ion-button round small class="btn-theme btn_view">{{'COMPLETE' | translate}}</button>
+
+  </ion-item>
+</div>
 </ion-content>

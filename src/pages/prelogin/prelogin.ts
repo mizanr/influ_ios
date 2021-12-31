@@ -103,7 +103,8 @@ export class PreloginPage {
       LoginType: '',
       Fname: k.fname,
       Lname: k.lname,
-      Email: k.email
+      Email: k.email,
+      profile_img_url:k.profilepic,
     }
     if (type == 'google') {
       Data['GmailID'] = { "value": k.id, "type": "NO" };
@@ -139,8 +140,9 @@ export class PreloginPage {
 
       });
       if (result.status == 2) {
-        this.navCtrl.push('SelectPage', { SignupData: SignUpDetail });
+        this.navCtrl.push('SelectPage', { SignupData: SignUpDetail,is_social:1 });
       } else if (result.status == 1) {
+        localStorage.removeItem('guest');
         this.auth.updateUserDetails(result.user);
         this.navCtrl.setRoot(TabsPage);
         this.events.publish('LoggedIn');
@@ -160,4 +162,9 @@ export class PreloginPage {
   terms() {
     this.navCtrl.push('PrivacyPage', { Type: 'terms' })
   }
+
+  guest() {
+    this.navCtrl.push('SelectPage',{type:'guest'});
+  }
+
 }

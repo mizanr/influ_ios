@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-buttons end>
       <button ion-button small clear style="padding: 0; width: 40px;">
-        <img src="assets/imgs/logo.png" style="width: 50px;">
+        <img src="assets/imgs/logo.png" style="width: 50px;height: 100%;">
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -38,7 +38,8 @@
 
         <div style="margin-bottom: 20px !important;">
           <ion-item class="input_1" no-padding no-lines>
-            <input formControlName="email" type="email" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}">
+            <input formControlName="email" type="email" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}" 
+            [readonly]="is_social==1&&influForm.controls.email.value!=undefined">
           </ion-item>
           <div *ngIf="companyForm.controls.email.value=='' && companyForm.controls.email.touched"
             style="margin-top: 8px;" ion-text padding-horizontal color="danger">
@@ -174,7 +175,8 @@
 
         <div style="margin-bottom: 20px !important;">
           <ion-item class="input_1" no-padding no-lines>
-            <input formControlName="email" type="email" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}">
+            <input formControlName="email" type="email" placeholder="{{'ENTER_YOUR_EMAIL_ID' | translate}}" 
+            [readonly]="is_social==1&&influForm.controls.email.value!=undefined">
           </ion-item>
           <div *ngIf="influForm.controls.email.value=='' && influForm.controls.email.touched" style="margin-top: 8px;"
             ion-text padding-horizontal color="danger">

@@ -1,0 +1,28 @@
+<ion-content padding>
+<div class="login_form">
+  <ion-title>{{'SELECT_PAY_ACC' | translate}}</ion-title>
+
+  <button ion-button icon-only (click)="closemodal()" small clear class="close">
+    <ion-icon name="close"></ion-icon>
+  </button>
+  <div margin-top>
+  <ion-item *ngFor="let l of paypal_accounts" (click)="go(l);$event.stopPropagation();">
+    <ion-avatar item-start>
+      <img src="../../assets/imgs/paypal.png">
+    </ion-avatar>
+    <h3>{{l.paypal_id}}</h3>
+    <button ion-button clear item-end (click)="delete(l);$event.stopPropagation();">
+      <ion-icon name="md-trash" color="danger"></ion-icon>
+    </button>
+  </ion-item>
+  <div text-center *ngIf="paypal_accounts.length==0">
+    <ion-spinner name="bubbles"></ion-spinner>
+  </div>
+  <ion-row *ngIf="paypal_accounts.length<=1" margin-top>
+    <ion-col col-12 text-center>
+      <button ion-button block class="btn-theme" (click)="add()">{{'ADD_NEW_PAYPAL' | translate}}</button>
+    </ion-col>
+  </ion-row>
+  </div>
+  </div>
+</ion-content>

@@ -53,6 +53,28 @@
       <p text-wrap text-capitalize>${{detail.price}}</p>
     </ion-item>
 
+    <ion-item no-lines no-padding margin-top *ngIf="auth?.isUserLoggedIn()&&auth?.getUserDetails()?.user_type==1">
+      <h3>{{'INFLU_SERVICE_FEE' | translate}}</h3>
+      <p text-wrap text-capitalize>${{detail.influ_service_fee}} ({{detail.influ_service_fee_percent}}%)</p>
+    </ion-item>
+
+    <ion-item no-lines no-padding margin-top *ngIf="auth?.isUserLoggedIn()&&auth?.getUserDetails()?.user_type==1">
+      <h3>{{'YOU_NEED_PAY' | translate}}</h3>
+      <p text-wrap text-capitalize>${{auth.getFloat(detail.price)+ auth.getFloat(detail.influ_service_fee_percent)}}</p>
+    </ion-item>
+
+
+    <ion-item no-lines no-padding margin-top 
+    *ngIf="(auth?.isUserLoggedIn()&&auth?.getCurrentUserId()!=detail?.created_by?.id)&& user.user_type!='1'&&is_mark>0">
+      <h3>Status</h3>
+      <!-- <p text-wrap text-capitalize></p> -->
+      <p *ngIf="is_mark==1"><strong style="color: black;">Already Applied.</strong></p>
+      <p *ngIf="is_mark==5"><strong style="color: red;">Rejected</strong></p>
+      <p style="color: green;"  *ngIf="is_mark==2"><strong >Hired You.</strong></p>
+      <p style="color: red;"><strong  *ngIf="is_mark==3">Hired Someone else.</strong></p>
+      <p style="color: green;"><strong  *ngIf="is_mark==4">Completed.</strong></p>
+    </ion-item>
+
     <!-- <ion-item no-lines no-padding margin-top>
     <h3>{{'INFLU_SERVICE_FEE' | translate}}</h3>
     <p text-wrap text-capitalize>${{influServiceFee}} ({{influeServiceInPercent}}%)</p>
@@ -63,18 +85,34 @@
     <p text-wrap text-capitalize>${{auth.getFloat(detail.price)+ auth.getFloat(influServiceFee)}}</p>
   </ion-item>
 -->
-    <div text-center *ngIf="(auth.getCurrentUserId()!=detail.created_by.id)&& user.user_type!='1'">
-      <button *ngIf="detail.applied_status==0" (click)="createRoom(detail.Id,detail.title,detail.created_by,detail)"
+
+  <div text-center  *ngIf="!auth?.isUserLoggedIn()">
+    <button (click)="login()"
         class="btn-theme" small ion-button>
         {{'REQUEST_TO_JOB' | translate}}
       </button>
+  </div>
+
+    <div text-center *ngIf="(auth?.isUserLoggedIn()&&auth?.getCurrentUserId()!=detail.created_by.id)&& user.user_type!='1'">
+      <button *ngIf="detail.applied_status==0&&is_mark!=5" 
+      (click)="createRoom(detail.Id,detail.title,detail.created_by,detail)"
+        class="btn-theme" small ion-button>
+        {{'REQUEST_TO_JOB' | translate}}
+      </button>
+
+
+      <button *ngIf="is_mark==1" (click)="cancel_request()"
+        class="btn-theme" small ion-button>
+        Cancel Request
+      </button>
+      
       <button *ngIf="detail.applied_status==1" (click)="message(detail);$event.stopPropagation()" class="btn-theme"
         small ion-button>
         {{'MESSAGE' | translate}}
       </button>
     </div>
 
-    <ion-row *ngIf="auth.getCurrentUserId()==detail.created_by.id">
+    <ion-row *ngIf="auth?.isUserLoggedIn()&&auth?.getCurrentUserId()==detail?.created_by?.id">
       <ion-col col-auto>
         <button style="width: 63px;" (click)="edit(detail.Id)" ion-button round small
           class="btn-theme btn_view">{{'EDIT' |

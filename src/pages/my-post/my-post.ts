@@ -66,8 +66,9 @@ export class MyPostPage {
   }
 
   detail(id) {
-    // let profileModal = this.modalCtrl.create('PostDetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
+    // let profileModal = this.modalCtrl.create('Post0DetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
     // profileModal.present();
+    
     this.navCtrl.push('PostDetailPage', { PostId: id });
   }
 }

@@ -1,0 +1,31 @@
+<div class="box">
+  <div text-center>
+
+  <div>
+    <ion-row align-items-center>
+      <ion-col col-12 text-center>
+        <ion-item>
+          <ion-label floating>Paypal Email</ion-label>
+          <ion-input type="email" appBlockCopyPaste [(ngModel)]="paypal_email"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-12 text-center>
+        <ion-item>
+          <ion-label floating>Confirm Paypal Email</ion-label>
+          <ion-input type="email" appBlockCopyPaste [(ngModel)]="conrim_paypal_email"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </div>
+  
+  <div class="btn" padding-horizontal>
+    <ion-row>
+      <ion-col col-6 text-center>
+        <button ion-button  round class="btn_theme btn-theme" (click)="submit()">Submit</button>
+      </ion-col>
+      <ion-col col-6 text-center>
+        <button ion-button outline  round (click)="close()">Cancel</button>
+      </ion-col>
+    </ion-row>
+  </div>
+</div>

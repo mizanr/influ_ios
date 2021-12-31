@@ -62,15 +62,14 @@ export class GooglePlusProvider {
     })
   }
 
-
   silentLogin() {
     return new Promise((resolve, reject) => {
       this.googlePlus.trySilentLogin().then(r => {
         console.log('silent Login response:=-=-=-=-=-=-=-', r);
-        resolve(1)
+        resolve(1);
       }).catch(e => {
         console.log('silent Login Error:=-=-=-=-=-=-=-', e);
-        resolve(1)
+        resolve(1);
       })
     });
   }

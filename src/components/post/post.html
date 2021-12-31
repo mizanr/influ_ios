@@ -23,8 +23,8 @@
         [color]="k?.avg_rate>=5?'star':'gray'"></ion-icon>
         <!-- <span *ngIf="k?.avg_rate"><b>({{k.avg_rate}})</b></span> -->
     </p>
-    <button *ngIf="auth.getCurrentUserId()!=k.created_by.id" ion-button small clear item-end no-padding
-      (click)="openAction(k.created_by);$event.stopPropagation()">
+    <button *ngIf="auth?.isUserLoggedIn()&&auth?.getCurrentUserId()!=k?.created_by?.id" ion-button small clear item-end no-padding
+      (click)="openAction(k);$event.stopPropagation()">
 
       <ion-icon style="color:#b3b3b3;font-size: 28px;" name="md-more"></ion-icon>
     </button>
@@ -59,7 +59,7 @@
       </div>
     </div> -->
 
-    <ion-slides  [dir]="auth.getUserLanguage()=='en'?'':'rtl'" 
+    <ion-slides  [dir]="auth?.getUserLanguage()=='en'?'':'rtl'" 
     [pager]="k.images.length>1?true:false">
       <ion-slide (click)="openSlider(k.images,im);$event.stopPropagation()" *ngFor="let img of k.images; let im=index">
         <img [src]="img.name" *ngIf="img.file_type=='image'">

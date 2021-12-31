@@ -1,4 +1,4 @@
-<div *ngIf="auth.getUserDetails().user_type==1">
+<div *ngIf="auth.getUserDetails()?.user_type==1">
   <ion-tabs (ionChange)="tabChanged($event)" #companyTabs>
     <ion-tab [root]="tab1Root" tabTitle="" tabIcon="home"></ion-tab>
     <ion-tab [root]="tab2Root" tabTitle="" tabIcon="information-circle"></ion-tab>
@@ -7,7 +7,7 @@
   </ion-tabs>
 </div>
 
-<div *ngIf="auth.getUserDetails().user_type==2">
+<div *ngIf="auth.getUserDetails()?.user_type==2">
   <ion-tabs (ionChange)="tabChanged($event)" #influTabs>
     <ion-tab [root]="tab5Root" tabTitle="" tabIcon="home"></ion-tab>
     <ion-tab [root]="tab6Root" tabTitle="" tabIcon="information-circle"></ion-tab>
@@ -15,3 +15,21 @@
     <ion-tab [root]="tab8Root" tabTitle="" tabIcon="profile"></ion-tab>
   </ion-tabs>
 </div>
+
+<div *ngIf="isguest==1 || isguest==2">
+  <ion-tabs (ionChange)="guestTabChanged($event)" #companyTabs>
+    <ion-tab [root]="isguest==1?tab9Root:tab13Root" tabTitle="" tabIcon="home"></ion-tab>
+    <ion-tab [root]="tab10Root" tabTitle="" tabIcon="information-circle"></ion-tab>
+    <ion-tab [root]="tab11Root" tabTitle="" tabIcon="contacts"></ion-tab>
+    <ion-tab [root]="tab12Root" tabTitle="" tabIcon="profile"></ion-tab>
+  </ion-tabs>
+</div>
+
+<!-- <div *ngIf="isguest==2">
+  <ion-tabs (ionChange)="tabChanged($event)" #influTabs>
+    <ion-tab [root]="tab13Root" tabTitle="" tabIcon="home"></ion-tab>
+    <ion-tab [root]="tab14Root" tabTitle="" tabIcon="information-circle"></ion-tab>
+    <ion-tab [root]="tab15Root" tabTitle="" tabIcon="contacts"></ion-tab>
+    <ion-tab [root]="tab16Root" tabTitle="" tabIcon="profile"></ion-tab>
+  </ion-tabs>
+</div> -->

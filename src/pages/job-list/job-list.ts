@@ -33,7 +33,8 @@ export class JobListPage {
 
   getJob() {
     let data = {
-      "user_id": { "value": this.auth.getCurrentUserId(), "type": "NO" },
+      user_id: { "value": this.auth.getCurrentUserId(), "type": "NO" },
+      session_id: { "value": this.auth.getCurrentUserId(), "type": "NO" },
     }
     this.api.postData(data, 0, 'GetMyJobList').then((res: any) => {
       // this.getinflus();
@@ -78,7 +79,7 @@ export class JobListPage {
 
 
   jobdetail(id) {
-    // let profileModal = this.modalCtrl.create('PostDetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
+    // let profileModal = this.modalCtrl.create('Po0stDetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
     // profileModal.present();
     this.navCtrl.push('JobDetialPage', { JobId: id });
   }

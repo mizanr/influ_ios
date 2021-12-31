@@ -4,8 +4,8 @@ import { ImageProvider } from './../../providers/image/image';
 import { AlertProvider } from './../../providers/alert/alert';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { AuthProvider } from './../../providers/auth/auth';
-import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, IonicPage, ActionSheetController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, NavParams, AlertController, IonicPage, ActionSheetController, Content } from 'ionic-angular';
 import {LoadingProvider} from '../../providers/loading/loading';
 @IonicPage()
 
@@ -14,6 +14,7 @@ import {LoadingProvider} from '../../providers/loading/loading';
   templateUrl: 'add-job.html',
 })
 export class AddJobPage {
+  @ViewChild(Content) content: Content;
   formData = {
     title: '',
     category: [''],
@@ -325,7 +326,7 @@ export class AddJobPage {
       // else 
       // this.is_spinner=false;
 
-      this.onKeyT()
+      this.onKeyT();
     })
   }
 
@@ -525,7 +526,9 @@ export class AddJobPage {
     this.medaiP.getVideoByGallery().then((res1: any) => {
       if (res1 != 0) {
         
+
         console.log("res1=-=-=-=-=-=-=-=-=-=-=-=", res1);
+
         // this.vdoRes = res1;
         // this.formData.lession_video = this.vdoRes.video.preview;
         // this.formData.video_thumbnail = this.vdoRes.thumb.preview;
@@ -543,12 +546,17 @@ export class AddJobPage {
           this.newImagesArr = this.newImagesArr.concat(data);
           this.is_spinner=false;
         }
+        setTimeout(() => {
+          this.content.resize();
+        }, 150);
+
       } else {
         this.is_spinner=false;
       }
 
       this.onKeyT()
     });
+  
   }
 
 }

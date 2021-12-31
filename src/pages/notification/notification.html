@@ -23,7 +23,7 @@
         <img src="assets/imgs/icon.png">
       </ion-avatar> 
       <p text-capitalize text-wrap>{{item.message}}</p>
-      <!-- <p color="primary" ion-text item-end>2 mins ago</p> -->
+      <p color="dark" ion-text >{{item.create_date.replace(' ','T') | date:'dd/mm/yyyy HH:mm'}}</p>
     </ion-item>
   </ion-list>
 </ion-content>

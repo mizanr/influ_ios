@@ -14,6 +14,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
 import { JobDetialPage } from '../pages/job-detial/job-detial';
+import { EncryptProvider } from '../providers/encrypt/encrypt';
 const config = {
   apiKey: 'AIzaSyC0ALZAVZCK8bRgP2Rm1ihdjwT-tSLk3tE',
   authDomain: 'fir-85886.firebaseapp.com',
@@ -38,17 +39,24 @@ export class MyApp {
     public api: RestApiProvider,
     public google: GooglePlusProvider,
     public download: DownloadProvider,
+    public ensp:EncryptProvider,
     // public config: Config,
     public app: App,
     public ionicApp: IonicApp,
     public alert: AlertProvider,
     public aP: AndroidPermissions
   ) {
+
+    // this.ensp.getEncryptedData2('kamal');
+
+
     platform.ready().then(() => {
+      localStorage.removeItem('guest');
       if (platform.is('cordova')) {
         this.setBackButton();
         this.onesignalsetup();
-        statusBar.styleLightContent();
+        statusBar.styleDefault();
+        statusBar.overlaysWebView(false);
         statusBar.backgroundColorByHexString('#10b4ed');
         splashScreen.hide();
       }
@@ -64,43 +72,61 @@ export class MyApp {
         this.getProfile(r);
       });
 
-      this.aP.requestPermissions(
-        [this.aP.PERMISSION.CAMERA,
-        this.aP.PERMISSION.READ_EXTERNAL_STORAGE,
-      this.aP.PERMISSION.WRITE_EXTERNAL_STORAGE]
-         ).then(r => {
-        console.log('success in get permision---', r);
-
-      });
+      setTimeout(() => {
+        this.aP.requestPermissions(
+          [this.aP.PERMISSION.CAMERA,
+          this.aP.PERMISSION.READ_EXTERNAL_STORAGE,
+        this.aP.PERMISSION.WRITE_EXTERNAL_STORAGE]
+           ).then(r => {
+          console.log('success in get permision---', r);
+        });
+      }, 150);     
 
 
       this.lang = this.auth.getUserLanguage();
       console.log(this.lang);
-      if (this.lang) {
-        this.translate.setDefaultLang(this.lang);
-        if (this.lang == 'he') {
-          this.platform.setDir('rtl', true);
-        }
-      } else {
-        this.translate.setDefaultLang('en');
-      }
-
-      if (this.auth.isUserLoggedIn()) {
-        if (this.auth.getUserDetails().email_verified == 1) {
-          this.rootPage = TabsPage;
-          this.updateDeviceId();
-          this.google.silentLogin();
-
+      setTimeout(() => {
+        if (this.lang) {        
+          this.translate.setDefaultLang(this.lang);
+          if (this.lang == 'he') {
+            setTimeout(() => {
+            this.platform.setDir('rtl', true);              
+            }, 150);
+          }
         } else {
-          this.rootPage = 'VerifyPage';
+          setTimeout(() => {
+            this.translate.setDefaultLang('en');            
+          }, 150);
         }
-      } else {
-        if (this.lang) {
-          this.rootPage = 'PreloginPage'
+      }, 150);   
+      
+      setTimeout(() => {
+        if (this.auth.isUserLoggedIn()) {
+          if (this.auth.getUserDetails().email_verified == 1) {
+            setTimeout(() => {
+              this.rootPage = TabsPage;              
+            }, 150);
+            setTimeout(() => {
+              this.updateDeviceId();
+              // this.google.silentLogin();
+            }, 150);            
+          } else {
+            setTimeout(() => {
+              this.rootPage = 'VerifyPage';             
+            }, 150);
+          }
         } else {
-          this.rootPage = 'SelectLangPage'
+          if (this.lang) {
+            setTimeout(() => {
+              this.rootPage = 'PreloginPage';              
+            }, 150);
+          } else {
+            setTimeout(() => {
+              this.rootPage = 'SelectLangPage';              
+            }, 150);
+          }
         }
-      }
+      }, 200);     
 
     });
 
@@ -133,6 +159,7 @@ export class MyApp {
 
         if(data.screen=="job_complete"){
           setTimeout(() => {
+            // alert("job complete - component")
             this.nav.push('PostDetailPage',{PostId:data.postId});          
           }, 500);
       }
@@ -147,6 +174,12 @@ export class MyApp {
           setTimeout(() => {
             this.nav.push('WalletPage');
           }, 700);
+        }
+
+        if(data.screen=="job_done"){
+          setTimeout(() => {
+            this.nav.push('JobDetialPage',{JobId:data.postId});
+          },500);         
         }
 
         if (data.screen == 'ChatDetailsPage') {

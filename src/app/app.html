@@ -1,4 +1,4 @@
-<ion-menu [side]="auth.getUserLanguage()=='en'?'left':'right'" [content]="nav" type="overlay" persistent="true">
+<ion-menu [side]="auth.getUserLanguage()=='en'?'left':'right'" [content]="nav" type="overlay" persistent="true" id="content">
 
   <ion-content>
     <div *ngIf="auth.isUserLoggedIn() && auth.getUserDetails().user_type==1">
@@ -140,7 +140,7 @@
 
   </ion-content>
 </ion-menu>
-<ion-nav [ngClass]="auth.getUserLanguage()=='en'?'':'rotateBack'" [root]="rootPage"></ion-nav>
+<ion-nav #nav [ngClass]="auth.getUserLanguage()=='en'?'':'rotateBack'" [root]="rootPage"></ion-nav>
 
 <ion-card class="downloadBar" *ngIf="download.isDownloading==true">
   <button (click)="download.cancelDownload()" class="cancelDownload" ion-button icon-only small clear>

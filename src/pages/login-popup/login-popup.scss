@@ -1,0 +1,199 @@
+page-login-popup {
+    .close-btn {
+        button {
+            position: absolute;
+            right: 2%;
+            top: 1%;
+        }
+    }
+    ion-icon {
+        font-size: 2.0em !important;
+    }    
+    .content {
+        background-color: rgba(0, 0, 0, 0) !important;
+    }
+      .login_form {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(100% - 30px);
+        border-radius: 5px;
+        background: #fff;
+        box-shadow: 0 1px 3px #00001075;
+        padding: 10px 10px 30px;
+        //margin-top: 50%;
+      }
+      .content-ios {
+      color: #fff;
+      }
+      .logo h3 {
+      color: #000;
+      font-size: 22px;
+      text-transform: uppercase;
+      }
+      .img_sign img {
+      width: 200px;
+      margin: 10px;
+      }
+      .logo img {
+      width: 160px;
+      }
+      .logo {
+      padding: 25px 0 30px;
+      text-align: center;
+      }
+      .input_1 {
+      margin: 10px 0;
+      height: 35px;
+      background: #fff;
+      color: #575757;
+      font-size: 13px;
+      }
+      .btn_grp p {
+      color: #000;
+      margin-top: 50px;
+      }
+      .list.list-ios {
+          margin: 0;
+      }
+      .btn_grp {
+      padding: 0 0 !important;
+      text-align: center;
+      font-size: 15px;
+      }
+      .btn_grp p span {
+      color: #0751c2;
+      }
+      .toolbar-background.toolbar-background-ios {
+      background: #fff;
+      border: none;
+      }
+      .header-md::after, .tabs-md[tabsPlacement="top"] > .tabbar::after, .footer-md::before, .tabs-md[tabsPlacement="bottom"] > .tabbar::before {
+      left: 0;
+      bottom: -5px;
+      background-position: left 0 top -2px;
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      background-image: none;
+      background-repeat: repeat-x;
+      content: "";
+      }
+      .item-inner {
+          padding: 0 !important;
+      }
+      .label {
+          margin-right: 0 !important;
+      }
+      .label input {
+          width: 100%;
+          height: 35px;
+          border: none;
+          background: #f1f1f1;
+          padding: 10px;
+      }
+      .label {
+      display: flex;
+      align-items: center;
+      }
+      .label img {
+      width: auto;
+      height: 20px;
+      margin-right: 8px;
+      }
+      .logo p {
+      color: #6a6a6a;
+      font-size: 15px;
+      line-height: 22px;
+      }
+      .thankyou {
+          text-align: center;
+      }
+      .thankyou img {
+          width: 95px;
+          margin: 10px 10px 0;
+      }
+      .thankyou h2 {
+          color: #000;
+          font-size: 25px;
+          font-weight: normal;
+          margin: 0;
+      }
+      .thankyou p {
+          color: #000;
+      }
+      .enq {
+          font-size: 13px;
+          line-height: 22px;
+      }
+      .color {
+          color: #0751c2;
+          display: block;
+      }
+    
+      h6 {
+        color: #3370d0;
+        font-weight: normal;
+        text-decoration: underline;
+        margin-bottom: 0;
+      }
+
+
+      ///// pre-login page CSS
+      .btn_login img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+      }
+      .fb.item {
+        background: #3b5998;
+        border-radius: 50px;
+        color: #fff;
+      }
+    
+      .btn_login {
+        .item {
+          border-radius: 50px;
+          padding: 5px 16px;
+          box-shadow: 0 0 13px rgba(0, 0, 0, 0.2);
+          margin-bottom: 16px;
+          h4 {
+            font-size: 20px !important;
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            top: 18px;
+            left: 0;
+          }
+        }
+      }
+    
+      .insta.item {
+        background-image: linear-gradient(12deg, #f8c602, #f40816, #9049c5);
+        color: #fff;
+      }
+      .tiktok.item.item-block.item-ios {
+        background: #0b0b16;
+        color: #fff;
+      }
+      .logo {
+        margin: 0 auto;
+        text-align: center;
+        img {
+          width: 120px;
+          // margin-top: 50px;
+        }
+        p {
+          color: #3370d0;
+          font-size: 22px;
+        }
+      }
+      ion-label {
+        white-space: normal;
+      }
+      .color {
+        color: #d12989;
+        z-index: +111111;
+        position: relative;
+      }
+}

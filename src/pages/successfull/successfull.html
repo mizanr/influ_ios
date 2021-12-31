@@ -11,10 +11,15 @@
 
     <div class="thankyou">
       <!-- <img src="assets/imgs/check.png"> -->
-      <ion-icon style="font-size: 100px;" class="icon-theme" name="ios-checkmark-circle-outline"></ion-icon>
+      <ion-icon style="font-size: 100px; color:#10b4ed"  name="ios-checkmark-circle-outline"></ion-icon>
       <h2>{{'CONGRATULATIONS!!' | translate}}</h2>
-      <p>{{'THE_SERVICE_HAVE_BEEN_HIRED_BY_YOU_SUCCESSFULLY' | translate}}</p>
+
+      <p *ngIf="type==0">{{'THE_SERVICE_HAVE_BEEN_HIRED_BY_YOU_SUCCESSFULLY' | translate}}</p>
+
+      <p *ngIf="type==1">{{'THE_INFLU_HAVE_BEEN_HIRED_BY_YOU_SUCCESSFULLY' | translate}}</p>
+
       <h6 (click)="closemodal()">{{'CLOSE' | translate}}</h6>
+
     </div>
   </div>
 

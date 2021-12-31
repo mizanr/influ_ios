@@ -42,8 +42,8 @@ export class CreatePasswordPage {
       "confirmP": { "value": this.cPass, "type": "NO" },
       "email": { "value": this.navParams.get('Email'), "type": "NO" }
     }
-    this.encrypt.getEncryptedData(this.pass).then((r: any) => {
-      data["password"].value = r.trim();
+    this.encrypt.getEncryptedData2(this.pass).then((r: any) => {
+      data["password"].value =r;
       console.log('new password-------', r, '-------');
 
       this.api.postData(data, 1, 'create_password').then((res: any) => {

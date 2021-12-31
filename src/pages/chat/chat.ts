@@ -155,7 +155,32 @@ export class ChatPage {
 
   deleteChat(obj) {
     console.log(obj);
-    firebase.database().ref('chatrooms1/'+obj.key).remove();
+    var single_thread_ref  = firebase.database().ref('chatrooms1/' + obj.key);
+    obj['_show_id_'+this.auth.getCurrentUserId()]=false;
+    single_thread_ref.update(obj);
+    // this.all_thread_ref.on('value', (resp: any) => {
+    //   resp.forEach((childSnapshot) => {
+    //     let item = childSnapshot.val();
+    //     if(item.key==obj.key){
+    //       item['_show_id_'+this.auth.getCurrentUserId()]=false;
+    //     }
+    //   });
+    //     this.all_thread_ref.update();
+    // });
+
+    var chats_ref = firebase.database().ref('chatrooms1/' + obj.key + '/chats');
+    // console.log('chats----',chats_ref);
+    chats_ref.on('value', (resp: any) => {
+      resp.forEach(childSnapshot => {
+        let item = childSnapshot.val();
+        item.key = childSnapshot.key;
+        let key = 'show_id_'+this.auth.getCurrentUserId();
+        this.mark_as_delete_chat(item,key,obj.key);  
+        console.log('item====',item);
+      });
+      chats_ref.off('value');
+    })
+    // firebase.database().ref('chatrooms1/'+obj.key).remove();
     // let data = {
     //   "user_id": this.auth.getCurrentUserId(),
     //   "job_id": obj.Job_detail.Id,
@@ -168,6 +193,38 @@ export class ChatPage {
     // }, (err) => {
     // });
   }
+
+  show(item) {
+    // if(item['_show_id_'+this.auth.getCurrentUserId()]){
+      return item['_show_id_'+this.auth.getCurrentUserId()];
+    // } else {
+    //   return true;
+    // }
+  }
+
+  mark_as_delete_chat(item: any, key,roomKey) {
+    console.log("mark as delete chat--------");
+    let data = {};
+    data[key] = false;
+    let chat_ref = firebase.database().ref('chatrooms1/' + roomKey + '/chats/' + item.key);
+    chat_ref.update(data);
+  }
+
+  // deleteChat(obj) {
+  //   console.log(obj);
+  //   firebase.database().ref('chatrooms1/'+obj.key).remove();
+  //   // let data = {
+  //   //   "user_id": this.auth.getCurrentUserId(),
+  //   //   "job_id": obj.Job_detail.Id,
+  //   //   "receiver_id": obj.sender.id,
+  //   // };
+  //   // this.api.get(data, 1, 'delete_chat').then((result: any) => {
+  //   //   if (result.status == 1) {
+  //   //     this.getChatList(1);
+  //   //   }
+  //   // }, (err) => {
+  //   // });
+  // }
 
 
   openNoti() {

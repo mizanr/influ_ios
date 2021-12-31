@@ -17,6 +17,7 @@ import { AbstractControl } from '@angular/forms';
   templateUrl: 'signup.html',
 })
 export class SignupPage {
+  is_social:any;
   formData = {
     email: '',
     password: '',
@@ -37,6 +38,7 @@ export class SignupPage {
     category: '',
     gender: 'Any'
   }
+  profile_img_url:any='';
   blob_name: any = '';
   blob: any = '';
   categories: any = [];
@@ -53,10 +55,11 @@ export class SignupPage {
     public translate: TranslateService,
     public encrypt: EncryptProvider
   ) {
+    this.is_social=navParams.data.is_social||0;
     var d = new Date();
     var m = d.getMonth() + 1;
 
-    this.min1 = (d.getFullYear() - 18) + "-" + ((m > 9) ? m : "0" + m) + "-" + ((d.getDate() > 9) ? d.getDate() : "0" + d.getDate());
+    this.min1 = (d.getFullYear() - 13) + "-" + ((m > 9) ? m : "0" + m) + "-" + ((d.getDate() > 9) ? d.getDate() : "0" + d.getDate());
 
     this.formData.user_type = navParams.get('Type');
     if (this.formData.user_type == '2') {
@@ -91,15 +94,18 @@ export class SignupPage {
       category: ['', Validators.compose([Validators.required])],
     });
     if (this.navParams.get('SignupData')) {
+
       let l = this.navParams.get('SignupData');
+      console.log('social login data-----',l);
+      this.profile_img_url=l.profile_img_url;
       this.influForm.controls.first_name.value = l.Fname;
       this.influForm.controls.last_name.value = l.Lname;
       this.influForm.controls.email.value = l.Email;
       this.companyForm.controls.email.value = l.Email;
-      this.companyForm.get(['passwords', 'password']).value = 123456;
-      this.companyForm.get(['passwords', 'confirmP']).value = 123456;
-      this.influForm.get(['passwords', 'password']).value = 123456;
-      this.influForm.get(['passwords', 'confirmP']).value = 123456;
+      this.companyForm.get(['passwords', 'password']).value = '123456';
+      this.companyForm.get(['passwords', 'confirmP']).value = '123456';
+      this.influForm.get(['passwords', 'password']).value = '123456';
+      this.influForm.get(['passwords', 'confirmP']).value = '123456';
 
     }
   }
@@ -163,9 +169,12 @@ export class SignupPage {
     } else {
       passToEncrypt = this.influForm.get(['passwords', 'password']).value
     }
-    this.encrypt.getEncryptedData(passToEncrypt).then((r: any) => {
+    console.log('passToEncrypt-------',passToEncrypt);
+    // let r = this.encrypt.getEncryptedData2(passToEncrypt);
+   
+    this.encrypt.getEncryptedData2(passToEncrypt).then((r: any) => {
       console.log('Encrypter passwor=========', r);
-      r = r.trim();
+      r = r;
       let data = {
         // // "first_name": { "value": this.formData.first_name, "type": "FNAME" },
         // // "last_name": { "value": this.formData.last_name, "type": "LNAME" },
@@ -193,6 +202,8 @@ export class SignupPage {
         data['zip_code'] = { "value": this.formData.zip_code, "type": "NO" };
         data['company_website'] = { "value": this.companyForm.controls.company_website.value, "type": "NO" };
         data['company_desc'] = { "value": this.companyForm.controls.company_desc.value, "type": "NO" };
+        data['image'] = { "value": this.profile_img_url, "type": "NO" };
+
       } else {
         data['email'] = { "value": this.influForm.controls.email.value, "type": "NO" };
         data['country'] = { "value": this.influForm.controls.country.value, "type": "NO" };
@@ -206,6 +217,7 @@ export class SignupPage {
         data['dob'] = { "value": this.influForm.controls.dob.value, "type": "NO" };
         data['gender'] = { "value": this.influForm.controls.gender.value, "type": "NO" };
         data['category'] = { "value": this.influForm.controls.category.value, "type": "NO" };
+        data['image'] = { "value": this.profile_img_url, "type": "NO" };
       }
       if (this.navParams.get('SignupData')) {
         let l = this.navParams.get('SignupData');

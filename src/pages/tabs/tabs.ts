@@ -1,6 +1,6 @@
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { AuthProvider } from './../../providers/auth/auth';
-import { NavParams, Tabs, Events } from 'ionic-angular';
+import { NavParams, Tabs, Events, ModalController } from 'ionic-angular';
 import { AddJobPage } from './../add-job/add-job';
 import { Component, ViewChild } from '@angular/core';
 import * as firebase from 'Firebase';
@@ -15,21 +15,41 @@ export class TabsPage {
   // observableVar: any;
   mesgCount=0;
   count: any;
+  isguest:any;
+
+  // For login user
+
   tab1Root = 'HomePage';
   tab2Root = 'AddJobPage';
   tab3Root = 'ChatPage';
   tab4Root = 'CompanyProfilePage';
-
 
   tab5Root = 'HomeInfluencerPage';
   tab6Root = 'AddjobInfluPage';
   tab7Root = 'ChatPage';
   tab8Root = 'InfluencerProfilePage';
 
+
+  // For Guest user
+
+  tab9Root = 'HomePage';
+  tab10Root = '';
+  tab11Root = '';
+  tab12Root = '';
+
+  tab13Root = 'HomeInfluencerPage';
+  tab14Root = '';
+  tab15Root = '';
+  tab16Root = '';
+
   constructor(public navParams: NavParams,
     public auth: AuthProvider,
     public events: Events,
+    public modal:ModalController,
     public api: RestApiProvider) {
+      this.isguest = JSON.parse(localStorage.getItem('guest')) || 0;
+      console.log('isguest--------------',this.isguest);
+
     this.events.subscribe('SelectTab', (index) => {
       if (this.auth.getUserDetails().user_type == 1) {
         this.companyTabRef.select(index);
@@ -37,11 +57,13 @@ export class TabsPage {
         this.influTabRef.select(index);
       }
     });
-    this.getNotiUnread(0);
+    if(this.isguest==0){
+      this.getNotiUnread(0);
+     this.getUnreadMessageCount();
+    }
     this.events.subscribe('GetNotiCount', r => {
       this.getNotiUnread(0);
     })
-    this.getUnreadMessageCount();
     this.events.subscribe('chat_count_start',()=>{
       this.getUnreadMessageCount();
     })
@@ -100,4 +122,13 @@ export class TabsPage {
   //  $ev.setRoot($ev.root);
     $ev.popToRoot();//($ev.root);
   }
+
+  guestTabChanged($ev) {
+    console.log($ev);
+    if($ev.root=='') {
+      const modal = this.modal.create('LoginPopupPage',{},{cssClass:'moremodel',enableBackdropDismiss:true});
+      modal.present();
+    }
+  }
+
 }

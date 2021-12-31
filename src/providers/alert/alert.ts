@@ -401,10 +401,9 @@ export class AlertProvider {
 
 
   presentToast(message: string, position: string) {
-
     const toast = this.toastCtrl.create({
       message: message,
-      duration: 2000,
+      duration: 5000,
       position: position
     });
     toast.present();

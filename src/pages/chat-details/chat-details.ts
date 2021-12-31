@@ -38,7 +38,7 @@ export class ChatDetailsPage {
   sendBtnDisabledS = false;
   toggled: boolean = false;
   message: string;
-  baseUrl = "https://www.webwiders.com/WEB01/Influ/assets/media/";
+  baseUrl = "";
   senderImage: any;
   @ViewChild(Content) content: Content;
   constructor(public navCtrl: NavController, public navParams: NavParams, public api: RestApiProvider,
@@ -50,7 +50,7 @@ export class ChatDetailsPage {
     public media: MediaProvider,
     public download: DownloadProvider,
     public player: PlayAudioProvider) {
-
+      this.baseUrl=this.auth.mediaLink;
     this.senderImage = this.auth.getUserDetails().image
 
   }

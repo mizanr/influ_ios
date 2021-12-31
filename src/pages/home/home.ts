@@ -45,10 +45,11 @@ export class HomePage {
     public actionSheetCtrl: ActionSheetController,
     public paypal: PaypalProvider,
     public trans: TranslateService) {
-
+      
   }
 
   ionViewWillEnter() {
+    // alert("Home page will enter");
     this.start = 0;
     this.influStart = 0;
     this.getTopInflu(1);
@@ -88,7 +89,7 @@ export class HomePage {
       // "post_type": { "value": this.filter.post_type, "type": "NO" },
       // "start": { "value": this.start, "type": "NO" },
       // "limit": { "value": 2, "type": "NO" },
-      "user_id": this.auth.getCurrentUserId(),
+      "user_id": this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),
       "type": 2,
       // "keywords": { "value": this.filter.keywords, "type": "NO" },
       "category": this.filter.category,
@@ -101,6 +102,7 @@ export class HomePage {
       "limit": 30,
     }
     this.api.get(data, s, 'getPostList').then((res: any) => {
+    
       if (inf != '') {
         inf.complete();
       }
@@ -159,15 +161,17 @@ export class HomePage {
 
   getTopInflu(s) {
     let data = {
-      "user_id": this.auth.getCurrentUserId(),
+      "user_id": this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),
       "start": this.influStart,
       "limit": 10,
     }
     this.api.get(data, s, 'getTopInflu').then((res: any) => {
+
       if (res.status == 1) {
         this.showSpinner = false;
         if (this.influStart != 0) {
           if (res.data.length != 0) {
+
             this.topInflu = this.topInflu.concat(res.data);
           }
         } else {
@@ -251,7 +255,7 @@ export class HomePage {
 
     let data = {
       // "user_id": { "value": this.auth.getCurrentUserId(), "type": "NO" },
-      "hired_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
+      "hired_by": { "value": this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(), "type": "NO" },
       // "keywords": { "value": this.filter.keywords, "type": "NO" },
       "hired_to": { "value": post_user_id, "type": "NO" },
       "jobId": { "value": post_id, "type": "NO" },

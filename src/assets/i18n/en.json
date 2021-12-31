@@ -276,5 +276,15 @@
     "SKIP":"Skip",
     "REJECT1":"Reject",
     "ACCEPT":"Accept",
-    "MARK_AS":" Mark As Complete"
+    "MARK_AS":" Mark As Complete",
+    "SELECT_PAY_ACC":"Select Your Paypal Account",
+    "ADD_NEW_PAYPAL":"Add New Paypal Account",
+    "CONNECT_YOUR_PAYPAL":"Connect your paypal account",
+    "REMOVE_ACC":"Remove Account",
+    "ARE_YOU_SURE":"Are you sure?",
+    "THE_INFLU_HAVE_BEEN_HIRED_BY_YOU_SUCCESSFULLY": "The influencer have been hired by you successfully.",
+    "HIRED_INFLU":"Hired Influencer",
+    "WITHDRAWAL_FEE":"Withdrawal Fee"
+    
+
 }

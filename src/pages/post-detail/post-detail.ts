@@ -40,11 +40,16 @@ export class PostDetailPage {
   }
   ionViewWillEnter() {
     this.getPost(1);
+    // alert("Post Details page will enter")
+
+  }
+  ionViewDidLoad(){
+    // alert("Post Details page did load")
   }
 
   getPost(lodr:any) {
     let data = {
-      "user_id": this.auth.getCurrentUserId(),
+      "user_id": this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),
       "job_id": this.navParams.get('PostId'),
     }
     this.api.get(data, lodr, 'GetJobById').then((res: any) => {
@@ -82,7 +87,9 @@ export class PostDetailPage {
       console.log(amt);
       let k = parseFloat(amt);
       let modal = this.api.modalCtrl.create('PaypalButtonPage', { Amount: k }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
+    
       modal.onDidDismiss((data: any) => {
+        console.log('payment id -----',data);
         if (data) {
           this.runHireApi(obj, post_user_id, post_id, amt, data);
         }
@@ -97,7 +104,7 @@ export class PostDetailPage {
   }
 
   runHireApi(post, post_user_id, post_id, amt, tId) {
-
+    console.log('hiring api -----');
     let data = {
       // "user_id": { "value": this.auth.getCurrentUserId(), "type": "NO" },
       "hired_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
@@ -109,11 +116,15 @@ export class PostDetailPage {
       admin_comission:{value:this.influServiceFee,type:'NO'},
     }
     this.api.postData(data, 0, 'jobHiring').then((res: any) => {
+      
       if (res.status == 1) {
+        console.log('hiring api success-----');
         const modal = this.api.modalCtrl.create('SuccessfullPage', {}, { cssClass: 'moremodel', showBackdrop: true, enableBackdropDismiss: true });
+        post.isPayment = 1;
         modal.present();
         modal.onDidDismiss(() => {
-          post.isPayment = 1;
+        
+
         })
       }
       else {
@@ -290,6 +301,11 @@ export class PostDetailPage {
         this.getPost(0);
       }
     })
+  }
+
+  login(){
+    const modal = this.api.modal.create('LoginPopupPage',{},{cssClass:'moremodel',enableBackdropDismiss:true});
+    modal.present();
   }
 
 }

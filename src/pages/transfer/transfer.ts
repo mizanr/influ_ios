@@ -15,6 +15,7 @@ export class TransferPage {
   user_info:any;
   bank_detail:any={};
   amount:any;
+  paypal_email:any;
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     public auth: AuthProvider,
@@ -22,6 +23,7 @@ export class TransferPage {
     public api: RestApiProvider,
     public alert: AlertProvider,
     public viewCtrl: ViewController) {
+      this.paypal_email=navParams.data.paypal_email;
   }
 
   ionViewDidLoad() {
@@ -113,7 +115,7 @@ export class TransferPage {
       return;
     }
 
-    let url = `withdraw_request?amount=${this.amount}&user_id=${this.auth.getCurrentUserId()}`;
+    let url = `withdraw_request?amount=${this.amount}&user_id=${this.auth.getCurrentUserId()}&email_id=${this.paypal_email}`;
     this.api.get({},1,url).then((res:any) => {
       if(res.status==1){
         this.alert.presentToast(res.message,"bottom");

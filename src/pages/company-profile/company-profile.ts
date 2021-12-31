@@ -31,6 +31,7 @@ export class CompanyProfilePage {
   posts: any;
   ownerId: any;
   hired_services = [];
+  completed_job:any = new Array();
 
   noHireData = false;
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -44,7 +45,7 @@ export class CompanyProfilePage {
 
   ionViewWillEnter() {
     if (this.navParams.get('ID')) {
-      this.ownerId = this.navParams.get('ID')
+      this.ownerId = this.navParams.get('ID');
     } else {
       this.ownerId = this.auth.getCurrentUserId();
     };
@@ -61,17 +62,46 @@ export class CompanyProfilePage {
         this.hires = res.no_of_hires;
         this.posts = res.no_of_posts;
         this.getJob();
+        this.get_completed_job();
       }
       else {
       }
     })
   }
 
-  getJob() {
+  get_completed_job() {
     let data = {
-      "user_id": { "value": this.ownerId, "type": "NO" },
+      user_id:this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),
+     // session_id:this.auth.getCurrentUserId(),
     }
-    this.api.postData(data, 0, 'GetMyJobList').then((res: any) => {
+    let url ;
+    let isguest = JSON.parse(localStorage.getItem('guest'));
+    if((this.auth.isUserLoggedIn()&&this.auth.getUserDetails().user_type==2) || isguest==2){
+     url = `GetInfluCompletedJobs`;
+    } else {
+     url = `GetCompanyCompletedJobs`;
+    }
+    this.api.get(data,0,url).then((res:any) => {
+      console.log(res);
+      if(res.status==1){
+        this.completed_job=res.data;
+      }
+    })
+  }
+
+  getJob() {
+    let url;
+    let data = {
+      user_id: this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),
+      //session_id:{value:this.auth.getCurrentUserId(),type:'NO'},
+    }
+    let isguest = JSON.parse(localStorage.getItem('guest'));
+    if((this.auth.isUserLoggedIn()&&this.auth.getUserDetails().user_type==2) || isguest==2){
+      url = `GetInfluOpenJobs`;
+     } else {
+      url = `GetCompanyOpenJobs`;
+     }
+    this.api.get(data,0,url).then((res: any) => {
       this.getHiredService();
       if (res.status == 1) {
         this.jobs = res.data;
@@ -105,6 +135,7 @@ export class CompanyProfilePage {
   getHiredService() {
     let data = {
       "user_id": { "value": this.ownerId, "type": "NO" },
+      session_id:{valut:this.auth.isUserLoggedIn()?this.auth.getCurrentUserId():this.auth.guest_id(),type:'NO'},
     }
     this.api.postData(data, 0, 'HiredByMe').then((res: any) => {
       if (res.status == 1) {
@@ -129,7 +160,7 @@ export class CompanyProfilePage {
 
 
   postdetail(id) {
-    // let profileModal = this.modalCtrl.create('PostDetailPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
+    // let profileModal = this.modalCtrl.create('PostDeta0ilPage', { PostId: id }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
     // profileModal.present();
     this.navCtrl.push('PostDetailPage', { PostId: id });
   }
@@ -155,7 +186,7 @@ export class CompanyProfilePage {
       "block_to":  this.ownerId,
       "block_by":this.auth.getCurrentUserId()
     }
-    //https://www.webwiders.com/WEB01/Influ/Api/BlockCompany?block_by=51&block_to=52
+    //https://www.webwiwders.com/WEB01/Influ/Api/BlockCompany?block_by=51&block_to=52
       this.api.get(data,1,'BlockCompany').then((res:any)=>{
             if(res.status==1){
               this.navCtrl.pop();

@@ -62,12 +62,17 @@
       <p text-wrap text-capitalize>${{detail.price}}</p>
     </ion-item>
 
-    <ion-item no-lines no-padding margin-top *ngIf="auth.getUserDetails().user_type==1">
+    <ion-item no-lines no-padding margin-top *ngIf="auth?.isUserLoggedIn()&&auth?.getUserDetails()?.user_type==2">
+      <h3>Service Fee</h3>
+      <p text-wrap text-capitalize>${{detail.influ_service_charge}}</p>
+    </ion-item>
+
+    <ion-item no-lines no-padding margin-top *ngIf="auth?.isUserLoggedIn()&&auth?.getUserDetails().user_type==1">
       <h3>{{'INFLU_SERVICE_FEE' | translate}}</h3>
       <p text-wrap text-capitalize>${{influServiceFee}} ({{influeServiceInPercent}}%)</p>
     </ion-item>
 
-    <ion-item no-lines no-padding margin-top *ngIf="auth.getUserDetails().user_type==1">
+    <ion-item no-lines no-padding margin-top *ngIf="auth?.isUserLoggedIn()&&auth.getUserDetails().user_type==1">
       <h3>{{'YOU_NEED_PAY' | translate}}</h3>
       <p text-wrap text-capitalize>${{auth.getFloat(detail.price)+ auth.getFloat(influServiceFee)}}</p>
     </ion-item>
@@ -196,9 +201,16 @@
     <!-- </div> -->
 
     
+      <div text-center>
+        <button *ngIf="!auth?.isUserLoggedIn()&&detail.isPayment==0"
+          (click)="login()"
+          class="btn-theme" small ion-button>
+          {{'BUY_NOW' | translate}}
+        </button>
+      </div>
+      
 
-
-    <div text-center *ngIf="auth.getUserDetails().user_type==1&&isdeleted==0" margin-top>
+    <div text-center *ngIf="auth?.isUserLoggedIn()&&auth?.getUserDetails().user_type==1&&isdeleted==0" margin-top>
       <button *ngIf="detail.isPayment==0"
         (click)="hire(detail,detail.created_by.id,detail.Id,auth.getFloat(detail.price)+ auth.getFloat(influServiceFee));$event.stopPropagation()"
         class="btn-theme" small ion-button>
@@ -235,7 +247,7 @@
   </div>
 
 
-  <ion-row *ngIf="auth.getCurrentUserId()==detail?.created_by?.id&&isdeleted==0" margin-top>
+  <ion-row *ngIf="auth?.isUserLoggedIn()&&auth?.getCurrentUserId()==detail?.created_by?.id&&isdeleted==0" margin-top>
     <ion-col col-auto>
       <button style="width: 63px;" (click)="edit(detail.Id)" ion-button round small class="btn-theme btn_view">{{'EDIT'| translate}}</button>
     </ion-col>

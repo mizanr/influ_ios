@@ -25,17 +25,14 @@
 
     
     <!-- *ngIf="user_info?.withdraw_pending_status==0&&user_info?.wallet_amount>0" -->
-    <div class="btn_theme btn-theme" *ngIf="user_info?.withdraw_pending_status==0&&user_info?.wallet_amount>0">
+    <div class="btn_theme btn-theme" 
+    *ngIf="user_info?.withdraw_pending_status==0&&user_info?.wallet_amount>0&&paypal_accounts.length==0">
       <!-- <p>{{'VIEW_ALL_TRANSACTIONS' | translate}}</p> -->
-      <p (click)="trans()">Withdrawal Fund's in your paypal</p>
-    </div>
-
-
-
-
+      <p (click)="paypal_popup()">{{'CONNECT_YOUR_PAYPAL' | translate}}</p>
+    </div> 
   </div>
 
-  <div id="lippButton" margin text-center></div>
+  <!-- <div id="lippButton" margin text-center></div> -->
 
 
   <ion-row class="withdrawal-css" *ngIf="is_dithdrawal">
@@ -48,6 +45,76 @@
       [disabled]="!withdrawal_amount.trim()">{{'WITHDRAWAL' | translate}}</button>
       </ion-col>
   </ion-row>
+
+
+                          <!-- Pay-pal account Content  *ngIf="paypal_accounts.length>0"-->
+
+  <div class="login_form" *ngIf="paypal_accounts.length>0&&user_info?.withdraw_pending_status==0" margin-bottom>
+    <ion-title>{{'SELECT_PAY_ACC' | translate}}</ion-title>
+    <div margin-top>
+    <!-- <ion-item *ngFor="let l of paypal_accounts" (click)="go(l);$event.stopPropagation();">
+      <ion-avatar item-start>
+        <img src="../../assets/imgs/paypal.png">
+      </ion-avatar>
+      <h3>{{l.paypal_id}}</h3>
+      <button ion-button clear item-end (click)="delete(l);$event.stopPropagation();">
+        <ion-icon name="md-trash" color="danger"></ion-icon>
+      </button>
+    </ion-item> -->
+      <ion-row align-items-center *ngFor="let l of paypal_accounts;let i=index">
+        <ion-col col-1 text-right>
+            <ion-checkbox (ionChange)="paypal_checkevent($event,l,i)"
+            [(ngModel)]="l.ischecked"></ion-checkbox>        
+        </ion-col>
+        <ion-col col-11 >
+          <ion-item no-padding>
+            <ion-label>{{l.paypal_id}}</ion-label>
+            <button ion-button clear item-end (click)="delete(l);$event.stopPropagation();">
+              <ion-icon name="md-trash" color="danger"></ion-icon>
+            </button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      
+   
+    <!-- <div text-center *ngIf="paypal_accounts.length==0">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div> -->
+    <ion-row *ngIf="paypal_accounts.length<=1" margin-top>
+      <ion-col col-12 text-center>
+        <button ion-button block class="btn-theme" (click)="paypal_popup()">Add More</button>
+        <!-- <button ion-button block class="btn-theme" (click)="add()">{{'ADD_NEW_PAYPAL' | translate}}</button> -->
+      </ion-col>
+    </ion-row>
+    </div>
+    </div>
+
+    <!-- *ngIf='user_info?.withdraw_pending_status==0&&is_paypal_check' -->
+
+    <div class="login_form" *ngIf='user_info?.withdraw_pending_status==0&&is_paypal_check&&paypal_accounts.length>0'>
+  
+      <h3 style="font-size: 16px;text-align: center;color: #000;margin-bottom: 20px;">
+       {{'WALLETTOTRANS' | translate}}</h3>
+  
+      <ion-list>
+        <label>{{'AMOUNT' | translate}}</label> 
+        <span style="color: red;">(Minimum withdrawal amount ${{user_info?.min_withdraw_amt}},Maximum withdrawal amount ${{user_info?.max_withdraw_amt}}.)</span>
+        <ion-item  no-lines no-padding text-center>
+          <ion-input type="number" placeholder="{{'AMOUNT' | translate}}" [(ngModel)]="amount"
+          class="am-input"></ion-input>
+        </ion-item>
+        <label>Note:</label> 
+        <span style="color: red;">({{'WITHDRAWAL_FEE' | translate}} : {{user_info?.withdrawal_fee}}%)</span>
+      </ion-list>
+
+      <div  class="btn_grp" margin-bottom>
+        <button ion-button round block class="btn-theme" [disabled]="!amount.trim()"
+        (click)="withdrawal_submit()">{{'SUBMIT' | translate}}</button>
+      </div>
+
+    </div>
+
+
 
 <div>
   <ion-segment [(ngModel)]="type">
@@ -92,14 +159,19 @@
 
   <div *ngIf="type=='serv'" margin-top>
     <ion-item *ngFor="let s of earnings">
-      <h3 (click)="service_detail(s.jobId);$event.stopPropagation();">
+      <h3 (click)="service_detail(s.jobId);$event.stopPropagation();" *ngIf="s.type==2">
         {{'SERVICE_TITLE' | translate}}: <strong>{{s.job_title}}</strong></h3>
+
+        <h3 (click)="job_detail(s.jobId);$event.stopPropagation();" *ngIf="s.type==1">
+          Job Title: <strong>{{s.job_title}}</strong></h3>
+
       <h3 (click)="profile(s.hired_by);$event.stopPropagation();">
         {{'HIRED_BY' | translate}}: <strong>{{s.company_name}}</strong></h3>
       <h3>{{'EARN_AMOUNT' | translate}}: ${{s.user_amount}}</h3>
-      <p>{{s.created_at | date:'MMM,dd,yyyy , hh:mm:a'}}</p>
+      <h3>Service Fee: ${{s.service_fee}}</h3>
+      <p>{{s.created_at.replace(' ','T') | date:'MMM,dd,yyyy , hh:mm:a'}}</p>
     </ion-item>
-    <div class="noDatadiv" *ngIf="histories.length==0">
+    <div class="noDatadiv" *ngIf="earnings.length==0">
       <ion-icon name="ios-search-outline"></ion-icon>
       <p>{{'NO_DATA_FOUND' | translate}}</p>
     </div>

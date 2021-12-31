@@ -4,6 +4,8 @@ import { AuthProvider } from './../../providers/auth/auth';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { k } from '@angular/core/src/render3';
+import { AlertProvider } from '../../providers/alert/alert';
+import { RatePopupPage } from '../rate-popup/rate-popup';
 
 
 @IonicPage()
@@ -16,6 +18,7 @@ export class AppliedInfluencerPage {
   noData = false;
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public auth: AuthProvider,
+    public alert:AlertProvider,
     public api: RestApiProvider,
     public fireP: FirebaseProvider) {
     this.getinflus()
@@ -79,6 +82,113 @@ export class AppliedInfluencerPage {
 
     });
   }
+
+
+  hired(k) {
+    console.log(k);
+    let amount = Number(k.price) + Number(k.influ_service_fee);
+    // let k = parseFloat(amt);
+      let modal = this.api.modalCtrl.create('PaypalButtonPage', { Amount: amount }, { cssClass: "alertModal", enableBackdropDismiss: true, showBackdrop: true });
+      modal.onDidDismiss((data: any) => {
+        console.log(data);
+        if (data) {
+          this.runHireApi(k.apply_by,k.Id,amount,data,k.influ_service_fee,k.applied_id);
+        }
+      });
+      modal.present();
+
+  }
+
+  runHireApi(hired_to, jobId, amt, tId,admincomm,applied_id) {
+
+    let data = {
+      "hired_by": { "value": this.auth.getCurrentUserId(), "type": "NO" },
+      "hired_to": { "value": hired_to, "type": "NO" },
+      "jobId": { "value": jobId, "type": "NO" },
+      "amount": { "value": amt, "type": "NO" },
+      "trasnsactionId": { "value": tId, "type": "NO" },
+      'admin_comission':{value:admincomm,type:'NO'},
+      applied_id:{value:applied_id,type:'NO'},
+    }
+    this.api.postData(data, 0, 'jobHiring').then((res: any) => {
+      if (res.status == 1) {
+        const modal = this.api.modalCtrl.create('SuccessfullPage', {type:1}, { cssClass: 'moremodel', showBackdrop: true, enableBackdropDismiss: true });
+        modal.present();
+        modal.onDidDismiss(() => {
+          this.getinflus();
+          // post.isPayment = 1;
+        })
+      }
+      else {
+      }
+    });
+  }
+
+
+  mark_as_complete(k:any) {
+    console.log(k);
+    this.alert.confirmationAlert('Complete Job','Are you sure?').then((res:any) => {
+      if(res){
+        let Data = {
+          id:k.Id,
+          // user_id:k.apply_by,
+          // company_id:this.auth.getCurrentUserId(),
+          hired_id:k.hired_id,
+        }
+        this.api.get(Data,1,'MarkAsComplete').then((res:any) => {
+          console.log(res);
+          if(res.status==1){
+            this.getinflus();
+            if(k.is_rated==0){
+              setTimeout(() => {
+                this.rate_now(k);
+              }, 200);
+            }  
+            // this.ionViewWillEnter();
+             // this.getPost(0);
+          }
+        })
+      }
+    });    
+  }
+
+
+  rate_now(k) {
+    let d = {
+      id:k.apply_by
+    }
+    let ratemodal = this.api.modalCtrl.create(RatePopupPage, {data:d}, { cssClass: 'ratemodal' });
+    ratemodal.present();
+    ratemodal.onDidDismiss((data) => {
+      if(data){
+        this.getinflus();
+        // this.getPost(0);
+      }
+    })
+  }
+
+
+  reject(k) {
+    console.log(k);
+    this.alert.confirmationAlert('Reject Job','Are you sure?').then((res:any) => {
+      if(res){
+        let Data = {
+          // id:k.Id,
+          id:k.applied_id,
+          user_id:this.auth.getCurrentUserId(),
+          // company_id:this.auth.getCurrentUserId(),
+          // hired_id:k.hired_id,
+        }
+        this.api.get(Data,1,'reject_request').then((res:any) => {
+          console.log(res);
+          if(res.status==1){
+            this.getinflus();
+          }
+        })
+      }
+    }); 
+  }
+
 
 
 }

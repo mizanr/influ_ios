@@ -1,3 +1,4 @@
+import {Platform } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -23,6 +24,7 @@ export class ImageProvider {
     public alertCtrl: AlertController,
     // public fileChooser:FileChooser,
     public file: File,
+    public plt:Platform,
     public trans: TranslateService
   ) {
     console.log('Hello ImageProvider Provider');
@@ -31,7 +33,7 @@ export class ImageProvider {
 
   getImageForCrop() {
     return new Promise((resolve, reject) => {
-      if (Camera['installed']()) {
+      if (this.plt.is('cordova')) {
 
         this.alertCtrl.create({
           title: this.trans.instant('SET_PHOTO'),
@@ -103,7 +105,7 @@ export class ImageProvider {
 
   getImage() {
     return new Promise((resolve, reject) => {
-      if (Camera['installed']()) {
+      if (this.plt.is('cordova')) {
 
         this.alertCtrl.create({
           title: this.trans.instant('SET_PHOTO'),
@@ -117,7 +119,7 @@ export class ImageProvider {
               text: this.trans.instant('CHOOSE_FROM_GALLERY'),
               handler: () => {
 
-                this.camera.getPicture
+                // this.camera.getPicture
 
                 this.camera.getPicture({
                   quality: 100,
@@ -132,6 +134,7 @@ export class ImageProvider {
                 }).then((data) => {
                   resolve('data:image/jpeg;base64,' + data);
                 }, (err) => {
+                  alert('image error'+JSON.stringify(err));
                   reject('Unable to take photo: ' + err);
                 })
 
@@ -153,6 +156,7 @@ export class ImageProvider {
                 }).then((data) => {
                   resolve('data:image/jpeg;base64,' + data);
                 }, (err) => {
+                  alert('image----'+JSON.stringify(err));
                   reject('Unable to take photo: ' + err);
                 })
 

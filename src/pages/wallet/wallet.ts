@@ -6,6 +6,7 @@ import { AlertProvider } from '../../providers/alert/alert';
 import { AuthProvider } from '../../providers/auth/auth';
 import { RestApiProvider } from '../../providers/rest-api/rest-api';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { WithdrawalPopupPage } from '../withdrawal-popup/withdrawal-popup';
 declare var paypal;
 @IonicPage()
 @Component({
@@ -19,6 +20,11 @@ histories:any=new Array();
 user_info:any;
 withdrawal_amount:any='';
 is_dithdrawal:boolean=false;
+paypal_accounts:any=[];
+amount:any='';
+paypal_email:any;
+is_paypal_check:any=false;
+
   constructor(public navCtrl: NavController,
      public navParams: NavParams, 
      public auth: AuthProvider,
@@ -27,7 +33,6 @@ is_dithdrawal:boolean=false;
     private iab: InAppBrowser,
     public alert: AlertProvider,
      public modalCtrl: ModalController) {
-      this.paypal_login();
       this.user_info=this.auth.getUserDetails();
   }
 
@@ -41,9 +46,9 @@ is_dithdrawal:boolean=false;
     this.get_earning();
   }
 
-  amount_popup() {
+  amount_popup(paypal_account:any) {
     // this.is_dithdrawal=!this.is_dithdrawal;
-    const modal = this.modalCtrl.create('TransferPage',{},{cssClass:'moremodel', showBackdrop:true, enableBackdropDismiss:true});
+    const modal = this.modalCtrl.create('TransferPage',{paypal_email:paypal_account.paypal_id},{cssClass:'moremodel', showBackdrop:true, enableBackdropDismiss:true});
      modal.present();
      modal.onDidDismiss((data) => {
        if(data){
@@ -52,40 +57,51 @@ is_dithdrawal:boolean=false;
      })
   }
 
-  trans(){
-    if(this.user_info.paypal_email!=''){
-      this.amount_popup();
-    } else {
-      const browser = this.iab.create('https://www.webwiders.com/WEB01/Influ/button.php', '_blank', 'location=yes');
-      // browser.show();
-      browser.on('loadstop').subscribe(event => {  
-        console.log('load stop callled........................');
-        // var interval = setInterval(() => {
-          browser.executeScript({code: "JSON.parse(localStorage.getItem('paypalsession'))"})
-          .then((session) => {      
-            // JSON.parse(localStorage.getItem('paypalsession'));
-            console.log('inapp =========',session);
-            if(session&&session!=null){
-                if(session[0].status==1){
-                  browser.close();
-                  // clearInterval(interval);
-                  let Data = {
-                    email:session[0].email,
-                    user_id:this.auth.getCurrentUserId(),
-                  }
-                  this.api.get(Data,1,'update_paypal_email').then((res:any) => {
-                    console.log(res);
-                    if(res.status==1){
-                      this.amount_popup();
-                    }
-                  })
-                } else {
+  opne_inapp() {
+    // this.alert.presentToast('msizantest in app button clicked','bottom');
+    const browser = this.iab.create('https://app-api.influen.site/button.php', '_blank','location=no,clearsessioncache=yes');
+    browser.show();
+    // this.alert.presentToast('miszantest created -----','bottom');
+    browser.insertCSS({code:"body{background-color:white;height:100vh;width:100%;}"});
+    // browser.show();
+    browser.on('loadstop').subscribe(event => {  
+      console.log('load stop callled........................');
+      // var interval = setInterval(() => {
+        browser.executeScript({code: "JSON.parse(localStorage.getItem('paypalsession'))"})
+        .then((session) => {      
+          // JSON.parse(localStorage.getItem('paypalsession'));
+          console.log('inapp =========',session);
+          if(session&&session!=null){
+              if(session[0].status==1){
+                browser.close();
+                browser.executeScript({code: "localStorage.removeItem('paypalsession')"}).then(() =>{});
+                // clearInterval(interval);
+                let Data = {
+                  paypal_id:session[0].email,
+                  user_id:this.auth.getCurrentUserId(),
                 }
-              // },1000) 
-            }         
-          });
-        // }, 1000);
-     });
+                this.api.get(Data,1,'add_paypal_account').then((res:any) => {
+                  console.log(res);
+                  if(res.status==1){
+                    this.get_user_info();
+                    // this.paypay_account();
+                  }
+                })
+              } else {
+              }
+            // },1000) 
+          }         
+        });
+      // }, 1000);
+   });
+  }
+
+  trans(){
+    if(this.paypal_accounts.length>0){
+      // this.paypay_account();
+      this.opne_inapp();
+    } else {
+      this.opne_inapp();
     }
   }
 
@@ -113,6 +129,10 @@ is_dithdrawal:boolean=false;
     this.navCtrl.push('PostDetailPage', { PostId: id });
   }
 
+  job_detail(id) {
+    this.navCtrl.push('JobDetialPage', { JobId: id });
+  }
+
   profile(id) {
     this.navCtrl.push('CompanyProfilePage', { ID: id });
   }
@@ -123,6 +143,15 @@ is_dithdrawal:boolean=false;
       console.log(res);
       if(res.status==1){
         this.user_info=res.data;
+        this.paypal_accounts=res.paypal_account;
+
+        if(this.paypal_accounts.length>0){
+          this.paypal_email=this.paypal_accounts[0].paypal_id;
+          this.paypal_email=this.paypal_accounts[0].ischecked=true;
+          this.is_paypal_check=true;
+        }
+
+        this.amount=parseInt(this.user_info.wallet_amount)>parseInt(this.user_info.max_withdraw_amt)?this.user_info.max_withdraw_amt:this.user_info.wallet_amount;
       }
     })
   }
@@ -158,22 +187,152 @@ is_dithdrawal:boolean=false;
     
   }
 
-  paypal_login() {    
-    paypal.use( ['login'], function (login) {
-      login.render ({
-        "appid":"AWB3lHZ7zhjGTNx4ZI3g_NNhEf0WZwMaSid4Ixu77ihJbVN9KB-Xpp6y3yMkcnO_IeO8An3Pfp_5xSYR",
-        "authend":"sandbox",
-        "scopes":"email",
-        "containerid":"lippButton",
-        "responseType":"code",
-        "locale":"en-us",
-        "buttonType":"LWP",
-        "buttonShape":"pill",
-        "buttonSize":"lg",
-        "fullPage":"true",
-        "returnurl":"https://www.webwiders.com/WEB01/Influ/resp/get_paypal_info"
-      });
-    });    
+  paypay_account() {
+    const modal = this.modalCtrl.create('PaypalAccountPage',{},{cssClass:'moremodel', showBackdrop:true, enableBackdropDismiss:true});
+     modal.present();
+     modal.onDidDismiss((data) => {
+       if(data){
+         if(data==1){
+           this.opne_inapp();
+         } else if(data == 2){
+          this.get_user_info();
+         } else {
+          console.log(data);
+          this.amount_popup(data);
+         }
+        //  this.ionViewWillEnter();
+       }
+     })
+  }
+
+  // paypal_login() {    
+  //   paypal.use( ['login'], function (login) {
+  //     login.render ({
+  //       "appid":"AWB3lHZ7zhjGTNx4ZI3g_NNhEf0WZwMaSid4Ixu77ihJbVN9KB-Xpp6y3yMkcnO_IeO8An3Pfp_5xSYR",
+  //       "authend":"sandbox",
+  //       "scopes":"email",
+  //       "containerid":"lippButton",
+  //       "responseType":"code",
+  //       "locale":"en-us",
+  //       "buttonType":"LWP",
+  //       "buttonShape":"pill",
+  //       "buttonSize":"lg",
+  //       "fullPage":"true",
+  //       "returnurl":"https://www.webwiders.com/WEB01/Influ/resp/get_paypal_info"
+  //     });
+  //   });    
+  // }
+
+
+  withdrawal_submit() {
+    if(parseInt(this.amount)<parseInt(this.user_info.min_withdraw_amt)){
+      // this.alert.presentToast(this.trans.instant('MINMUM_WITHDRAWAL_AMOUNT')`$${this.user_info.min_withdraw_amt}.`,'bottom');
+      this.alert.presentToast(`Minmum withdrawal amount$${this.user_info.min_withdraw_amt}.`,'bottom');
+      return;
+    }
+    if(parseInt(this.amount)>parseInt(this.user_info.max_withdraw_amt)){
+      // this.alert.presentToast(this.trans.instant('MAXMUM_WITHDRAWAL_AMOUNT')`$${this.user_info.max_withdraw_amt}.`,'bottom');
+      this.alert.presentToast(`Maxmum withdrawal amount $${this.user_info.max_withdraw_amt}.`,'bottom');
+      return;
+    }
+
+
+    if(parseInt(this.amount)>parseInt(this.user_info.wallet_amount)){
+      // this.alert.presentToast(this.trans.instant('MAXMUM_WITHDRAWAL_AMOUNT')`$${this.user_info.max_withdraw_amt}.`,'bottom');
+      this.alert.presentToast(`Insufficient Fund.`,'bottom');
+      return;
+    }
+
+
+
+    let url = `withdraw_request?amount=${this.amount}&user_id=${this.auth.getCurrentUserId()}&email_id=${this.paypal_email}`;
+    this.api.get({},1,url).then((res:any) => {
+      if(res.status==1){
+        this.is_paypal_check=false;
+        this.ionViewWillEnter();
+        this.alert.presentToast(res.message,"bottom");
+        // this.viewCtrl.dismiss(true);
+      } else {
+        this.alert.presentToast(res.message,"bottom");
+      }
+    })
+  }
+
+  paypal_checkevent(ev,paypal:any,inx:any) {
+    // ev.stopPropagation();
+    console.log(ev);
+    // if(ev.value==true){
+
+    // }
+    if(ev.value==true){
+      for(let i =0;i<this.paypal_accounts.length;i++){
+        if(inx!=i){
+          this.paypal_accounts[i].ischecked=false;
+        } else 
+        {
+          this.paypal_accounts[inx].ischecked=true;
+          // this.paypal_email=this.paypal_accounts[inx].paypal_id;
+          // this.is_paypal_check=true;
+        }
+      }
+    }
+   
+
+    let f = this.paypal_accounts.filter((item) => {
+      return item.ischecked;
+    })
+
+    console.log(f);
+
+    if(f.length>0){
+      this.paypal_email=f[0].paypal_id;
+      this.is_paypal_check=true;
+    } else {
+      this.paypal_email='';
+      this.is_paypal_check=false;
+    }
+
+  }
+
+  delete(l) {
+    this.alert.confirmationAlert(
+      this.translate.instant('REMOVE_ACC'),
+      this.translate.instant('ARE_YOU_SURE')).then((res:any) => {
+      if(res){
+        let Data = {
+          paypal_id:l.paypal_id,
+          user_id:this.auth.getCurrentUserId(),
+        }
+        this.api.get(Data,1,'remove_paypal_account').then((res:any) => {
+          console.log(res);
+          if(res.status==1){
+            this.get_user_info();
+            // this.paypay_account();
+          }
+        })
+      }
+    })
+  }
+
+  paypal_popup() {
+    const modal = this.modalCtrl.create(WithdrawalPopupPage,{},{cssClass:'moremodel',enableBackdropDismiss:true});
+    modal.present();
+    modal.onDidDismiss((data) => {
+      console.log(data);
+      if(data){
+        let Data = {
+          paypal_id:data,
+          user_id:this.auth.getCurrentUserId(),
+        }
+        this.api.get(Data,1,'add_paypal_account').then((res:any) => {
+          console.log(res);
+          if(res.status==1){
+            this.get_user_info();
+            // this.paypay_account();
+          }
+        })
+      }
+    })
   }
 
 }

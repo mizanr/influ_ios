@@ -3,7 +3,7 @@ import { AlertProvider } from './../../providers/alert/alert';
 import { AuthProvider } from './../../providers/auth/auth';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component } from '@angular/core';
-import { NavController, NavParams, IonicPage } from 'ionic-angular';
+import { NavController, NavParams, IonicPage, Events } from 'ionic-angular';
 
 /**
  * Generated class for the BlocklistPage page.
@@ -24,6 +24,7 @@ export class BlocklistPage {
     public api:RestApiProvider,
     public trans:TranslateService,
     public alert:AlertProvider,
+    public events:Events,
     public auth:AuthProvider,
     public navParams: NavParams) {
   }
@@ -58,6 +59,7 @@ export class BlocklistPage {
     }
     this.api.get(data,1,'UnBlockCompany').then((res:any)=>{
       if(res.status==1){
+        this.events.publish('list_refresh',true);
           this.get_block(); 
          this.alert.presentToast(this.trans.instant('UNBLOCKED_SUCCESSFULL'),'bottom');
 

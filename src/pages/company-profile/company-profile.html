@@ -16,7 +16,7 @@
         <ion-icon color="light" name="md-menu"></ion-icon>
       </button>
       <div class="rightIcons" [ngClass]="auth.getUserLanguage()=='en'?'eng':'noteng'">
-        <button *ngIf="ownerId!=this.auth.getCurrentUserId()" (click)="openAction()" ion-button clear icon-only
+        <button *ngIf="auth?.isUserLoggedIn()&&ownerId!=auth?.getCurrentUserId()" (click)="openAction()" ion-button clear icon-only
         class="moreBtn">
         <ion-icon style="color:white" name="md-more"></ion-icon>
       </button>
@@ -62,7 +62,7 @@
             <!-- <button *ngIf="ownerId!=auth.getCurrentUserId()" ion-button round small class="btn-theme">{{'MESSAGE' |
               translate}}</button> -->
 
-            <div *ngIf="ownerId==auth.getCurrentUserId()">
+            <div *ngIf="auth?.isUserLoggedIn()&&ownerId==auth?.getCurrentUserId()">
               <button (click)="opneEdit()" [ngClass]="auth.getUserLanguage()=='en'?'':'inLeft'" class="inRight"
                 ion-button clear icon-only><img width="30" src="../../assets/imgs/edit.png">
               </button>
@@ -84,6 +84,10 @@
     </ion-segment-button>
     <ion-segment-button value="Service">
       {{'OPEN_JOBS' | translate}}
+    </ion-segment-button>
+
+    <ion-segment-button value="Completed">
+     Completed Jobs
     </ion-segment-button>
   </ion-segment>
 
@@ -126,16 +130,34 @@
 
 
     <div *ngSwitchCase="'Service'" style="padding: 16px 16px;" class="scroll_div">
-      <div class="noDatadiv" *ngIf="noData">
+
+      <div class="noDatadiv" *ngIf="jobs.length==0">
         <ion-icon name="ios-search-outline"></ion-icon>
         <p>{{'NO_DATA_FOUND' | translate}}</p>
       </div>
 
+      <div class="noDatadiv" *ngIf="noData">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
+      </div>
       <div *ngFor="let k of jobs" class="feed">
+        <post [k]='k'></post>
+      </div>
+    </div>
+
+
+    <div *ngSwitchCase="'Completed'" style="padding: 16px 16px;" class="scroll_div">
+      <div class="noDatadiv" *ngIf="completed_job.length==0">
+        <ion-icon name="ios-search-outline"></ion-icon>
+        <p>{{'NO_DATA_FOUND' | translate}}</p>
+      </div>
+
+      <div *ngFor="let k of completed_job" class="feed">
 
         <post [k]='k'></post>
       </div>
     </div>
+
   </div>
 
 </ion-content>

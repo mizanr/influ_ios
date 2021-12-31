@@ -23,7 +23,7 @@
     </ion-avatar>
     <!-- <p style="color: #acacac;">{{'COMPANY_NAME' | translate}}Company Name, USA</p> -->
     <h2 *ngIf="k.user_type=='2'" style="color: #333;">{{k.first_name+' '+k.last_name}}</h2>
-    <h2 *ngIf="k.user_type=='1'" style="color: #333;">{{k.company_name}}</h2>
+    <h2 *ngIf="k.user_type=='1'" style="color: #333;" text-wrap>{{k.company_name}}</h2>
     
     <button (click)="unblock(k)" ion-button round small class="btn-theme btn_view" item-end>{{'UNBLOCK' | translate}}</button>
   </ion-item>

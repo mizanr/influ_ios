@@ -32,6 +32,7 @@ export class EditProfilePage {
     youtube_channel: '',
     Instagram_channel: '',
     facebook_channel: '',
+    tiktok_channel:'',
     background_image: ''
   }
   blob_name: any = '';
@@ -63,6 +64,9 @@ export class EditProfilePage {
     }
     if (this.formData.youtube_channel == null) {
       this.formData.youtube_channel = '';
+    }
+    if (this.formData.tiktok_channel == null) {
+      this.formData.tiktok_channel = '';
     }
     if (this.formData.user_type == '2') {
       let k = this.formData.category;
@@ -112,6 +116,7 @@ export class EditProfilePage {
       data['facebook_channel'] = { "value": this.formData.facebook_channel, "type": "NO" };
       data['Instagram_channel'] = { "value": this.formData.Instagram_channel, "type": "NO" };
       data['youtube_channel'] = { "value": this.formData.youtube_channel, "type": "NO" };
+      data['tiktok_channel'] = { "value": this.formData.tiktok_channel, "type": "NO" };
     }
     this.api.postData(data, 1, 'edit_profile').then((res: any) => {
       if (res.status == 1) {

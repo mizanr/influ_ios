@@ -1,7 +1,7 @@
 import { AlertProvider } from './../../providers/alert/alert';
 import { AuthProvider } from './../../providers/auth/auth';
 import { TranslateService } from '@ngx-translate/core';
-import { NavController, ActionSheetController } from 'ionic-angular';
+import { NavController, ActionSheetController, Events, App } from 'ionic-angular';
 import { RestApiProvider } from './../../providers/rest-api/rest-api';
 import { Component, Input } from '@angular/core';
 
@@ -20,14 +20,16 @@ export class PostComponent {
   @Input() k: any;
 
   constructor(public api: RestApiProvider,
-    public navCtrl: NavController,
+    // public navCtrl: NavController,
     public trans: TranslateService,
+    public events:Events,
+    public app:App,
     public actionSheetCtrl: ActionSheetController,
     public auth: AuthProvider,
     public alert: AlertProvider) {
   }
 
-  openAction(id) {
+  openAction(k) {
     let user = this.auth.getUserDetails();
     let btnText: any;
     if (user.user_type == 1) {
@@ -41,10 +43,13 @@ export class PostComponent {
           text: btnText,
           handler: () => {
             if (user.user_type == 1) {
-              let textModal = this.api.modalCtrl.create('TextModalPage', { PostId: id }, { cssClass: 'myModal' });
+              console.log(k);
+              let textModal = this.api.modalCtrl.create('TextModalPage', { PostId: k.Id }, { cssClass: 'myModal' });
               textModal.present();
             } else {
-              this.alert.show('Alert!', 'Coming Soon!')
+              // this.alert.show('Alert!', 'Coming Soon!');
+              console.log(k);
+              this.block_user(k.created_by.id);
             }
           }
         },
@@ -68,19 +73,39 @@ export class PostComponent {
 
 
   postdetail(item) {
+    console.log(item);
     if (item.type == 2) {
-      this.navCtrl.push('PostDetailPage', { PostId: item.Id });
+      // alert("post component");
+      this.app.getActiveNav().push('PostDetailPage', { PostId: item.Id });
+      // this.navCtrl.push('PostDetailPage', { PostId: item.Id });
     } else {
-      this.navCtrl.push('JobDetialPage', { JobId: item.Id });
+      this.app.getActiveNav().push('JobDetialPage', { JobId: item.Id });
     }
   }
 
 
   profile(obj) {
     if (obj.created_by.user_type == 1) {
-      this.navCtrl.push('CompanyProfilePage', { ID: obj.created_by.id })
+      this.app.getActiveNav().push('CompanyProfilePage', { ID: obj.created_by.id })
     } else {
-      this.navCtrl.push('InfluencerProfilePage', { InfluId: obj.created_by.id, PostId: obj.Id });
+      this.app.getActiveNav().push('InfluencerProfilePage', { InfluId: obj.created_by.id, PostId: obj.Id });
     }
   }
+
+  block_user(id){
+    let data = {
+      "block_to":id,
+      "block_by":this.auth.getCurrentUserId()
+    }
+    //https://www.w4ebwiders.com/WEB01/Influ/Api/BlockCompany?block_by=51&block_to=52
+      this.api.get(data,1,'BlockCompany').then((res:any)=>{
+            if(res.status==1){
+              this.events.publish('list_refresh',true);
+              // this.navCtrl.pop();
+              //this.getProfile();
+            }
+      })
+    
+  }
+
 }

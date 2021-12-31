@@ -93,8 +93,9 @@ export class VerifyPage {
           console.log('google Logout Error---------', e);
 
         });
-        this.navCtrl.setRoot(TabsPage);
         this.auth.updateUserDetails(res.data);
+        localStorage.removeItem('guest');
+        this.navCtrl.setRoot(TabsPage);
         this.events.publish('LoggedIn');
       }
       else {

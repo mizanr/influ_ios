@@ -22,7 +22,7 @@
         <ion-icon color="light" name="md-menu"></ion-icon>
       </button>
       <div class="rightIcons" [ngClass]="auth.getUserLanguage()=='en'?'eng':'noteng'">
-        <button *ngIf="inFluId!=this.auth.getCurrentUserId()" (click)="openAction()" ion-button clear icon-only
+        <button *ngIf="auth?.isUserLoggedIn()&&inFluId!=this.auth?.getCurrentUserId()" (click)="openAction()" ion-button clear icon-only
           class="moreBtn">
           <ion-icon style="color:white" name="md-more"></ion-icon>
         </button>
@@ -60,7 +60,7 @@
             <span>({{profile?.avg_rate}})</span>
         </p>
 
-        <button ion-button item-end *ngIf="rate_status==1&&auth.getUserDetails().user_type==1"
+        <button ion-button item-end *ngIf="auth?.isUserLoggedIn()&&rate_status==1&&auth?.getUserDetails()?.user_type==1"
         class="btn-theme" (click)="rate_now()" 
         small>{{'RATE_NOW' | translate}}</button>
       </ion-item>
@@ -71,24 +71,31 @@
         </div>
         <div class="proflie_info">
           <ion-row>
-            <ion-col col-4>
+            <ion-col col-3 *ngIf="profile.Instagram_follower>0">
               <div class="count">
                 <h3>{{profile.Instagram_follower}}</h3>
                 <p>{{'INSTAGRAM' | translate}}</p>
                 <p>{{'FOLLOWERS' | translate}}</p>
               </div>
             </ion-col>
-            <ion-col col-4>
+            <ion-col col-3 *ngIf="profile.facebook_follower>0">
               <div class="count">
                 <h3>{{profile.facebook_follower}}</h3>
                 <p>{{'FACEBOOK' | translate}}</p>
                 <p>{{'FOLLOWERS' | translate}}</p>
               </div>
             </ion-col>
-            <ion-col col-4>
+            <ion-col col-3 *ngIf="profile.tiktok_follower>0">
               <div class="count">
                 <h3>{{profile.tiktok_follower}}</h3>
                 <p>{{'TIKTOK' | translate}}</p>
+                <p>{{'FOLLOWERS' | translate}}</p>
+              </div>
+            </ion-col>
+            <ion-col col-3 *ngIf="profile.youtube_follower>0">
+              <div class="count">
+                <h3>{{profile.youtube_follower}}</h3>
+                <p>Youtube</p>
                 <p>{{'FOLLOWERS' | translate}}</p>
               </div>
             </ion-col>
@@ -97,7 +104,7 @@
             <!-- <button ion-button round small (click)="alert.show('Alert!','Coming Soon!')" class="btn-theme">{{'MESSAGE' |
               translate}}</button> -->
 
-            <div *ngIf="inFluId==auth.getCurrentUserId()">
+            <div *ngIf="auth?.isUserLoggedIn()&&inFluId==auth?.getCurrentUserId()">
               <button (click)="opneEdit()" [ngClass]="auth.getUserLanguage()=='en'?'':'inLeft'" class="inRight"
                 ion-button clear icon-only><img  width="30" src="../../assets/imgs/edit.png">
               </button>
@@ -360,7 +367,7 @@
       <div *ngFor="let r of ratings">
         <ion-item class="detail_item detail_item2" no-lines no-padding>
           <ion-avatar item-start>
-            <img src="assets/imgs/add-img.png">
+            <img [src]="r?.rated_by?.image">
           </ion-avatar>
           <h3>{{r.rated_by.first_name}}</h3>
           <!-- <h4>({{r.service_title}})</h4> -->

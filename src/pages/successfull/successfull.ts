@@ -6,8 +6,12 @@ import { NavController, NavParams, ViewController, IonicPage } from 'ionic-angul
   templateUrl: 'successfull.html',
 })
 export class SuccessfullPage {
+type:any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
+    this.type=navParams.data.type || 0;
+
+    console.log(this.type);
   }
 
   ionViewDidLoad() {
