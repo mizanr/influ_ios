@@ -120,7 +120,7 @@ export class ConversationPage {
 
           setTimeout(() => {
             this.check_noti_status(s);
-            // this.sendNoti(item);            
+            // this.sendNoti(item);
           }, 2000);
         }
       });
@@ -346,12 +346,12 @@ export class ConversationPage {
             this.media.getFile().then((res1: any) => {
               alert('get file successfull-----');
               console.log('res1------------', res1);
-           
+
               if (res1 != 0) {
-          
+
                 if (res1.file.type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || res1.file.type == 'application/msword' || res1.file.type == 'application/pdf') {
-              
-                  
+
+
                   this.sendFile(res1.file, res1.name, 'file', res1.name);
                 } else {
                   this.alert.show('Alert', 'Only Pdf,Ppt & Document files are allowed!');
@@ -504,6 +504,6 @@ export class ConversationPage {
 
   hidemsg(item:any) {
     return item['show_id_'+this.auth.getCurrentUserId()];
-  } 
+  }
 
 }

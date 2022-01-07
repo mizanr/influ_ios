@@ -41,6 +41,8 @@ export class MediaProvider {
   audioInterval: any;
 
   audiofile: MediaObject;
+  audioFileName:string = '';
+  audioFileDir:string = '';
   VideoEditorOptions = {
     OptimizeForNetworkUse: {
       NO: 0,
@@ -90,32 +92,28 @@ export class MediaProvider {
     ]);
   }
 
-
+  getUniqeName() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
   startAudioRecording() {
-    console.log('statting recordoing',this.file.documentsDirectory.replace(/^file:\/\//, ''));
-    
-    // this.filepath = this.file.dataDirectory + 'record' + new Date().getTime() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.m4a';
-    // this.filepath = this.file.documentsDirectory.replace(/^file:\/\//, '') + 'my_file.m4a';
-    // this.audiofile = this.media.create(this.filepath);
+    console.log('statting recordoing');
+    this.audioFileDir = this.file.externalDataDirectory;
+    this.audioFileName = this.getUniqeName() + '.mp3';
 
-    this.file.createFile((this.file.documentsDirectory.replace(/^file:\/\//, '')), 'my_file.3gp', true).then(() => {
-      console.log('statting file c------');
-      this.audiofile = this.media.create((this.file.documentsDirectory.replace(/^file:\/\//, '')) + 'my_file.3gp');
+    if (this.plt.is('ios')) {
+      this.audioFileDir = this.file.documentsDirectory;
+      this.audioFileName = this.getUniqeName() + '.m4a';
+    }
 
-      this.audiofile.onError.subscribe(error => {
-        alert('Audio recording----'+JSON.stringify(error));
-      });
-
-      this.filepath = (this.file.documentsDirectory.replace(/^file:\/\//, '')) + 'my_file.3gp';
-      console.log('statting recoding-------1423625');
-    this.audiofile.startRecord()
-    console.log('statting recordoing after---------');
-    // onerror = (error) => alert('audio recording error');
+    const recordPath = (this.audioFileDir + this.audioFileName).replace(/file:\/\//g, '');
+    this.audiofile = this.media.create(recordPath);
+    this.audiofile.startRecord();
     this.recordingStatus = 1;
-
-    console.log('recordingStatus------ in mediaprovider',this.recordingStatus);
-
     let time = 0;
     this.audioInterval = setInterval(() => {
       time = time + 1;
@@ -124,60 +122,71 @@ export class MediaProvider {
       let min1 = min > 9 ? min + "" : "0" + min;
       let sec1 = sec > 9 ? sec + "" : "0" + sec;
       this.timer = min1 + ':' + sec1;
-    }, 1000) 
-    }).catch((err) => {
-      console.log('catch----',err);
-    })
+    }, 1000);
+
+    // this.file.createFile((this.file.documentsDirectory.replace(/^file:\/\//, '')), 'my_file.3gp', true).then(() => {
+    //   console.log('statting file c------');
+    //   this.audiofile = this.media.create((this.file.documentsDirectory.replace(/^file:\/\//, '')) + 'my_file.3gp');
+    //
+    //   this.audiofile.onError.subscribe(error => {
+    //     alert('Audio recording----'+JSON.stringify(error));
+    //   });
+    //
+    //   this.filepath = (this.file.documentsDirectory.replace(/^file:\/\//, '')) + 'my_file.3gp';
+    //   console.log('statting recoding-------1423625');
+    // this.audiofile.startRecord()
+    // console.log('statting recordoing after---------');
+    // // onerror = (error) => alert('audio recording error');
+    // this.recordingStatus = 1;
+    //
+    // console.log('recordingStatus------ in mediaprovider',this.recordingStatus);
+    //
+    // let time = 0;
+    // this.audioInterval = setInterval(() => {
+    //   time = time + 1;
+    //   let min = parseInt(time / 60 + "");
+    //   let sec = time % 60;
+    //   let min1 = min > 9 ? min + "" : "0" + min;
+    //   let sec1 = sec > 9 ? sec + "" : "0" + sec;
+    //   this.timer = min1 + ':' + sec1;
+    // }, 1000)
+    // }).catch((err) => {
+    //   console.log('catch----',err);
+    // })
   }
 
-  // startAudioRecording() {
-  //   console.log('starting audio recording------');
-  //   this.filepath = this.file.tempDirectory.replace(/^file:\/\//, '') + 'record' + new Date().getTime() + new Date().getMonth() + new Date().getFullYear() + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.m4a';
-  //   console.log('file path------',this.filePath);
-  //   this.audiofile = this.media.create(this.filepath);
-
-  //   console.log('audio file------',this.audiofile);
-
-  //   this.audiofile.startRecord();
-  //   this.recordingStatus = 1;
-  //   let time = 0;
-  //   this.audioInterval = setInterval(() => {
-  //     time = time + 1;
-  //     let min = parseInt(time / 60 + "");
-  //     let sec = time % 60;
-  //     let min1 = min > 9 ? min + "" : "0" + min;
-  //     let sec1 = sec > 9 ? sec + "" : "0" + sec;
-  //     this.timer = min1 + ':' + sec1;
-  //   }, 1000)
-  // }
 
   stopAudioRecording() {
     this.audiofile.stopRecord();
-    clearInterval(this.interval1);
-    clearInterval(this.interval2);
-    clearInterval(this.interval3);
     this.recordingStatus = 2;
     clearInterval(this.audioInterval);
-    this.readAsBlob("file://"+this.filepath).then((res) => {
-      this.blob = res;
-    });
 
-    this.audiofile.play();
-    //this.audiofile.setVolume(0.0); // you don't want users to notice that you are playing the file
-    this.interval1 = setInterval(() => {
-      if (this.duration == -1) {
-        this.duration = ~~this.audiofile.getDuration(); // make it an integer
-
-      } else {
-        // this.audiofile.stop();
-        this.audiofile.pause();
-        console.log("paused", this.duration);
-        this.getAndSetCurrentAudioPosition();
-        //this.audiofile.release();
-        //this.setRecordingToPlay();
-        clearInterval(this.interval1);
-      }
-    }, 100);
+    //
+    // clearInterval(this.interval1);
+    // clearInterval(this.interval2);
+    // clearInterval(this.interval3);
+    // this.recordingStatus = 2;
+    // clearInterval(this.audioInterval);
+    // this.readAsBlob("file://"+this.filepath).then((res) => {
+    //   this.blob = res;
+    // });
+    //
+    // this.audiofile.play();
+    // //this.audiofile.setVolume(0.0); // you don't want users to notice that you are playing the file
+    // this.interval1 = setInterval(() => {
+    //   if (this.duration == -1) {
+    //     this.duration = ~~this.audiofile.getDuration(); // make it an integer
+    //
+    //   } else {
+    //     // this.audiofile.stop();
+    //     this.audiofile.pause();
+    //     console.log("paused", this.duration);
+    //     this.getAndSetCurrentAudioPosition();
+    //     //this.audiofile.release();
+    //     //this.setRecordingToPlay();
+    //     clearInterval(this.interval1);
+    //   }
+    // }, 100);
   }
 
 
@@ -206,8 +215,15 @@ export class MediaProvider {
 
 
   playaudio() {
-    this.audiofile.play();
-    this.isPlay = true;
+    try {
+      this.audiofile.play();
+      //this.getAndSetCurrentAudioPosition();
+      this.isPlay = true;
+      this.audiofile.setVolume(0.8);
+    } catch (e) {
+      console.log('play audio error ', e);
+    }
+
   }
   pauseaudio() {
 
@@ -215,13 +231,8 @@ export class MediaProvider {
     this.isPlay = false;
   }
 
-
-
-
-
-
-
   resetRecording() {
+    this.position = 0;
     this.recordingStatus = 0;
     this.timer = "00:00";
     this.isLoaded = false;
@@ -349,7 +360,7 @@ export class MediaProvider {
   //   let options: CaptureVideoOptions = { limit: 1, quality: 0 };
   //   this.mediaCapture.captureVideo(options)
   // .then(
-  //   (data: MediaFile[]) => {      
+  //   (data: MediaFile[]) => {
   //      console.log("video captured successfull",data);
   //      this.loading.show();
   //     this.readAsBlob(data[0].fullPath).then((res)=>{
@@ -430,7 +441,7 @@ export class MediaProvider {
          resolve(0)
        });
      });
- 
+
    }
 
   getCompressedImage(no) {
@@ -442,7 +453,7 @@ export class MediaProvider {
         buttons: [
           {
             text: 'Cancel',
-            handler: data => { 
+            handler: data => {
               resolve(0);
             }
           },
@@ -476,7 +487,7 @@ export class MediaProvider {
     });
   }
 
-  
+
   selectMultipleImages(imgCount: any) {
     this.file_array = [];
     return new Promise((resolve, reject) => {
@@ -499,7 +510,7 @@ export class MediaProvider {
     })
   }
 
-  
+
   getCompressedblobFromMultiple(results, i, n) {
     // console.log("get blob for multiple", i,n);
     console.log('getblobFromMultiple', i, n);
@@ -588,7 +599,7 @@ export class MediaProvider {
                 type: file.type,
               });
               console.log("blob.....", blob);
-              resolve({ name: file.name, file: blob, 
+              resolve({ name: file.name, file: blob,
                 preview: this.sanitizer.bypassSecurityTrustResourceUrl((<any>window).Ionic.WebView.convertFileSrc(path)) });
               // this.blob['name']=file.name;
               // this.blob['file']=blob;
@@ -609,7 +620,7 @@ export class MediaProvider {
     console.log("media provider");
     return new Promise((resolve, reject) => {
       if(this.plt.is('cordova')){
-      
+
           this.camera.getPicture({
             quality: 100,
             destinationType: this.camera.DestinationType.FILE_URI,
@@ -621,7 +632,7 @@ export class MediaProvider {
           }).then((data) => {
             let path = data;
             console.log('Path--------==', path);
-  
+
             // let options = {
             //   uri: path,
             //   quality: 100,
@@ -642,31 +653,31 @@ export class MediaProvider {
                   else {
                     resolve(res);
                     console.log("get blob successfull", res);
-  
+
                   }
                 });
               // })
               // .catch(e => console.log(e));
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
             // console.log('getting image by camera',data);
             //resolve('data:image/png;base64,' + data);
           }, (err) => {
             console.log('getting image by camera', err);
             reject('Unable to take photo: ' + err);
           })
-        
+
       }
 
       else {
         this.getWebImage().then((res: any) => {
           resolve(res);
           // this.image.imgURItoBlob(res).then((blob: any) => {
-         
+
           //   // console.log(blob);
           //   // let name = this.image.generateImageName("hello.jpg");
           //   // resolve({ file: blob, name: name, preview:res });
@@ -733,7 +744,7 @@ export class MediaProvider {
       else {
         this.getWebImage().then((res: any) => {
           console.log('In is getWebImage-------------------');
-          
+
           resolve(res);
         })
 

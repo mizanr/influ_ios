@@ -46,6 +46,9 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
+        <edit-config file="*-Info.plist" mode="merge" target="NSMicrophoneUsageDescription">
+            <string>Need microphone access to record message</string>
+        </edit-config>
         <allow-intent href="itms:*" />
         <allow-navigation href="*" />
         <allow-navigation href="http://*/*" />
